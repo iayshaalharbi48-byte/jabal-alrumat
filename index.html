@@ -15,6 +15,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap">
 <style>
+@font-face{font-family:"Thmanyah Serif Text";src:url("fonts/thmanyah-serif-text-regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+
 /* Layout: ink-wash scroll — misty mountain hero, paper tiles that fill with ink, floating paper tab bar. Daily = indigo ink, weekday-specific = vermilion. Ruqaa for titles, naskh for text, Amiri for hadith and poetry. */
 :root{
   --bg:#F3F5F7; --surface:#FFFFFF; --sunk:#E4E9EF; --line:#DAE1EA;
@@ -24,8 +26,8 @@
   --heat0:#E3E8EE; --heat1:#C4D5EC; --heat2:#8DB0DD; --heat3:#4F84C9; --heat4:#1F4A86;
   --ink1:#2E64AA; --ink2:#173A6B; --mist:#F3F5F7; --trail:#5B8FD0; --horse:#141820; --cloak:#C8322B;
   --glass:rgba(255,255,255,.86);
-  --f-display:"Aref Ruqaa","Amiri","Traditional Arabic",serif;
-  --f-body:"Noto Naskh Arabic","Segoe UI","Tahoma",serif;
+  --f-display:"Thmanyah Serif Text","Aref Ruqaa","Amiri",serif;
+  --f-body:"Thmanyah Serif Text","Noto Naskh Arabic","Segoe UI",serif;
   --f-text:"Amiri","Traditional Arabic","Times New Roman",serif;
   --r:20px; color-scheme:light;
 }
@@ -249,7 +251,7 @@ nav.tabs a[aria-current="page"]{color:var(--on-accent);background:var(--accent)}
 .empty{text-align:center;padding:22px 12px;color:var(--muted)}
 /* ink-wash overrides */
 body{font-weight:400}
-h1,h2,h3{font-weight:700}
+h1,h2,h3{font-weight:400}
 .brand h1{font-size:30px;color:var(--fg)}
 .blk-h h2{font-size:25px}
 .card,.list,.metric,.remind,.mount{box-shadow:0 1px 0 var(--line),0 8px 24px -16px rgba(24,32,44,.35);border-width:1px}
@@ -475,7 +477,7 @@ function render(){
 
 function ring(p){
   const r=38,c=2*Math.PI*r,v=Math.max(0,Math.min(1,p||0));
-  return `<svg class="ring" viewBox="0 0 92 92" aria-label="إنجاز اليوم ${Math.round(v*100)}٪"><circle cx="46" cy="46" r="${r}" fill="none" stroke="currentColor" stroke-opacity=".22" stroke-width="8"/><circle cx="46" cy="46" r="${r}" fill="none" stroke="var(--cloak)" stroke-width="7" stroke-linecap="round" stroke-dasharray="${c*v} ${c}" transform="rotate(-90 46 46)"/><text x="46" y="52" text-anchor="middle" font-size="21" font-weight="800" fill="currentColor" font-family="Noto Naskh Arabic, serif">${fmt(Math.round(v*100))}٪</text></svg>`;
+  return `<svg class="ring" viewBox="0 0 92 92" aria-label="إنجاز اليوم ${Math.round(v*100)}٪"><circle cx="46" cy="46" r="${r}" fill="none" stroke="currentColor" stroke-opacity=".22" stroke-width="8"/><circle cx="46" cy="46" r="${r}" fill="none" stroke="var(--cloak)" stroke-width="7" stroke-linecap="round" stroke-dasharray="${c*v} ${c}" transform="rotate(-90 46 46)"/><text x="46" y="52" text-anchor="middle" font-size="21" font-weight="800" fill="currentColor" font-family="Thmanyah Serif Text, Noto Naskh Arabic, serif">${fmt(Math.round(v*100))}٪</text></svg>`;
 }
 function phaseLine(d){
   const p=phaseOf(d);
@@ -522,7 +524,7 @@ function mountainSVG(){
   <path d="M118 298 C150 292 178 280 168 264 C156 244 122 240 140 224 C164 206 262 214 242 192 C222 172 138 182 150 160 C162 138 232 150 216 118 C206 96 176 92 180 70 C182 56 181 48 181 40" fill="none" stroke="var(--trail)" stroke-width="2.6" stroke-linecap="round" opacity=".8"/>
   <g id="ticks"></g>
   ${climb().prov<SUMMIT-3?`<g transform="translate(181 40)" opacity=".45" style="--horse:var(--fg);--cloak:var(--fg)"><g transform="scale(1.15)">${RIDER}</g></g>`:""}
-    <text x="290" y="62" font-size="12" fill="var(--cloak)" font-family="Aref Ruqaa, serif">موضع الرماة</text>
+    <text x="290" y="62" font-size="12" fill="var(--cloak)" font-family="Thmanyah Serif Text, serif">موضع الرماة</text>
   <g id="climber"><g id="riderflip"><g class="bob"><g transform="scale(1.15)">${RIDER}</g></g></g></g>
   <rect x="300" y="236" width="40" height="40" rx="4" fill="var(--cloak)" transform="rotate(-6 320 256)" opacity=".92"/>
   <text x="320" y="252" text-anchor="middle" font-size="11" fill="#FFF" font-family="Aref Ruqaa, serif" transform="rotate(-6 320 256)">لا</text>
