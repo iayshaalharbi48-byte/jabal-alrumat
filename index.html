@@ -305,7 +305,7 @@ const KEY="jabal-alrumat-v1";
 const DAYN=["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
 const DAYS=["ح","ن","ث","ر","خ","ج","س"];
 const ALL=[0,1,2,3,4,5,6], WK=[0,1,2,3,4];
-const CATS={ibada:"العبادات",master:"منهج الماجستير",skill:"المهارات",care:"العناية بالنفس"};
+const CATS={ibada:"العبادات",master:"منهج الماجستير",prog:"البرامج العلمية",skill:"المهارات",care:"العناية بالنفس"};
 const PRAYERS=["الفجر","الظهر","العصر","المغرب","العشاء"];
 
 const DEFAULT_ITEMS=[
@@ -315,10 +315,14 @@ const DEFAULT_ITEMS=[
  {id:"wird",t:"ورد التلاوة",cat:"ibada",days:ALL,type:"check"},
  {id:"azm",t:"أذكار الصباح",cat:"ibada",days:ALL,type:"check"},
  {id:"aze",t:"أذكار المساء",cat:"ibada",days:ALL,type:"check"},
- {id:"hifz",t:"حفظ وجهٍ جديد",cat:"master",days:WK,type:"count",unit:"وجه",target:1,phase:true},
- {id:"tathbit",t:"تثبيت المحفوظ ومراجعته",cat:"master",days:[5,6],type:"check",phase:true},
+ {id:"hifz",t:"حفظ وجهٍ جديد",cat:"master",days:[0,1,2,3,4,6],type:"count",unit:"وجه",target:1,phase:true},
+ {id:"tathbit",t:"تثبيت المحفوظ ومراجعته",cat:"master",days:[5],type:"check",phase:true},
  {id:"hadith",t:"دراسة الحديث",cat:"master",days:WK,type:"count",unit:"صفحة",phase:true},
  {id:"test",t:"الاختبار الشامل الشهري",cat:"master",days:[4],type:"check",phase:true,special:"test"},
+ {id:"p_academy",t:"أكاديمية الحديث",cat:"prog",days:[],type:"check",prog:true},
+ {id:"p_arqam",t:"مدرسة الأرقم",cat:"prog",days:[],type:"check",prog:true},
+ {id:"p_manhaji",t:"البناء المنهجي",cat:"prog",days:[],type:"check",prog:true},
+ {id:"p_mutun",t:"حلقة المتون",cat:"prog",days:[],type:"check",prog:true,sub:"حلقات المسجد النبوي · المستوى الأول"},
  {id:"course",t:"الدورة العلمية",cat:"skill",days:[5,6],type:"check"},
  {id:"ai",t:"تعلّم الذكاء الاصطناعي",cat:"skill",days:[1],type:"check"},
  {id:"poetry",t:"حفظ الشعر",cat:"skill",days:[3],type:"check"},
@@ -340,6 +344,42 @@ const BOOKS={
 const DEFAULT_PHASES=[
  {id:"p1",name:"الفصل الأول",start:"2026-11-01",end:"2026-12-31",target:60,quran:"البقرة وآل عمران والنساء",books:["nuzha","ilm","tadwin"],map:{0:"nuzha",1:"ilm",2:"nuzha",3:"ilm",4:"tadwin"}},
  {id:"p2",name:"الفصل الثاني",start:"2027-01-01",end:"2027-03-31",target:60,quran:"نصف المائدة وجزء عمّ وجزء تبارك",books:["jarh","ilal","muall"],map:{0:"jarh",1:"ilal",2:"jarh",3:"ilal",4:"muall"}}
+];
+const QBANK=[
+ {b:"nuzha",q:"كتاب «نزهة النظر» شرحٌ لأيّ متن؟",o:["نخبة الفكر في مصطلح أهل الأثر","ألفية العراقي","مقدمة ابن الصلاح","الموقظة للذهبي"],x:"النزهة شرح ابن حجر لمتنه «نخبة الفكر»."},
+ {b:"nuzha",q:"عرّف ابن حجر المشهورَ بأنّه:",o:["ما له طرقٌ محصورة بأكثر من اثنين","ما لا يرويه أقلّ من اثنين عن اثنين","ما رواه عددٌ كثير تُحيل العادة تواطؤهم على الكذب","ما تفرّد بروايته راوٍ واحد"]},
+ {b:"nuzha",q:"العزيز عند ابن حجر:",o:["ألّا يرويه أقلُّ من اثنين عن اثنين","ما رواه ثلاثةٌ فأكثر في كل طبقة","ما رواه واحدٌ عن واحد","ما اشتهر على الألسنة ولو لم يصحّ"]},
+ {b:"nuzha",q:"الغريب (الفرد) هو:",o:["ما ينفرد بروايته شخصٌ واحد في أيّ موضعٍ وقع التفرّد من السند","ما رواه اثنان في كل طبقة","ما سقط من إسناده راوٍ","ما خالف فيه الثقةُ من هو أوثق منه"]},
+ {b:"nuzha",q:"من شروط المتواتر عند ابن حجر أن يكون مستندُ انتهائهم:",o:["الحسّ","العقل","الاجتهاد","الإجماع"],x:"كقولهم: سمعنا، أو رأينا."},
+ {b:"nuzha",q:"خبر الآحاد بنقل عدلٍ تامّ الضبط، متّصل السند، غير معلّلٍ ولا شاذّ، هو:",o:["الصحيح لذاته","الحسن لذاته","الصحيح لغيره","الحسن لغيره"]},
+ {b:"nuzha",q:"إذا خفّ ضبط الراوي مع بقيّة شروط الصحيح فالحديث:",o:["حسنٌ لذاته","صحيحٌ لغيره","ضعيف","شاذّ"]},
+ {b:"nuzha",q:"الحسن لذاته إذا تعدّدت طرقه صار:",o:["صحيحًا لغيره","حسنًا لغيره","صحيحًا لذاته","متواترًا"]},
+ {b:"nuzha",q:"ما رواه المقبول مخالفًا لمن هو أولى منه يسمّى:",o:["الشاذّ","المنكر","المعلّل","المضطرب"],x:"ومقابله المحفوظ؛ فإن وقعت المخالفة مع الضعف فهو المنكر، ومقابله المعروف."},
+ {b:"nuzha",q:"ما سقط من مبدأ إسناده من تصرّف مصنّفٍ يسمّى:",o:["المعلّق","المرسل","المعضل","المنقطع"]},
+ {b:"nuzha",q:"ما سقط منه اثنان فصاعدًا مع التوالي يسمّى:",o:["المعضل","المنقطع","المعلّق","المدلّس"],x:"فإن كان السقط مع عدم التوالي فهو المنقطع."},
+ {b:"nuzha",q:"الحديث المطعون فيه بكذب الراوي يسمّى:",o:["الموضوع","المتروك","المنكر","المعلّل"],x:"وإن كان الطعن بتهمة الكذب فهو المتروك."},
+ {b:"nuzha",q:"المرسل الخفيّ ما رواه الراوي عمّن:",o:["عاصره ولم يُعرف أنّه لقيه","لقيه وسمع منه غير ما حدّث به","لم يعاصره أصلًا","روى عنه بالإجازة"],x:"والتدليس أن يروي عمّن لقيه ما لم يسمعه منه بصيغةٍ موهمة."},
+ {b:"nuzha",q:"كم عدد أسباب الطعن في الراوي التي ذكرها ابن حجر؟",o:["عشرة","ستة","ثمانية","خمسة"],x:"الكذب، والتهمة به، وفحش الغلط، والغفلة، والفسق، والوهم، والمخالفة، والجهالة، والبدعة، وسوء الحفظ."},
+ {b:"tadwin",q:"الخليفة الذي أمر بتدوين الحديث تدوينًا رسميًّا عامًّا:",o:["عمر بن عبد العزيز","أبو بكر الصديق","هارون الرشيد","معاوية بن أبي سفيان"]},
+ {b:"tadwin",q:"كتب عمر بن عبد العزيز بالأمر بالتدوين إلى عامله على المدينة:",o:["أبي بكر بن محمد بن عمرو بن حزم","سعيد بن المسيّب","عروة بن الزبير","نافع مولى ابن عمر"],x:"وذكره البخاري معلّقًا في كتاب العلم، باب: كيف يُقبض العلم."},
+ {b:"tadwin",q:"يُعدّ أوّلَ من دوّن الحديث تدوينًا رسميًّا بأمر الخليفة:",o:["محمد بن شهاب الزهري","مالك بن أنس","البخاري","الشافعي"]},
+ {b:"tadwin",q:"«الصحيفة الصادقة» تُنسب إلى:",o:["عبد الله بن عمرو بن العاص","أبي هريرة","علي بن أبي طالب","أنس بن مالك"]},
+ {b:"tadwin",q:"صحيفة همّام بن منبّه رواها عن:",o:["أبي هريرة","ابن عباس","عائشة","جابر بن عبد الله"]},
+ {b:"tadwin",q:"حديث «لا تكتبوا عني، ومن كتب عني غير القرآن فليمحه» رواه مسلم عن:",o:["أبي سعيد الخدري","عبد الله بن عمرو","أبي هريرة","ابن مسعود"]},
+ {b:"tadwin",q:"قال النبي ﷺ «اكتبوا لأبي شاه» في:",o:["خطبته عام فتح مكة","خطبته بعرفة في حجة الوداع","غزوة تبوك","صلح الحديبية"]},
+ {b:"tadwin",q:"من أوائل المصنّفات المرتّبة على الأبواب الفقهية في القرن الثاني:",o:["موطأ الإمام مالك","مسند الإمام أحمد","سنن النسائي","صحيح مسلم"]},
+ {b:"tadwin",q:"المسانيد، كمسند الإمام أحمد، مرتّبةٌ على:",o:["أسماء الصحابة","الأبواب الفقهية","حروف المعجم في المتون","البلدان"]},
+ {b:"tadwin",q:"أشهر ما يُعلَّل به النهي عن الكتابة أوّلَ الأمر:",o:["خشية اختلاط الحديث بالقرآن","قلّة أدوات الكتابة وحدها","كراهة العلم المكتوب مطلقًا","أنّ الصحابة لا يحسنون الكتابة"]},
+ {b:"ilm",q:"موضع «كتاب العلم» بين كتب صحيح البخاري:",o:["الثالث بعد بدء الوحي والإيمان","الأول","الأخير","بعد كتاب الصلاة"]},
+ {b:"ilm",q:"ترجم البخاري في كتاب العلم بابًا اشتهر بقوله فيه:",o:["العلم قبل القول والعمل","العمل قبل العلم","العلم بعد الفتوى","الكتابة قبل الحفظ"]},
+ {b:"ilm",q:"حديث «من يُرد الله به خيرًا يفقّهه في الدين» رواه البخاري في كتاب العلم عن:",o:["معاوية بن أبي سفيان","أبي هريرة","عمر بن الخطاب","ابن عباس"]},
+ {b:"ilm",q:"في باب الاغتباط في العلم والحكمة حديث:",o:["«لا حسد إلا في اثنتين»","«طلب العلم فريضةٌ على كل مسلم»","«نضّر الله امرأً سمع مقالتي»","«بلّغوا عني ولو آية»"]},
+ {b:"ilm",q:"حديث «إنّ الله لا يقبض العلم انتزاعًا ينتزعه من العباد» رواه:",o:["عبد الله بن عمرو بن العاص","أنس بن مالك","أبو موسى الأشعري","معاوية"]},
+ {b:"ilm",q:"ذكر البخاري أنّ جابر بن عبد الله رحل مسيرة شهرٍ في حديثٍ واحد إلى:",o:["عبد الله بن أُنيس","أبي أيوب الأنصاري","عقبة بن عامر","أبي الدرداء"]},
+ {b:"ilm",q:"مثَلُ «الغيث الكثير أصاب أرضًا» في فضل من عَلِم وعلَّم، رواه:",o:["أبو موسى الأشعري","أبو هريرة","جابر بن عبد الله","أبو سعيد الخدري"]},
+ {b:"ilm",q:"أورد البخاري في كتاب العلم قصّة موسى عليه السلام مع:",o:["الخضر","فرعون","شعيب","هارون"]},
+ {b:"ilm",q:"سُئل عليٌّ رضي الله عنه: هل عندكم كتاب؟ فذكر صحيفةً فيها:",o:["العقل، وفكاك الأسير، ولا يُقتل مسلمٌ بكافر","أحكام الصلاة والزكاة","خطبة الوداع","أسماء الصحابة"]},
+ {b:"ilm",q:"حديث «من كذب عليّ متعمّدًا فليتبوّأ مقعده من النار» أورده البخاري في باب:",o:["إثم من كذب على النبي ﷺ","كتابة العلم","الفهم في العلم","الغضب في الموعظة"]}
 ];
 const QUOTES=[
  {t:"سنظلّ في جبل الرماة، وخلفنا صوتُ النبيّ ﷺ يهزّنا: لا تبرحوا",s:"من عهدكِ لنفسكِ",firm:1},
@@ -372,12 +412,16 @@ const TRACKS=[
 
 /* ---------- state ---------- */
 function blank(){return{v:1,name:"عائشة",items:DEFAULT_ITEMS.map(i=>({...i,on:true})),phases:JSON.parse(JSON.stringify(DEFAULT_PHASES)),
-  totals:{},log:{},tests:{},poems:[],books:[],curBook:null,course:"",majLink:"",ntfy:"",lastHifz:{},projects:{},tracks:{},pieces:[],myQuotes:[],seenPos:null}}
+  totals:{},log:{},tests:{},poems:[],books:[],curBook:null,course:"",majLink:"",ntfy:"",lastHifz:{},projects:{},tracks:{},pieces:[],myQuotes:[],seenPos:null,programs:{},_u:0,sv:2}}
 function load(){
   let s=null;
   try{s=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){}
+  return migrate(s);
+}
+function migrate(s){
   if(!s)return blank();
   const b=blank();
+  if(!(s.sv>=2)){for(const it of (s.items||[])){if(it.id==="hifz"&&!it.days.includes(6))it.days=it.days.concat(6).sort();if(it.id==="tathbit")it.days=[5]}s.sv=2}
   const ids=new Set((s.items||[]).map(i=>i.id));
   s.items=(s.items||[]).concat(b.items.filter(i=>!ids.has(i.id)));
   for(const it of s.items){const df=b.items.find(x=>x.id===it.id);if(df&&df.metric&&!it.metric){it.metric=true;it.t=df.t;if(!it.target)it.target=df.target;if(!it.step)it.step=df.step}}
@@ -385,7 +429,7 @@ function load(){
   return s;
 }
 let S=load();
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function save(){S._u=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}schedulePush()}
 
 /* ---------- utils ---------- */
 const $=s=>document.querySelector(s);
@@ -450,7 +494,7 @@ const fmtMin=m=>{m=+m||0;const h=Math.floor(m/60),r=m%60;return h?`${fmt(h)} س$
 function sumItem(id,from,to){let s=0;for(const k in S.log){if((from&&k<from)||(to&&k>to))continue;const v=S.log[k].d[id];s+=typeof v==="number"?v:(v===true?1:0)}return s}
 function bookPages(bid){let s=0;for(const k in S.log){const e=S.log[k];if(e.b===bid)s+=+e.d.hadith||0}return s+(+(S.totals[bid+"_start"])||0)}
 function readPages(id){let s=0;for(const k in S.log){const e=S.log[k];if(e.r===id)s+=+e.d.reading||0}return s}
-function wkCount(p,from){let n=0,d=parse(from||p.start);const e=parse(p.end);while(d<=e){if(d.getDay()<5)n++;d=addDays(d,1)}return n}
+function wkCount(p,from){const hd=(S.items.find(x=>x.id==="hifz")||{days:WK}).days;let n=0,d=parse(from||p.start);const e=parse(p.end);while(d<=e){if(hd.includes(d.getDay()))n++;d=addDays(d,1)}return n}
 
 /* ---------- render ---------- */
 const ICONS={
@@ -462,7 +506,7 @@ const ICONS={
  content:'<rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/>'
 };
 const TABS=[["today","اليوم"],["cal","التقويم"],["masters","الماجستير"],["skills","المهارات"],["reading","القراءة"],["content","المحتوى"]];
-const VIEWS=["today","cal","masters","skills","reading","content","log","prefs"];
+const VIEWS=["today","cal","quiz","masters","skills","reading","content","log","prefs"];
 let route="today",viewDay=today();
 function render(){
   const h=(location.hash||"").slice(1);route=VIEWS.includes(h)?h:"today";
@@ -471,7 +515,7 @@ function render(){
   $("#navPrefs").toggleAttribute("aria-current",route==="prefs");if(route==="prefs")$("#navPrefs").setAttribute("aria-current","page");
   const t=today();$("#hdrDates").textContent=DAYN[t.getDay()]+" · "+hijri(t)+" · "+greg(t);
   const prevRoute=render._r;render._r=route;
-  $("#view").innerHTML=({today:vToday,cal:vCal,masters:vMasters,skills:vSkills,reading:vReading,content:vContent,log:vLog,prefs:vPrefs})[route]();
+  $("#view").innerHTML=({today:vToday,cal:vCal,quiz:vQuiz,masters:vMasters,skills:vSkills,reading:vReading,content:vContent,log:vLog,prefs:vPrefs})[route]();
   if(route==="today")animateClimber();
 }
 
@@ -587,6 +631,7 @@ function vToday(){
   ${mets.length?`<section class="blk"><div class="blk-h"><h2>مقاييس اليوم</h2><span class="tag">المشي والقراءة والجهاز</span></div><div class="metrics">${mets.map(it=>metricHTML(it,e)).join("")}</div></section>`:""}
   <div class="key"><span><i style="background:var(--daily)"></i>مهامّ يومية ثابتة</span><span><i style="background:var(--special)"></i>مهامّ هذا اليوم من الأسبوع</span></div>
   ${groups||'<div class="card empty">لا وِرد مجدول لهذا اليوم.</div>'}
+  ${isT&&(d.getDay()===4||d.getDay()===5)?harvestHTML():""}
   <section class="blk"><div class="blk-h"><h2>محاسبة اليوم</h2><span class="tag">ما الذي أعانكِ، وما الذي عطّلكِ؟</span></div>
    <textarea class="inp" id="note" data-k="${k}" placeholder="اكتبي سطرين قبل النوم…">${esc(e.note||"")}</textarea></section>`;
 }
@@ -637,6 +682,7 @@ const ICO={
  sport:'<path d="M6 7v10M3 9.5v5M18 7v10M21 9.5v5M6 12h12"/>',
  selfcare:'<path d="M12 3c2 4 6 5 6 10a6 6 0 0 1-12 0c0-5 4-6 6-10z"/>'
 };
+ICO.p_academy=ICO.hadith;ICO.p_arqam=ICO.course;ICO.p_manhaji=ICO.wird;ICO.p_mutun=ICO.hifz;
 const orb=id=>`<span class="orb" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${ICO[id]||'<circle cx="12" cy="12" r="5"/>'}</svg></span>`;
 function subFor(it,d,ph){
   let sub=it.sub?esc(it.sub):"";
@@ -648,6 +694,8 @@ function subFor(it,d,ph){
   if(it.id==="poetry"){const cur=S.poems.find(p=>!p.done);sub=cur?`<b>${esc(cur.title)}</b>`:'اختاري قصيدة الأسبوع'}
   if(it.id==="majariyat")sub=S.majLink?`<a href="${esc(S.majLink)}" target="_blank" rel="noopener">افتحي عدد اليوم</a>`:"أول ما يُقرأ صباحًا";
   if(it.id==="sport")sub=`الهدف ${fmt(it.target)} دقيقة`;
+  if(it.prog){const pr=S.programs[it.id]||{};sub=pr.note?`<b>${esc(pr.note)}</b>`:(it.sub?esc(it.sub):"")}
+  if(it.id==="hifz"&&d.getDay()===6&&ph)sub=`حفظٌ ومراجعة · ${esc(ph.quran)}`;
   return sub;
 }
 function tileHTML(it,e,d,ph){
@@ -718,6 +766,20 @@ function vCal(){
    <div class="blk-h"><h3 style="font-size:17px;color:var(--daily)">المهامّ اليومية</h3><span class="tag num">${fmt(daily.length)}</span></div><div class="list">${li(daily,"daily")}</div>
    ${key(sd)<=key(t)?`<button class="btn ghost" data-act="openDay" data-k="${key(sd)}">فتح هذا اليوم للتسجيل</button>`:""}</section>`;
 }
+function progCount(id){let n=0;for(const k in S.log)if(S.log[k].d[id])n++;return n+(+((S.programs[id]||{}).base)||0)}
+function vPrograms(){
+  const ps=S.items.filter(i=>i.prog);
+  return `<section class="blk"><div class="blk-h"><h2>البرامج العلمية</h2><span class="tag">اختاري أيام كل برنامج ليظهر في وِرد يومه</span></div>
+  <div class="stack">${ps.map(it=>{const pr=S.programs[it.id]||{},n=progCount(it.id),tot=+pr.total||0;
+   return `<div class="card stack"><div class="kv"><b style="font-size:17px">${esc(it.t)}</b><span class="num muted">${fmt(n)}${tot?" / "+fmt(tot):""} درسًا</span></div>
+    ${it.sub?`<div class="small muted">${esc(it.sub)}</div>`:""}
+    <div class="bar"><i style="width:${tot?Math.min(100,n/tot*100):0}%"></i></div>
+    <div class="days">${ALL.map(x=>`<button class="${it.days.includes(x)?"on":""}" data-act="itemDay" data-id="${it.id}" data-x="${x}" title="${DAYN[x]}">${DAYS[x]}</button>`).join("")}</div>
+    ${it.days.length?"":`<div class="small" style="color:var(--down)">لم تُحدَّد أيامه بعد، فلن يظهر في وِردكِ اليومي.</div>`}
+    <div class="field"><label for="pn_${it.id}">${it.id==="p_mutun"?"المتن الحالي":"المقرّر أو الدرس الحالي"}</label><input class="inp" id="pn_${it.id}" data-prog="${it.id}" data-f="note" value="${esc(pr.note||"")}"></div>
+     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="field"><label for="pt_${it.id}">عدد الدروس</label><input class="inp num" type="number" min="0" id="pt_${it.id}" data-prog="${it.id}" data-f="total" value="${pr.total||""}"></div>
+     <div class="field"><label for="pb_${it.id}">دروسٌ سابقة</label><input class="inp num" type="number" min="0" id="pb_${it.id}" data-prog="${it.id}" data-f="base" value="${pr.base||""}"></div></div></div>`}).join("")}</div></section>`;
+}
 function vMasters(){
   const t=today();
   return S.phases.map(p=>{
@@ -728,7 +790,8 @@ function vMasters(){
     const need=daysLeft?left/daysLeft:0;
     let adv="";
     if(st!=="منتهٍ"&&left>0){
-      adv=need>1?`<div class="note">بقي <b class="num">${fmt(left)}</b> وجهًا في <b class="num">${fmt(daysLeft)}</b> يومَ حفظ (الأحد إلى الخميس)، أي نحو <b class="num">${(Math.ceil(need*10)/10).toLocaleString("ar-EG")}</b> وجه في اليوم. وجهٌ واحد يوميًا يبلغ <b class="num">${fmt(done+daysLeft)}</b> من ${fmt(p.target)}، فإمّا أن تزيدي نصف وجهٍ في بعض الأيام، وإمّا أن تجعلي من الجمعة والسبت نصيبًا للحفظ.</div>`
+      const extra=left-daysLeft;
+      adv=need>1?`<div class="note">بقي <b class="num">${fmt(left)}</b> وجهًا في <b class="num">${fmt(daysLeft)}</b> يومَ حفظ، أي نحو <b class="num">${(Math.ceil(need*10)/10).toLocaleString("ar-EG")}</b> وجه في اليوم. وجهٌ واحد يوميًا يبلغ <b class="num">${fmt(done+daysLeft)}</b> من ${fmt(p.target)}، فزيدي نصف وجهٍ في <b class="num">${fmt(extra*2)}</b> يومًا منها لتبلغي الستين.</div>`
       :`<div class="note">بقي <b class="num">${fmt(left)}</b> وجهًا في <b class="num">${fmt(daysLeft)}</b> يومَ حفظ، فوجهٌ واحد يوميًا يكفي ويفضل منه للتثبيت.</div>`;
     }
     const months=[];let m=parse(p.start);while(key(m)<=p.end){months.push(new Date(m));m=new Date(m.getFullYear(),m.getMonth()+1,1)}
@@ -749,12 +812,37 @@ function vMasters(){
     <div class="blk-h" style="margin-top:4px"><h3 style="font-size:18px">الاختبارات الشهرية</h3><span class="tag">آخر خميسٍ من كل شهر</span></div>
     <div class="list">${months.map(mm=>{const id=key(mm).slice(0,7),tt=S.tests[id]||{},lt=lastThu(mm);
       return `<div class="row" style="flex-wrap:wrap"><div class="txt" style="flex-basis:50%"><div class="t">${esc(monthName(mm))}</div><div class="s">${esc(DAYN[4])} ${esc(greg(lt))}</div></div>
+      <button class="btn ghost" data-act="quizStart" data-m="${id}" data-p="${p.id}">${tt.score!=null?"أعيدي الاختبار":"ابدئي الاختبار"}</button>
       <div class="field" style="width:84px"><label for="ts_${id}">الدرجة ٪</label><input class="inp num" type="number" min="0" max="100" id="ts_${id}" data-test="${id}" data-f="score" value="${tt.score??""}"></div>
       <div class="field" style="flex:1 1 100%"><input class="inp" id="tn_${id}" data-test="${id}" data-f="note" value="${esc(tt.note||"")}" placeholder="مواطن الضعف التي ظهرت في الاختبار"></div></div>`}).join("")}</div>
     </section>`;
-  }).join("");
+  }).join("")+vPrograms();
 }
 
+let QZ=null;
+function shuffle(a,seed){a=a.slice();let x=seed||Date.now();for(let i=a.length-1;i>0;i--){x=(x*9301+49297)%233280;const j=Math.floor(x/233280*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function startQuiz(month,pid){
+  const ph=S.phases.find(p=>p.id===pid)||S.phases[0];
+  const pool=QBANK.map((q,i)=>({...q,i})).filter(q=>ph.books.includes(q.b));
+  const seed=Date.now()%233280;
+  const qs=shuffle(pool,seed).slice(0,15).map((q,k)=>({i:q.i,order:shuffle([0,1,2,3],seed+k*7+1)}));
+  QZ={month,pid,qs,ans:{},done:false};
+}
+function vQuiz(){
+  if(!QZ)return `<div class="card empty">اختاري الشهر من صفحة الماجستير لتبدئي الاختبار.<br><a href="#masters">إلى الماجستير</a></div>`;
+  if(!QZ.qs.length)return `<div class="card empty">لم تُعدّ أسئلة كتب هذا الفصل بعد، وسأضيفها قبل بدايته.<br><a href="#masters">رجوع</a></div>`;
+  const mm=parse(QZ.month+"-01");let right=0;
+  const body=QZ.qs.map((qq,n)=>{const q=QBANK[qq.i],a=QZ.ans[n];if(QZ.done&&a===0)right++;
+    return `<div class="card stack"><div class="small muted">${esc(BOOKS[q.b])} · سؤال ${fmt(n+1)} من ${fmt(QZ.qs.length)}</div><b style="font-size:17px;line-height:1.6">${esc(q.q)}</b>
+    <div class="stack" style="gap:6px">${qq.order.map(o=>{const sel=a===o,ok=QZ.done&&o===0,bad=QZ.done&&sel&&o!==0;
+      return `<button class="btn ghost" style="text-align:start;white-space:normal;${sel?"border-color:var(--accent);background:var(--accent-soft);":""}${ok?"border-color:var(--ok);color:var(--ok);":""}${bad?"border-color:var(--down);color:var(--down);":""}" data-act="quizPick" data-n="${n}" data-o="${o}" ${QZ.done?"disabled":""}>${esc(q.o[o])}</button>`}).join("")}</div>
+    ${QZ.done&&q.x?`<div class="note">${esc(q.x)}</div>`:""}</div>`}).join("");
+  const answered=Object.keys(QZ.ans).length,pct=Math.round(right/QZ.qs.length*100);
+  return `<section class="blk"><div class="blk-h"><h2>اختبار ${esc(monthName(mm))}</h2><a class="tag" href="#masters">رجوع</a></div>
+   ${QZ.done?`<div class="card stack"><span class="small muted">النتيجة</span><span class="bigstep num">${fmt(pct)}٪</span><span>${fmt(right)} من ${fmt(QZ.qs.length)} إجابةً صحيحة، وحُفظت الدرجة في صفحة الماجستير.</span><div class="btns"><button class="btn" data-act="quizRetry">اختبارٌ جديد</button><a class="btn ghost" href="#masters" style="text-decoration:none">رجوع</a></div></div>`:""}
+   ${body}
+   ${QZ.done?"":`<button class="btn" data-act="quizSubmit" ${answered<QZ.qs.length?'style="opacity:.6"':""}>تسليم الإجابات (${fmt(answered)}/${fmt(QZ.qs.length)})</button>`}</section>`;
+}
 function weekDots(it){
   const t=today();let h="";
   for(let i=6;i>=0;i--){const d=addDays(t,-i),s=scheduled(it,d),sc=score(it,entry(key(d)));
@@ -806,6 +894,24 @@ function vContent(){
    <div><button class="btn" type="submit">تسجيل</button></div></form></section>`;
 }
 
+function weekHarvest(){
+  const t=today(),days=[];let ups=0,downs=0;const cat={};
+  for(let i=6;i>=0;i--){const d=addDays(t,-i),p=dayPct(d),e=entry(key(d));days.push({k:key(d),p:S.log[key(d)]?p:null});
+    if(i>0&&p!==null){if(p>=.7)ups++;else downs++}
+    for(const it of dayItems(d)){const c=cat[it.cat]||(cat[it.cat]={s:0,n:0});c.s+=score(it,e);c.n++}}
+  const cs=Object.entries(cat).filter(([,v])=>v.n).map(([k,v])=>({k,t:CATS[k],v:v.s/v.n})).sort((a,b)=>b.v-a.v);
+  const got=days.filter(x=>x.p!==null);
+  return{days,ups,downs,avg:got.length?got.reduce((a,b)=>a+b.p,0)/got.length:0,best:cs[0],weak:cs[cs.length-1]};
+}
+function harvestHTML(){
+  const h=weekHarvest();
+  return `<section class="blk"><div class="blk-h"><h2>حصاد الأسبوع</h2><span class="tag">آخر سبعة أيام</span></div><div class="card stack">
+   <div class="dots">${h.days.map(x=>`<span class="${x.p===null?"":x.p>=.7?"ok":"sch"}" title="${esc(x.k)}">${DAYS[parse(x.k).getDay()]}</span>`).join("")}</div>
+   <div class="kv"><span>معدّل الإنجاز</span><b class="num">${fmt(Math.round(h.avg*100))}٪</b></div>
+   <div class="kv"><span>أيام الثبات</span><b class="num up">${fmt(h.ups)}</b></div><div class="kv"><span>أيام النزول</span><b class="num dn">${fmt(h.downs)}</b></div>
+   ${h.best?`<div class="kv"><span>أقوى الثغور</span><b>${esc(h.best.t)} · ${fmt(Math.round(h.best.v*100))}٪</b></div>`:""}
+   ${h.weak&&h.weak!==h.best?`<div class="note">أضعف الثغور هذا الأسبوع: <b>${esc(h.weak.t)}</b> (${fmt(Math.round(h.weak.v*100))}٪)، فاجعليه همّكِ في الأسبوع المقبل.</div>`:""}</div></section>`;
+}
 function vLog(){
   const t=today(),weeks=17;let start=addDays(t,-(weeks*7-1));start=addDays(start,-start.getDay());
   let cells="";
@@ -815,7 +921,7 @@ function vLog(){
   const cat=Object.keys(CATS).map(c=>{let s=0,n=0;for(let i=0;i<30;i++){const d=addDays(t,-i),e=entry(key(d));for(const it of dayItems(d).filter(x=>x.cat===c)){s+=score(it,e);n++}}const v=n?Math.round(s/n*100):0;
     return `<div class="stack" style="gap:4px"><div class="kv"><span>${CATS[c]}</span><span class="num">${n?fmt(v)+"٪":"لم يبدأ بعد"}</span></div><div class="bar"><i style="width:${v}%"></i></div></div>`}).join("");
   const notes=Object.entries(S.log).filter(([,e])=>e.note).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,6);
-  return `<div class="tiles"><div class="card"><span class="small muted">التتابع الحالي</span><span class="big num">${fmt(streak())}</span></div>
+  return harvestHTML()+`<div class="tiles"><div class="card"><span class="small muted">التتابع الحالي</span><span class="big num">${fmt(streak())}</span></div>
    <div class="card"><span class="small muted">أطول تتابع</span><span class="big num">${fmt(bestStreak())}</span></div>
    <div class="card"><span class="small muted">معدّل ٧ أيام</span><span class="big num">${fmt(avg(7))}٪</span></div></div>
   <section class="blk"><div class="blk-h"><h2>المقاييس في أسبوعين</h2><span class="tag">من الأقدم إلى اليوم</span></div>
@@ -853,6 +959,11 @@ function vPrefs(){
   <section class="blk"><div class="blk-h"><h2>توزيع كتب الحديث</h2></div>
   ${S.phases.map(p=>`<div class="card stack"><b>${esc(p.name)}</b><div class="grid2">${WK.map(x=>`<div class="field"><label for="bm_${p.id}${x}">${DAYN[x]}</label><select class="inp" id="bm_${p.id}${x}" data-map="${p.id}" data-x="${x}">${p.books.map(b=>`<option value="${b}" ${p.map[x]===b?"selected":""}>${BOOKS[b]}</option>`).join("")}</select></div>`).join("")}</div>
    <div class="grid2"><div class="field"><label for="ps_${p.id}">بداية الفصل</label><input class="inp" type="date" id="ps_${p.id}" data-ph="${p.id}" data-f="start" value="${p.start}"></div><div class="field"><label for="pe_${p.id}">نهاية الفصل</label><input class="inp" type="date" id="pe_${p.id}" data-ph="${p.id}" data-f="end" value="${p.end}"></div></div></div>`).join("")}</section>
+  <section class="blk"><div class="blk-h"><h2>المزامنة</h2><span class="tag">${esc(syncStatus)}</span></div>
+  <div class="card stack small"><p style="margin:0">تحفظ تقدّمكِ في مستودعٍ خاصّ على GitHub، فلا يضيع إن غيّرتِ الهاتف، ويعرف تنبيه المساء ما بقي عليكِ.</p>
+   <div class="grid2"><div class="field"><label for="syRepo">المستودع الخاص</label><input class="inp" id="syRepo" dir="ltr" value="${esc(SY.repo||"iayshaalharbi48-byte/jabal-data")}"></div>
+   <div class="field"><label for="syTok">رمز الوصول</label><input class="inp" id="syTok" dir="ltr" type="password" autocomplete="off" value="${SY.token?"••••••••":""}" placeholder="github_pat_…"></div></div>
+   <div class="btns"><button class="btn" data-act="syncSave" type="button">حفظ وتشغيل المزامنة</button>${SY.token?`<button class="btn ghost" data-act="syncNow" type="button">مزامنة الآن</button><button class="btn warn" data-act="syncOff" type="button">إيقاف</button>`:""}</div></div></section>
   <section class="blk"><div class="blk-h"><h2>بياناتكِ</h2><span class="tag">محفوظةٌ على هذا الجهاز وحده</span></div>
   <div class="card stack small"><p style="margin:0">انسخي نسخةً احتياطية واحفظيها في ملاحظاتكِ أو بريدكِ، فإن غيّرتِ الجهاز ألصقتِها هنا.</p>
    <div class="btns"><button class="btn" data-act="export" type="button">نسخ النسخة الاحتياطية</button><button class="btn ghost" data-act="import" type="button">استعادة من النص الملصق</button></div>
@@ -877,6 +988,13 @@ document.addEventListener("click",ev=>{
    case"prayAll":{const v=entry(k).d.salah;const all=Array.isArray(v)&&v.every(Boolean);setVal("salah",all?[0,0,0,0,0]:[1,1,1,1,1]);break}
    case"inc":{const v=Math.max(0,(+entry(k).d[id]||0)+(+b.dataset.n));setVal(id,v);break}
    case"sound":S.sound=S.sound===false?true:false;save();break;
+   case"quizStart":startQuiz(b.dataset.m,b.dataset.p);location.hash="quiz";return;
+   case"quizPick":if(QZ&&!QZ.done)QZ.ans[+b.dataset.n]=+b.dataset.o;break;
+   case"quizSubmit":{if(!QZ)break;if(Object.keys(QZ.ans).length<QZ.qs.length){toast("أجيبي عن الأسئلة كلّها أولًا");return}QZ.done=true;const r=QZ.qs.filter((q,n)=>QZ.ans[n]===0).length;const t=S.tests[QZ.month]||(S.tests[QZ.month]={});t.score=Math.round(r/QZ.qs.length*100);save();window.scrollTo(0,0);render();return}
+   case"quizRetry":startQuiz(QZ.month,QZ.pid);render();window.scrollTo(0,0);return;
+   case"syncSave":{const repo=($("#syRepo").value||"").trim(),tk=($("#syTok").value||"").trim();SY.repo=repo;if(tk&&!/^•+$/.test(tk))SY.token=tk;saveSY();syncPull(true);break}
+   case"syncNow":syncPull(true);return;
+   case"syncOff":SY.token="";saveSY();syncStatus="متوقّفة";break;
    case"calM":calM=new Date(calM.getFullYear(),calM.getMonth()+(+b.dataset.n),1);break;
    case"calSel":calSel=parse(b.dataset.k);break;
    case"openDay":viewDay=parse(b.dataset.k);location.hash="today";return;
@@ -911,6 +1029,7 @@ document.addEventListener("change",ev=>{
   const el=ev.target,keepY=window.scrollY;let rr=true;
   if(el.matches(".cnt input")){const it=S.items.find(x=>x.id===el.dataset.id),bf=score(it,entry(key(viewDay)))>=1;setVal(el.dataset.id,Math.max(0,+el.value||0));render();window.scrollTo(0,keepY);if(!bf&&score(it,entry(key(viewDay)))>=1){chime(true);celebrate(it.id)}return}
   if(el.matches(".stepper input")){setVal(el.dataset.id,el.value===""?null:Math.max(0,+el.value||0))}
+  else if(el.dataset.prog!==undefined){const pr=S.programs[el.dataset.prog]||(S.programs[el.dataset.prog]={});pr[el.dataset.f]=el.dataset.f==="note"?el.value.trim():Math.max(0,+el.value||0);save()}
   else if(el.dataset.target!==undefined){const it=S.items.find(x=>x.id===el.dataset.target);if(it.type==="limit")it.limit=Math.max(0,+el.value||0);else it.target=Math.max(1,+el.value||1);save()}
   else if(el.dataset.lh!==undefined){S.lastHifz[el.dataset.lh]=el.value.trim();save()}
   else if(el.dataset.tot!==undefined){S.totals[el.dataset.tot]=Math.max(0,+el.value||0);save()}
@@ -942,8 +1061,45 @@ function sendTest(){
    .then(r=>{if(!r.ok)throw 0;toast("أُرسل التنبيه، فتحقّقي من هاتفكِ")})
    .catch(()=>toast("تعذّر الإرسال من هنا؛ جرّبيه من التطبيق المثبّت أو من GitHub"));
 }
+/* ---------- sync ---------- */
+const SYK="jabal-sync";let SY={};try{SY=JSON.parse(localStorage.getItem(SYK)||"{}")||{}}catch(e){}
+function saveSY(){try{localStorage.setItem(SYK,JSON.stringify(SY))}catch(e){}}
+let syncStatus=SY.token?"تعمل":"غير مفعّلة",syncSha=null,pushT=null,syncing=false;
+const b64e=s=>btoa(unescape(encodeURIComponent(s))),b64d=s=>decodeURIComponent(escape(atob(s.replace(/\n/g,""))));
+function ghUrl(){return `https://api.github.com/repos/${SY.repo||"iayshaalharbi48-byte/jabal-data"}/contents/progress.json`}
+function ghHeaders(){return{"Authorization":"Bearer "+SY.token,"Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"}}
+function summary(){
+  const t=today(),its=dayItems(t),e=entry(key(t)),c=climb(),h=weekHarvest();
+  return{date:key(t),pct:dayPct(t)||0,done:its.filter(i=>score(i,e)>=1).length,total:its.length,
+    remaining:its.filter(i=>score(i,e)<1).map(i=>i.t),pos:c.prov,summit:SUMMIT,lastResult:c.last??null,
+    week:{avg:h.avg,ups:h.ups,downs:h.downs,best:h.best?h.best.t:null,weak:h.weak?h.weak.t:null}};
+}
+async function syncPull(manual){
+  if(!SY.token)return;
+  try{syncStatus="جارٍ…";if(route==="prefs")render();
+    const r=await fetch(ghUrl()+"?t="+Date.now(),{headers:ghHeaders()});
+    if(r.status===404){syncSha=null;await syncPush();return}
+    if(!r.ok)throw new Error(r.status);
+    const j=await r.json();syncSha=j.sha;const remote=JSON.parse(b64d(j.content));
+    if(remote&&remote.state&&(remote.state._u||0)>(S._u||0)){S=migrate(remote.state);try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}animFrom=null;render();if(manual)toast("جُلب تقدّمكِ المحفوظ")}
+    else await syncPush();
+  }catch(err){syncStatus=String(err.message)==="401"||String(err.message)==="403"?"الرمز غير صالح":"تعذّر الاتصال";if(route==="prefs")render()}
+}
+function schedulePush(){if(!SY.token)return;clearTimeout(pushT);pushT=setTimeout(()=>syncPush(),4000)}
+async function syncPush(retry){
+  if(!SY.token||syncing)return;syncing=true;
+  try{const body={message:"تحديث التقدّم",content:b64e(JSON.stringify({updated:Date.now(),summary:summary(),state:S}))};if(syncSha)body.sha=syncSha;
+    const r=await fetch(ghUrl(),{method:"PUT",headers:{...ghHeaders(),"Content-Type":"application/json"},body:JSON.stringify(body)});
+    if((r.status===409||r.status===422)&&!retry){const g=await fetch(ghUrl()+"?t="+Date.now(),{headers:ghHeaders()});if(g.ok){syncSha=(await g.json()).sha}syncing=false;return syncPush(true)}
+    if(!r.ok)throw new Error(r.status);
+    syncSha=(await r.json()).content.sha;syncStatus="آخر مزامنة "+new Date().toLocaleTimeString("ar-EG",{hour:"numeric",minute:"2-digit"});
+  }catch(err){syncStatus=String(err.message)==="401"||String(err.message)==="403"||String(err.message)==="404"?"تحقّقي من الرمز واسم المستودع":"تعذّر الاتصال"}
+  syncing=false;if(route==="prefs")render();
+}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")syncPull(false);else if(SY.token){clearTimeout(pushT);syncPush()}});
 window.addEventListener("hashchange",()=>{confirmReset=false;render();window.scrollTo(0,0)});
 render();
+syncPull(false);
 })();
 </script>
 

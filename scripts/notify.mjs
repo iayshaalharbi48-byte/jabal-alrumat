@@ -25,7 +25,6 @@ const PHASES = [
     map: { 0: "jarh", 1: "ilal", 2: "jarh", 3: "ilal", 4: "muall" } },
 ];
 const phase = PHASES.find((p) => iso >= p.start && iso <= p.end);
-const isWeekday = dow <= 4;
 
 function lastThursday() {
   const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0));
@@ -46,7 +45,8 @@ function skillsToday() {
 }
 function masterLine() {
   if (!phase) return null;
-  if (isWeekday) return `حفظ وجهٍ من ${phase.quran}، ودراسة «${BOOKS[phase.map[dow]]}»`;
+  if (dow <= 4) return `حفظ وجهٍ من ${phase.quran}، ودراسة «${BOOKS[phase.map[dow]]}»`;
+  if (dow === 6) return `حفظ وجهٍ ومراجعة من ${phase.quran}`;
   return `تثبيت المحفوظ ومراجعته من ${phase.quran}`;
 }
 
@@ -76,50 +76,92 @@ function quote(firm, shift = 0) {
 }
 
 const bullets = (a) => a.map((x) => "• " + x).join("\n");
-let title, message, tags;
-switch (SLOT) {
-  case "fajr":
-    title = "قبل الفجر";
-    message = bullets(["الوتر", phase ? (isWeekday ? `وجه اليوم من ${phase.quran}` : "تثبيت المحفوظ ومراجعته") : "ورد التلاوة"]);
-    tags = ["crescent_moon"];
-    break;
-  case "morning": {
-    title = `صباح ${DAYN[dow]}`;
-    const lines = ["أذكار الصباح", "عدد اليوم من ماجريات"];
-    const m = masterLine();
-    if (m) lines.push(m);
-    if (testDay) lines.push("اليوم الاختبار الشامل الشهري");
-    message = bullets(lines) + "\n\n" + quote(false);
-    tags = ["sunrise"];
-    break;
+const ar = (n) => Number(n).toLocaleString("ar-EG");
+const DATA_TOKEN = process.env.DATA_TOKEN;
+const DATA_REPO = process.env.DATA_REPO;
+const yIso = new Date(now.getTime() - 864e5).toISOString().slice(0, 10);
+
+async function getSummary() {
+  if (!DATA_TOKEN || !DATA_REPO) return null;
+  try {
+    const r = await fetch(`https://api.github.com/repos/${DATA_REPO}/contents/progress.json`, {
+      headers: { Authorization: `Bearer ${DATA_TOKEN}`, Accept: "application/vnd.github+json" },
+    });
+    if (!r.ok) { console.log("data:", r.status); return null; }
+    const j = await r.json();
+    return JSON.parse(Buffer.from(j.content, "base64").toString("utf8")).summary || null;
+  } catch (e) { console.log("data error", e.message); return null; }
+}
+
+function build(sum) {
+  let title, message, tags;
+  switch (SLOT) {
+    case "fajr":
+      title = "قبل الفجر";
+      message = bullets(["الوتر", phase ? (dow === 5 ? "تثبيت المحفوظ ومراجعته" : `وجه اليوم من ${phase.quran}`) : "ورد التلاوة"]);
+      tags = ["crescent_moon"];
+      break;
+    case "morning": {
+      title = `صباح ${DAYN[dow]}`;
+      const lines = ["أذكار الصباح", "عدد اليوم من ماجريات"];
+      const m = masterLine();
+      if (m) lines.push(m);
+      if (testDay) lines.push("اليوم الاختبار الشامل الشهري");
+      let head = "";
+      if (sum) {
+        if (sum.date === yIso && sum.pct < 0.7) head = "نزلتِ أمس خطوةً عن الجبل، فاصعدي اليوم إلى موضعكِ.\n\n";
+        else if (sum.date === yIso) head = "ثبتِّ أمس على الجبل، فلا تبرحي مكانكِ اليوم.\n\n";
+        else if (sum.date < yIso) head = "لم تسجّلي أمس شيئًا في جبل الرماة.\n\n";
+      }
+      message = head + bullets(lines) + "\n\n" + quote(false);
+      tags = ["sunrise"];
+      break;
+    }
+    case "duha":
+      title = "الضحى والطلب";
+      message = bullets(["صلاة الضحى", phase && dow <= 4 ? `جلسة «${BOOKS[phase.map[dow]]}»` : "ورد التلاوة"]);
+      tags = ["books"];
+      break;
+    case "skills":
+      title = "ثغور المهارات";
+      message = bullets(skillsToday()) + "\n\n" + quote(false, 5);
+      tags = ["dart"];
+      break;
+    case "evening":
+      title = "أذكار المساء";
+      message = "حان وقت أذكار المساء.\n\n" + quote(false, 9);
+      tags = ["city_sunset"];
+      break;
+    case "night": {
+      title = "محاسبة اليوم";
+      if (sum && sum.date === iso) {
+        const pct = Math.round(sum.pct * 100);
+        const rem = (sum.remaining || []).slice(0, 7);
+        message = `أتممتِ ${ar(sum.done)} من ${ar(sum.total)} (${ar(pct)}٪).`;
+        if (rem.length) message += "\nبقي عليكِ:\n" + bullets(rem);
+        message += sum.pct >= 0.7 ? "\n\nبلغتِ ٧٠٪، فأنتِ ثابتةٌ على الجبل." : `\n\nبقي ${ar(70 - pct)}٪ حتى لا تنزلي خطوة.\n\n` + quote(true);
+      } else {
+        message = (sum ? "لم تسجّلي شيئًا اليوم بعد. " : "سجّلي ما أنجزتِ في جبل الرماة. ") + "إن لم يبلغ وِردكِ ٧٠٪ نزلتِ خطوةً عن الجبل.\n\n" + quote(true);
+      }
+      if (dow === 4 && sum && sum.week) {
+        const w = sum.week;
+        message += `\n\nحصاد الأسبوع: معدّل ${ar(Math.round(w.avg * 100))}٪، ثبات ${ar(w.ups)} أيام، ونزول ${ar(w.downs)}.`;
+        if (w.weak && w.weak !== w.best) message += `\nأضعف الثغور: ${w.weak}، فاجعليه همّ الأسبوع المقبل.`;
+      }
+      tags = ["memo"];
+      break;
+    }
+    default:
+      title = "جبل الرماة";
+      message = sum ? `تنبيهٌ تجريبي: وصلكِ التنبيه، والمزامنة تعمل (آخر تسجيل ${sum.date}).` : "تنبيهٌ تجريبي: وصلكِ التنبيه، فالثغر محروس.";
+      tags = ["bow_and_arrow"];
   }
-  case "duha":
-    title = "الضحى والطلب";
-    message = bullets(["صلاة الضحى", phase && isWeekday ? `جلسة «${BOOKS[phase.map[dow]]}»` : "ورد التلاوة"]);
-    tags = ["books"];
-    break;
-  case "skills":
-    title = "ثغور المهارات";
-    message = bullets(skillsToday()) + "\n\n" + quote(false, 5);
-    tags = ["dart"];
-    break;
-  case "evening":
-    title = "أذكار المساء";
-    message = "حان وقت أذكار المساء.\n\n" + quote(false, 9);
-    tags = ["city_sunset"];
-    break;
-  case "night":
-    title = "محاسبة اليوم";
-    message = "إن لم يبلغ وِردكِ ٧٠٪ نزلتِ غدًا خطوةً عن الجبل. سجّلي ما أنجزتِ، وسجّلي خطواتكِ وصفحاتكِ ومدة الجهاز.\n\n" + quote(true);
-    tags = ["memo"];
-    break;
-  default:
-    title = "جبل الرماة";
-    message = "تنبيهٌ تجريبي: وصلكِ التنبيه، فالثغر محروس.";
-    tags = ["bow_and_arrow"];
+  return { title, message, tags };
 }
 
 async function main() {
+  const sum = await getSummary();
+  const { title, message, tags } = build(sum);
   let sent = 0;
   if (TOPIC) {
     const body = { topic: TOPIC, title, message, tags, priority: 4 };
