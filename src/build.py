@@ -1,13 +1,12 @@
 s=open("app.html").read()
-import re as _re
-s=_re.sub(r'url\(data:font/woff2;base64,[A-Za-z0-9+/=]+\)','url("fonts/thmanyah-serif-text-regular.woff2")',s)  # THMANYAH
+# خطّ ثمانية مضمَّنٌ في التطبيق نفسه (data URL) كما يجيزه ترخيصه، ولا يُرفع ملفًّا مستقلًّا.
 te=s.index("</title>")+8
 head='''<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#F3F5F7" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#0C1117" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#EFE8EE">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="جبل الرماة">
 <link rel="manifest" href="manifest.webmanifest">
