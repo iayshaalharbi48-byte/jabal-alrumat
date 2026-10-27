@@ -521,6 +521,44 @@ nav.tabs .plus[aria-expanded="true"]{transform:rotate(45deg)}
 @keyframes fade{from{opacity:0}}
 @media (prefers-reduced-motion:reduce){.sheet,.dim{animation:none}}
 :root[data-scene="night"] .go svg{stroke:#F6D99A}
+
+/* بطاقة اليوم: شريطا الأساس والمكمّلات، ويوم العذر */
+.bar2{display:grid;grid-template-columns:2fr 1fr;gap:6px}
+.bar2 span{height:7px;border-radius:99px;background:var(--sunk);overflow:hidden;display:block}
+.bar2 i{display:block;height:100%;border-radius:99px;background:linear-gradient(270deg,#4B4E9E,#8FC3C4)}
+.bar2 .sup i{background:linear-gradient(270deg,#C73E52,#F08A73)}
+:root[data-scene="night"] .bar2 i{background:linear-gradient(270deg,#F6E7B8,#E8A0A8)}
+.tc-ex{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.tc-ex.on{background:color-mix(in srgb,var(--gold) 16%,transparent);border-radius:14px;padding:7px 12px;color:var(--fg);justify-content:space-between}
+.tc-ex b{color:var(--fg);font-weight:500}
+.tc-ex .linkbtn{font-weight:400;font-size:13px;color:var(--accent);min-height:30px}
+.exchip{height:34px;padding:0 14px;border-radius:99px;border:1px solid var(--line);background:var(--field);color:var(--fg);font-size:13.5px}
+.exchip:disabled{opacity:.4}
+.exleft{flex-basis:100%;font-size:12px}
+.grp.now h2{color:var(--special2)} .grp.now .grp-h h2::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--special2);margin-inline-end:7px;vertical-align:2px;animation:twinkle 2.4s ease-in-out infinite}
+.grp.core h2::after{content:"لا يُعوَّض";font-family:var(--f-body);font-size:11px;margin-inline-start:8px;padding:1px 8px;border-radius:99px;background:var(--accent-soft);color:var(--accent);vertical-align:3px}
+.cal2 .d.exd .n{background:color-mix(in srgb,var(--gold) 30%,transparent)}
+
+/* خانات المقاييس: صفوفٌ واسعة */
+.mx{display:flex;flex-direction:column;grid-template-columns:none;padding:2px 0}
+.mx>.mrow{display:flex;flex-direction:row;align-items:center;gap:12px;padding:12px 14px;border-top:1px solid var(--line);border-inline-start:0;min-width:0}
+.mx>.mrow:first-child{border-top:0}
+.mic{width:40px;height:40px;border-radius:13px;flex:none;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent)}
+.mrow.ok .mic{background:var(--accent);color:var(--on-accent)}
+.mrow.over .mic{background:color-mix(in srgb,var(--down) 16%,transparent);color:var(--down)}
+.mtx{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.mtx b{font-weight:500;font-size:15.5px;line-height:1.2}
+.mtx small{font-size:12px;color:var(--muted);line-height:1.3}
+.mrow.ok .mtx small{color:var(--ok)} .mrow.over .mtx small{color:var(--down)}
+.mbar{height:5px;border-radius:99px;background:var(--sunk);overflow:hidden;display:block}
+.mbar i{display:block;height:100%;border-radius:99px;background:linear-gradient(270deg,#4B4E9E,#8FC3C4)}
+.mrow.over .mbar i{background:linear-gradient(270deg,#C73E52,#F08A73)}
+:root[data-scene="night"] .mbar i{background:linear-gradient(270deg,#F6E7B8,#E8A0A8)}
+.mrow .stepper{gap:0;flex:none;border:1px solid var(--line);border-radius:14px;background:var(--field);overflow:hidden}
+.mrow .stepper button{width:36px;height:44px;border:0;border-radius:0;background:none;font-size:20px;color:var(--accent);box-shadow:none}
+.mrow .stepper button:active{background:var(--accent-soft)}
+.mrow .stepper input{width:62px;height:44px;border:0;border-inline:1px solid var(--line);border-radius:0;background:none;font-size:19px;font-weight:500;color:var(--fg);padding:0}
+.sheet .mx{background:var(--field)}
 </style>
 
 </head>
@@ -624,20 +662,20 @@ const QUOTES=[
  {t:"سنظلّ في جبل الرماة، وخلفنا صوتُ النبيّ ﷺ يهزّنا: لا تبرحوا",s:"من عهدكِ لنفسكِ",firm:1},
  {t:"شُدّي مِئزرَكِ، فهذا أوانُ جِدّكِ وزمانُ مجدِكِ",s:"من عهدكِ لنفسكِ",firm:1},
  {t:"إذا سوّفتِ نِمتِ، وأدلجَ الناس",s:"من عهدكِ لنفسكِ",firm:1},
- {t:"إن رأيتمونا تخطفنا الطير فلا تبرحوا مكانكم هذا حتى أرسل إليكم",s:"وصيّة النبي ﷺ للرماة يوم أحد، رواه البخاري",firm:1},
- {t:"من خاف أدلج، ومن أدلج بلغ المنزل، ألا إنّ سلعة الله غالية، ألا إنّ سلعة الله الجنة",s:"حديثٌ رواه الترمذي",firm:1},
- {t:"احرص على ما ينفعك، واستعن بالله، ولا تعجز",s:"حديثٌ رواه مسلم"},
- {t:"أحبّ الأعمال إلى الله أدومها وإن قلّ",s:"حديثٌ متفقٌ عليه"},
- {t:"نعمتان مغبونٌ فيهما كثيرٌ من الناس: الصحة والفراغ",s:"حديثٌ رواه البخاري",firm:1},
- {t:"المؤمن القويّ خيرٌ وأحبّ إلى الله من المؤمن الضعيف، وفي كلٍّ خير",s:"حديثٌ رواه مسلم"},
- {t:"لا يُستطاع العلمُ براحة الجسم",s:"يحيى بن أبي كثير، أخرجه مسلم في صحيحه"},
+ {t:"إن رأيتمونا تخطفنا الطير فلا تبرحوا مكانكم هذا حتى أرسل إليكم",s:"وصيّة النبي ﷺ للرماة يوم أحد · رواه البخاري (٣٠٣٩) عن البراء بن عازب",firm:1},
+ {t:"من خاف أدلج، ومن أدلج بلغ المنزل، ألا إنّ سلعة الله غالية، ألا إنّ سلعة الله الجنة",s:"رواه الترمذي (٢٤٥٠) عن أبي هريرة، وقال: حسنٌ غريب",firm:1},
+ {t:"احرص على ما ينفعك، واستعن بالله، ولا تعجز",s:"رواه مسلم (٢٦٦٤) عن أبي هريرة"},
+ {t:"أحبّ الأعمال إلى الله أدومها وإن قلّ",s:"متفقٌ عليه: البخاري (٦٤٦٤) ومسلم (٧٨٣) عن عائشة"},
+ {t:"نعمتان مغبونٌ فيهما كثيرٌ من الناس: الصحة والفراغ",s:"رواه البخاري (٦٤١٢) عن ابن عباس",firm:1},
+ {t:"المؤمن القويّ خيرٌ وأحبّ إلى الله من المؤمن الضعيف، وفي كلٍّ خير",s:"رواه مسلم (٢٦٦٤) عن أبي هريرة"},
+ {t:"لا يُستطاع العلمُ براحة الجسم",s:"يحيى بن أبي كثير · أسنده مسلم في صحيحه (٦١٢) في كتاب المساجد"},
  {t:"إذا غامرتَ في شرفٍ مَرومِ  ·  فلا تقنعْ بما دون النجومِ",s:"المتنبي"},
  {t:"على قدر أهل العزم تأتي العزائمُ  ·  وتأتي على قدر الكرام المكارمُ",s:"المتنبي"},
  {t:"ولم أرَ في عيوب الناس شيئًا  ·  كنقص القادرين على التمامِ",s:"المتنبي",firm:1},
  {t:"وإذا كانت النفوسُ كبارًا  ·  تعبتْ في مرادها الأجسامُ",s:"المتنبي"},
  {t:"بقدر الكدّ تُكتسبُ المعالي  ·  ومن طلب العلا سهر الليالي",s:"يُنسب إلى الشافعي"},
  {t:"وما نيلُ المطالب بالتمنّي  ·  ولكن تؤخذ الدنيا غِلابا",s:"أحمد شوقي"},
- {t:"أخي لن تنال العلم إلا بستةٍ  ·  سأنبيك عن تفصيلها ببيانِ  ·  ذكاءٌ وحرصٌ واجتهادٌ وبُلغةٌ  ·  وصحبةُ أستاذٍ وطولُ زمانِ",s:"الشافعي"}
+ {t:"أخي لن تنال العلم إلا بستةٍ  ·  سأنبيك عن تفصيلها ببيانِ  ·  ذكاءٌ وحرصٌ واجتهادٌ وبُلغةٌ  ·  وصحبةُ أستاذٍ وطولُ زمانِ",s:"يُنسب إلى الشافعي"}
 ];
 const SUMMIT=100;
 const PROJECTS=[{id:"tanheeda",t:"تنهيدة"},{id:"inshaad",t:"إن شاد"},{id:"frames",t:"صفحة الحديث البصري"}];
@@ -696,7 +734,17 @@ function scheduled(it,d){
   if(it.special==="test")return isTestDay(d);
   return true;
 }
-function dayItems(d){return S.items.filter(it=>scheduled(it,d))}
+/* أيّام العذر: المرض والسفر تثبّت الراية (بحدٍّ شهري)، والعذر الشرعي يُخفي الصلوات ولا يُنزل الراية */
+const EX_CAP=4,EXN={sick:"مرض",travel:"سفر",hayd:"عذرٌ شرعي"};
+const HAYD_HIDE=new Set(["salah","duha","witr"]);
+/* الثغر الأساس؛ وما سواه مكمّلات */
+const CORE=new Set(["salah","wird","azm","aze","hifz","tathbit"]);
+const isCore=it=>CORE.has(it.id);
+/* القاعدة الجديدة تسري من يوم إطلاقها، وما قبله يبقى على ٧٠٪ فلا يتغيّر موضعكِ بأثرٍ رجعي */
+const RULE_FROM="2026-10-28";
+const exOf=d=>(S.log[key(d)]||{}).ex||"";
+function dayItems(d){const ex=exOf(d);return S.items.filter(it=>scheduled(it,d)&&!(ex==="hayd"&&HAYD_HIDE.has(it.id)))}
+function exUsed(d,skipK){const m=key(d).slice(0,7);let n=0;for(const k in S.log){if(k.slice(0,7)===m&&k!==skipK){const x=S.log[k].ex;if(x==="sick"||x==="travel")n++}}return n}
 function entry(k,create){if(!S.log[k]){if(!create)return{d:{}};S.log[k]={d:{}}}return S.log[k]}
 function score(it,e){
   const v=e.d[it.id];
@@ -706,29 +754,51 @@ function score(it,e){
   return v?1:0;
 }
 function dayPct(d){const its=dayItems(d);if(!its.length)return null;const e=entry(key(d));return its.reduce((a,it)=>a+score(it,e),0)/its.length}
+const newRule=d=>key(d)>=(S.ruleFrom||RULE_FROM);
+function dayParts(d){
+  const its=dayItems(d),e=entry(key(d)),core=its.filter(isCore),sup=its.filter(i=>!isCore(i));
+  const cd=core.filter(i=>score(i,e)>=1).length,sd=sup.filter(i=>score(i,e)>=1).length;
+  const sp=sup.length?sup.reduce((a,i)=>a+score(i,e),0)/sup.length:1;
+  return{core,sup,cd,sd,sp,coreOk:cd===core.length,supOk:sp>=.5};
+}
+/* up = ثبات، down = نزول، hold = عذرٌ لا يُحتسب، null = لا وِرد */
+function dayState(d){
+  const ex=exOf(d);
+  if(ex==="sick"||ex==="travel")return"hold";
+  const p=dayPct(d);if(p===null)return null;
+  let ok;if(newRule(d)){const q=dayParts(d);ok=q.coreOk&&q.supOk}else ok=p>=.7;
+  return ok?"up":ex==="hayd"?"hold":"down";
+}
 function firstDay(){const ks=Object.keys(S.log).sort();return ks.length?parse(ks[0]):today()}
 function streak(){
   let d=today(),n=0;
-  const p=dayPct(d);if(p===null||p<.7)d=addDays(d,-1);
+  if(dayState(d)!=="up")d=addDays(d,-1);
   const f=firstDay();
-  while(d>=f){const q=dayPct(d);if(q===null||q<.7)break;n++;d=addDays(d,-1)}
+  while(d>=f){const st=dayState(d);if(st==="hold"){d=addDays(d,-1);continue}if(st!=="up")break;n++;d=addDays(d,-1)}
   return n;
 }
 function bestStreak(){
   let d=firstDay(),t=today(),b=0,c=0;
-  while(d<=t){const q=dayPct(d);if(q!==null&&q>=.7){c++;b=Math.max(b,c)}else if(key(d)!==key(t))c=0;d=addDays(d,1)}
+  while(d<=t){const st=dayState(d);if(st==="up"){c++;b=Math.max(b,c)}else if(st!=="hold"&&key(d)!==key(t))c=0;d=addDays(d,1)}
   return b;
 }
 function climb(){
   const t=today();let d=firstDay(),pos=SUMMIT;const hist={};
-  while(d<t){const p=dayPct(d);if(p!==null){pos=p>=.7?Math.min(SUMMIT,pos+1):Math.max(0,pos-1);hist[key(d)]=p>=.7?1:-1}d=addDays(d,1)}
+  while(d<t){const st=dayState(d);
+    if(st==="up"){pos=Math.min(SUMMIT,pos+1);hist[key(d)]=1}
+    else if(st==="down"){pos=Math.max(0,pos-1);hist[key(d)]=-1}
+    else if(st==="hold")hist[key(d)]=0;
+    d=addDays(d,1)}
   const yk=key(addDays(t,-1)),last=hist[yk];
-  const tp=dayPct(t),prov=tp!==null&&tp>=.7?Math.min(SUMMIT,pos+1):pos;
+  const prov=dayState(t)==="up"?Math.min(SUMMIT,pos+1):pos;
   return{pos,prov,last,hist,todayUp:prov>pos};
 }
 function allQuotes(){return QUOTES.concat((S.myQuotes||[]).map(t=>({t,s:"من عباراتكِ",firm:1})))}
 function quoteFor(d,firm){const q=allQuotes().filter(x=>!firm||x.firm);const n=Math.floor(d.getTime()/864e5);return q[((n%q.length)+q.length)%q.length]}
 const isDaily=it=>it.days.length===7;
+/* متى يحين كلّ وِرد (بالساعة)؛ وما لم يُذكر فوقته مفتوح */
+const WIN={witr:[[20,24],[0,5]],hifz:[[3,8.5]],azm:[[4.5,10]],majariyat:[[6,10.5]],duha:[[7,11.5]],aze:[[15.5,19]]};
+function dueNow(it){const w=WIN[it.id];if(!w)return false;const t=new Date(),h=t.getHours()+t.getMinutes()/60;return w.some(([a,b])=>h>=a&&h<b)}
 const fmtMin=m=>{m=+m||0;const h=Math.floor(m/60),r=m%60;return h?`${fmt(h)} س${r?" و"+fmt(r)+" د":""}`:`${fmt(r)} د`};
 function sumItem(id,from,to){let s=0;for(const k in S.log){if((from&&k<from)||(to&&k>to))continue;const v=S.log[k].d[id];s+=typeof v==="number"?v:(v===true?1:0)}return s}
 function bookPages(bid){let s=0;for(const k in S.log){const e=S.log[k];if(e.b===bid)s+=+e.d.hadith||0}return s+(+(S.totals[bid+"_start"])||0)}
@@ -871,13 +941,17 @@ function sheetHTML(){
 }
 
 function metricHTML(it,e){
-  const v=e.d[it.id],has=!(v===undefined||v===null||v==="");
+  const v=e.d[it.id],has=!(v===undefined||v===null||v===""),lim=it.type==="limit",val=has?+v:0;
+  const tgt=lim?it.limit:(it.target||1),ok=score(it,e)>=1,over=lim&&has&&val>tgt;
+  const pct=Math.min(1,val/(tgt||1));
+  const lbl={walk:"خطوات المشي",reading:"صفحات القراءة",screen:"وقت الشاشة"}[it.id]||it.t;
   let goal;
-  if(it.type==="limit")goal=has?(+v<=it.limit?`<span class="goal ok">ضمن الحدّ</span>`:`<span class="goal bad">فوق الحدّ</span>`):`<span class="goal">حدّ ${fmtMin(it.limit)}</span>`;
-  else goal=`<span class="goal ${score(it,e)>=1?"ok":""}">الهدف ${fmt(it.target)}</span>`;
-  const lbl={walk:"خطوات المشي",reading:"صفحات القراءة",screen:"دقائق الجهاز"}[it.id]||it.t;
-  return `<div><span class="lb">${esc(lbl)}</span>
-   <div class="stepper"><button data-act="inc" data-id="${it.id}" data-n="-${it.step||1}" aria-label="نقص">−</button><input type="number" inputmode="numeric" min="0" class="num" id="c_${it.id}" data-id="${it.id}" value="${has?+v:""}" placeholder="—" aria-label="${esc(it.t)}"><button data-act="inc" data-id="${it.id}" data-n="${it.step||1}" aria-label="زيادة">+</button></div>${goal}</div>`;
+  if(lim)goal=!has?`الحدّ ${fmtMin(tgt)}`:over?`فوق الحدّ بـ ${fmtMin(val-tgt)}`:`ضمن الحدّ · ${fmtMin(val)} من ${fmtMin(tgt)}`;
+  else goal=ok?`بلغتِ الهدف · ${fmt(tgt)} ${esc(it.unit)}`:`الهدف ${fmt(tgt)} ${esc(it.unit)}${has?` · بقي ${fmt(tgt-val)}`:""}`;
+  return `<div class="mrow ${ok?"ok":""} ${over?"over":""}" data-tile="${it.id}">
+   <span class="mic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${ICO[it.id]||'<circle cx="12" cy="12" r="5"/>'}</svg></span>
+   <div class="mtx"><b>${esc(lbl)}</b><span class="mbar"><i style="width:${Math.round(pct*100)}%"></i></span><small>${goal}</small></div>
+   <div class="stepper"><button data-act="inc" data-id="${it.id}" data-n="-${it.step||1}" aria-label="نقص ${it.step||1}">−</button><input type="number" inputmode="numeric" min="0" class="num" id="c_${it.id}" data-id="${it.id}" value="${has?val:""}" placeholder="٠" aria-label="${esc(lbl)}${lim?" بالدقائق":""}"><button data-act="inc" data-id="${it.id}" data-n="${it.step||1}" aria-label="زيادة ${it.step||1}">+</button></div></div>`;
 }
 function itemRow(it,e,d,ph){
   const v=e.d[it.id],done=score(it,e)>=1,kc=isDaily(it)?"daily":"special",sub=subFor(it,d,ph);
@@ -888,28 +962,40 @@ function itemRow(it,e,d,ph){
   if(it.type==="count")return `<div class="ir ${kc} ${done?"done":""}" data-tile="${it.id}">${ic}${txt}</span><span class="cnt"><button data-act="inc" data-id="${it.id}" data-n="-${it.step||1}" aria-label="نقص">−</button><input type="number" inputmode="numeric" min="0" class="num" id="c_${it.id}" data-id="${it.id}" value="${+v||0}" aria-label="${esc(it.unit)}"><button data-act="inc" data-id="${it.id}" data-n="${it.step||1}" aria-label="زيادة">+</button></span></div>`;
   return `<button class="ir ${kc} ${done?"done":""}" data-tile="${it.id}" data-act="tog" data-id="${it.id}" aria-pressed="${done}">${ic}${txt}</span><span class="ck">${tick()}</span></button>`;
 }
+let exOpen=false;
 function vToday(){
   const d=viewDay,k=key(d),e=entry(k),its=dayItems(d),p=dayPct(d)||0,isT=k===key(today());
-  const ph=phaseOf(d),c=climb();
+  const ph=phaseOf(d),c=climb(),nr=newRule(d),P=dayParts(d),st=dayState(d),ex=e.ex||"";
   const mets=its.filter(i=>i.metric);
-  const groups=Object.keys(CATS).map(cc=>{
-    const list=its.filter(i=>i.cat===cc&&!i.metric);if(!list.length)return"";
-    const done=list.filter(i=>score(i,e)>=1).length;
-    return `<section class="grp"><div class="grp-h"><h2>${CATS[cc]}</h2><span class="pb"><i style="width:${done/list.length*100}%"></i></span><span class="n num">${fmt(done)}/${fmt(list.length)}</span></div><div class="lst">${list.map(it=>itemRow(it,e,d,ph)).join("")}</div></section>`;
-  }).join("");
+  const now=isT?its.filter(i=>!i.metric&&score(i,e)<1&&dueNow(i)):[];
+  const nowSet=new Set(now.map(i=>i.id));
+  const rest=its.filter(i=>!i.metric&&!nowSet.has(i.id));
+  const sec=(title,list,cls)=>{if(!list.length)return"";const done=list.filter(i=>score(i,e)>=1).length;
+    return `<section class="grp ${cls||""}"><div class="grp-h"><h2>${title}</h2><span class="pb"><i style="width:${done/list.length*100}%"></i></span><span class="n num">${fmt(done)}/${fmt(list.length)}</span></div><div class="lst">${list.map(it=>itemRow(it,e,d,ph)).join("")}</div></section>`};
+  const groups=sec("يحين الآن",now,"now")+(nr?sec("الثغر الأساس",rest.filter(isCore),"core"):"")+
+    Object.keys(CATS).map(cc=>sec(nr&&cc==="ibada"?"عباداتٌ مكمّلة":CATS[cc],rest.filter(i=>i.cat===cc&&!(nr&&isCore(i))))).join("");
   let remind="";
-  if(isT&&c.last===-1){const q=quoteFor(d,true);remind=`<div class="remind2" role="status"><b>من خبر أُحد · نزلتِ أمس خطوةً عن الجبل</b><span class="small muted">يوم أحد ترك أكثرُ الرماة مواضعهم حين رأوا الغنائم، فالتفّت الخيل من ورائهم. فاصعدي اليوم إلى موضعكِ.</span><q>${esc(q.t)}</q></div>`}
+  if(isT&&c.last===-1){const q=quoteFor(d,true);remind=`<div class="remind2" role="status"><b>من خبر أُحد · نزلتِ أمس خطوةً عن الجبل</b><span class="small muted">يوم أحد ترك أكثرُ الرماة مواضعهم حين رأوا الغنائم، فالتفّت الخيل من ورائهم. فاصعدي اليوم إلى موضعكِ.</span><q>${esc(q.t)}</q><small class="muted">${esc(q.s)}</small></div>`}
   const q=quoteFor(addDays(d,3),false);
   const doneN=its.filter(i=>score(i,e)>=1).length;
-  const line=c.todayUp?"أتممتِ ٧٠٪ اليوم، فصعدتِ خطوة":isT&&c.prov>=SUMMIT&&p>=.7?"أتممتِ ٧٠٪، فلم تبرحي مكانكِ":isT?"أتمّي ٧٠٪ من وِرد اليوم تثبتي على القمّة":esc(DAYN[d.getDay()]+" "+hijri(d));
+  const RULE="أتمّي الأساس كلّه ونصف المكمّلات";
+  const line=ex==="sick"||ex==="travel"?"يومُ عذر، فالرايةُ ثابتةٌ في موضعها"
+    :nr?(st==="up"?(c.todayUp&&isT?"أتممتِ الأساس ونصف المكمّلات، فصعدتِ خطوة":"أتممتِ الأساس ونصف المكمّلات، فلم تبرحي مكانكِ"):isT?RULE+" تثبتي على القمّة":(ex==="hayd"?"يومُ عذر، فلم تنزل الراية":"لم يكتمل الأساس في هذا اليوم"))
+    :(c.todayUp?"أتممتِ ٧٠٪ اليوم، فصعدتِ خطوة":isT&&c.prov>=SUMMIT&&p>=.7?"أتممتِ ٧٠٪، فلم تبرحي مكانكِ":isT?"أتمّي ٧٠٪ من وِرد اليوم تثبتي على القمّة":esc(DAYN[d.getDay()]+" "+hijri(d)));
+  const counts=nr?`الأساس ${fmt(P.cd)}/${fmt(P.core.length)} · المكمّلات ${fmt(P.sd)}/${fmt(P.sup.length)}`:`${fmt(doneN)} من ${fmt(its.length)} · ${fmt(Math.round(p*100))}٪`;
+  const left=EX_CAP-exUsed(d,k);
+  const exUI=ex?`<div class="tc-ex on"><span>يومُ عذر: <b>${EXN[ex]}</b>${ex==="hayd"?" · أُخفيت الصلوات والضحى والوتر، والراية لا تنزل":" · الراية ثابتة"}</span><button class="linkbtn" data-act="ex" data-v="">إلغاء</button></div>`
+    :exOpen?`<div class="tc-ex"><button class="exchip" data-act="ex" data-v="sick" ${left<=0?"disabled":""}>مرض</button><button class="exchip" data-act="ex" data-v="travel" ${left<=0?"disabled":""}>سفر</button><button class="exchip" data-act="ex" data-v="hayd">عذرٌ شرعي</button><span class="exleft">${left>0?`بقي للمرض والسفر <b class="num">${fmt(left)}</b> من ٤ هذا الشهر`:"استُنفدت أيام المرض والسفر لهذا الشهر"}</span><button class="linkbtn" data-act="exOpen">تراجع</button></div>`
+    :`<div class="tc-ex"><button class="linkbtn" data-act="exOpen">يومُ عذر؟</button></div>`;
   return `
   ${heroHTML(c,d)}
   <div class="today-card">
    <div class="tc-h"><button class="chev" data-act="day" data-n="-1" aria-label="اليوم السابق"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg></button>
-    <div class="tc-t"><b>${isT?"وِرد اليوم":"وِرد "+DAYN[d.getDay()]}</b><span class="num">${fmt(doneN)} من ${fmt(its.length)} · ${fmt(Math.round(p*100))}٪</span></div>
+    <div class="tc-t"><b>${isT?"وِرد اليوم":"وِرد "+DAYN[d.getDay()]}</b><span class="num">${counts}</span></div>
     ${isT?'<button class="chev" disabled aria-label="اليوم التالي"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 6-6 6 6 6"/></svg></button>':'<button class="chev" data-act="day" data-n="0" aria-label="العودة إلى اليوم"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 6-6 6 6 6"/></svg></button>'}</div>
-   <div class="bar"><i style="width:${Math.round(p*100)}%"></i></div>
-   <div class="tc-line">${line} · ${esc(phaseLine(d))}</div></div>
+   ${nr?`<div class="bar2"><span title="الأساس"><i style="width:${P.core.length?P.cd/P.core.length*100:100}%"></i></span><span title="المكمّلات" class="sup"><i style="width:${Math.min(100,P.sp/.5*100)}%"></i></span></div>`:`<div class="bar"><i style="width:${Math.round(p*100)}%"></i></div>`}
+   <div class="tc-line">${line} · ${esc(phaseLine(d))}</div>
+   ${exUI}</div>
   ${remind}
   ${mets.length?`<div class="mx">${mets.map(it=>metricHTML(it,e)).join("")}</div>`:""}
   ${groups||'<div class="card empty">لا وِرد مجدول لهذا اليوم.</div>'}
@@ -1032,9 +1118,10 @@ function vCal(){
   const weeks=Math.ceil((first.getDay()+last.getDate())/7);
   for(let i=0;i<weeks*7;i++){const d=addDays(start,i),k=key(d),p=S.log[k]&&d<=t?dayPct(d):null;
     const sp=dayItems(d).some(x=>!isDaily(x)),test=isTestDay(d)&&phaseOf(d);
-    const lv=p===null?"":p>=.7?"lv3":p>=.4?"lv2":p>0?"lv1":"";
-    const miss=d<t&&k>=key(firstDay())&&(p===null||p<.7)&&S.log[key(firstDay())]?" miss":"";
-    cells+=`<button class="d ${d.getMonth()!==calM.getMonth()?"out":""} ${k===key(t)?"today":""} ${k===key(calSel)?"sel":""} ${lv}${lv==="lv3"?"":miss}" data-act="calSel" data-k="${k}" aria-label="${esc(DAYN[d.getDay()]+" "+greg(d))}">
+    const ds=S.log[k]&&d<=t?dayState(d):null;
+    const lv=ds==="hold"?"exd":p===null?"":ds==="up"?"lv3":p>=.4?"lv2":p>0?"lv1":"";
+    const miss=d<t&&k>=key(firstDay())&&ds!=="up"&&ds!=="hold"&&S.log[key(firstDay())]?" miss":"";
+    cells+=`<button class="d ${d.getMonth()!==calM.getMonth()?"out":""} ${k===key(t)?"today":""} ${k===key(calSel)?"sel":""} ${lv}${lv==="lv3"||lv==="exd"?"":miss}" data-act="calSel" data-k="${k}" aria-label="${esc(DAYN[d.getDay()]+" "+greg(d))}">
       <span class="n num">${fmt(d.getDate())}</span><span class="h">${hf?esc(hf.format(d)):""}</span><span class="mk">${test?'<i style="background:var(--down)"></i>':""}</span></button>`}
   const sd=calSel,sits=dayItems(sd),se=entry(key(sd)),spct=dayPct(sd);
   const daily=sits.filter(isDaily),spec=sits.filter(x=>!isDaily(x));
@@ -1044,7 +1131,7 @@ function vCal(){
     <div class="t"><b>${esc(monthName(calM))}</b><span>${esc(hm)}</span></div>
     <button class="chev" data-act="calM" data-n="1" aria-label="الشهر التالي"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 6-6 6 6 6"/></svg></button></div>
    <div class="cal2">${cells}</div></div>
-  <div class="legend2"><span><i style="background:var(--daily2)"></i>ثبات</span><span><i style="background:color-mix(in srgb,var(--down) 30%,transparent)"></i>نزول</span><span><i style="background:var(--down);border-radius:50%"></i>اختبار شهري</span></div>
+  <div class="legend2"><span><i style="background:var(--daily2)"></i>ثبات</span><span><i style="background:color-mix(in srgb,var(--down) 30%,transparent)"></i>نزول</span><span><i style="background:color-mix(in srgb,var(--gold) 45%,transparent)"></i>عذر</span><span><i style="background:var(--down);border-radius:50%"></i>اختبار شهري</span></div>
   <div class="daycard"><div class="hd">${ring(spct||0)}<div><b>${DAYN[sd.getDay()]} ${esc(hijri(sd))}</b><span>${esc(greg(sd))}${ph&&sd.getDay()<5?` · ${esc(BOOKS[ph.map[sd.getDay()]])}`:""}</span></div></div>
    ${spec.length?`<div>${spec.map(it=>row(it,"special")).join("")}</div>`:`<div class="ft small muted">لا مهامّ خاصّة في هذا اليوم.</div>`}
    <details><summary><span>المهامّ اليومية</span><span class="num muted">${fmt(dd)}/${fmt(daily.length)}</span></summary>${daily.map(it=>row(it,"daily")).join("")}</details>
@@ -1180,8 +1267,8 @@ function vContent(){
 
 function weekHarvest(){
   const t=today(),days=[];let ups=0,downs=0;const cat={};
-  for(let i=6;i>=0;i--){const d=addDays(t,-i),p=dayPct(d),e=entry(key(d));days.push({k:key(d),p:S.log[key(d)]?p:null});
-    if(i>0&&p!==null){if(p>=.7)ups++;else downs++}
+  for(let i=6;i>=0;i--){const d=addDays(t,-i),p=dayPct(d),e=entry(key(d));const ds=dayState(d);days.push({k:key(d),p:S.log[key(d)]?p:null,s:S.log[key(d)]?ds:null});
+    if(i>0&&ds){if(ds==="up")ups++;else if(ds==="down")downs++}
     for(const it of dayItems(d)){const c=cat[it.cat]||(cat[it.cat]={s:0,n:0});c.s+=score(it,e);c.n++}}
   const cs=Object.entries(cat).filter(([,v])=>v.n).map(([k,v])=>({k,t:CATS[k],v:v.s/v.n})).sort((a,b)=>b.v-a.v);
   const got=days.filter(x=>x.p!==null);
@@ -1190,7 +1277,7 @@ function weekHarvest(){
 function harvestHTML(){
   const h=weekHarvest();
   return `<section class="blk"><div class="blk-h"><h2>حصاد الأسبوع</h2><span class="tag">آخر سبعة أيام</span></div><div class="card stack">
-   <div class="dots">${h.days.map(x=>`<span class="${x.p===null?"":x.p>=.7?"ok":"sch"}" title="${esc(x.k)}">${DAYS[parse(x.k).getDay()]}</span>`).join("")}</div>
+   <div class="dots">${h.days.map(x=>`<span class="${x.s==="up"?"ok":x.s==="down"?"sch":""}" title="${esc(x.k)}">${DAYS[parse(x.k).getDay()]}</span>`).join("")}</div>
    <div class="kv"><span>معدّل الإنجاز</span><b class="num">${fmt(Math.round(h.avg*100))}٪</b></div>
    <div class="kv"><span>أيام الثبات</span><b class="num up">${fmt(h.ups)}</b></div><div class="kv"><span>أيام النزول</span><b class="num dn">${fmt(h.downs)}</b></div>
    ${h.best?`<div class="kv"><span>أقوى الثغور</span><b>${esc(h.best.t)} · ${fmt(Math.round(h.best.v*100))}٪</b></div>`:""}
@@ -1265,10 +1352,12 @@ document.addEventListener("click",ev=>{
   const a=b.dataset.act,id=b.dataset.id,k=key(viewDay);
   const keepY=window.scrollY;
   const tid=b.closest("[data-tile]")?.dataset.tile;
-  const itm=tid&&S.items.find(x=>x.id===tid),before=itm?score(itm,entry(k))>=1:null,dayBefore=dayPct(viewDay);
+  const itm=tid&&S.items.find(x=>x.id===tid),before=itm?score(itm,entry(k))>=1:null,dayBefore=dayPct(viewDay),stBefore=dayState(viewDay)==="up";
   switch(a){
    case"sheet":sheetOpen=!sheetOpen;render();return;
    case"goTask":{const el=document.querySelector(".ir:not(.done)");if(el)el.scrollIntoView({behavior:"smooth",block:"center"});return}
+   case"exOpen":exOpen=!exOpen;break;
+   case"ex":{const e=entry(k,true),v=b.dataset.v;if(v){if((v==="sick"||v==="travel")&&EX_CAP-exUsed(viewDay,k)<=0){toast("استُنفدت أيام المرض والسفر لهذا الشهر");return}e.ex=v;toast(v==="hayd"?"يومُ عذر: أُخفيت الصلوات، والراية لا تنزل":"يومُ عذر: الراية ثابتةٌ في موضعها")}else delete e.ex;exOpen=false;save();break}
    case"tog":setVal(id,!entry(k).d[id]);break;
    case"pray":{const e=entry(k,true);const arr=Array.isArray(e.d.salah)?e.d.salah.slice():[0,0,0,0,0];arr[+b.dataset.i]=arr[+b.dataset.i]?0:1;setVal("salah",arr);break}
    case"prayAll":{const v=entry(k).d.salah;const all=Array.isArray(v)&&v.every(Boolean);setVal("salah",all?[0,0,0,0,0]:[1,1,1,1,1]);break}
@@ -1285,7 +1374,7 @@ document.addEventListener("click",ev=>{
    case"calSel":calSel=parse(b.dataset.k);break;
    case"openDay":viewDay=parse(b.dataset.k);location.hash="today";return;
    case"qDel":S.myQuotes.splice(+b.dataset.i,1);save();break;
-   case"day":{const n=+b.dataset.n;viewDay=n===0?today():addDays(viewDay,n);if(viewDay>today())viewDay=today();break}
+   case"day":{exOpen=false;const n=+b.dataset.n;viewDay=n===0?today():addDays(viewDay,n);if(viewDay>today())viewDay=today();break}
    case"poemDone":S.poems[+b.dataset.i].done=!S.poems[+b.dataset.i].done;save();break;
    case"poemDel":S.poems.splice(+b.dataset.i,1);save();break;
    case"curBook":S.curBook=S.books[+b.dataset.i].id;save();break;
@@ -1309,7 +1398,7 @@ document.addEventListener("click",ev=>{
     if(after&&!before){chime(true);celebrate(tid,dp>=1&&dayBefore<1)}
     else if(after!==before){chime(false)}
     else chime(true);
-    if(dp>=.7&&dayBefore<.7){toast(climb().prov>=SUMMIT?"بلغتِ ٧٠٪، فأنتِ ثابتةٌ على الجبل":"بلغتِ ٧٠٪، فصعدتِ خطوةً نحو موضعكِ");animFrom=climb().pos}}
+    if(dayState(viewDay)==="up"&&!stBefore){toast(climb().prov>=SUMMIT?"ثبتِّ اليوم، فأنتِ على القمّة":"ثبتِّ اليوم، فصعدتِ خطوةً نحو موضعكِ");animFrom=climb().pos}}
 });
 document.addEventListener("change",ev=>{
   const el=ev.target,keepY=window.scrollY;let rr=true;
