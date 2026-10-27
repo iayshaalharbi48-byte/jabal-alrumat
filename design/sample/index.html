@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>جبل الرماة · العيّنة</title>
+<style>
+@font-face{font-family:"Thmanyah Serif Text";src:url("../../fonts/thmanyah-serif-text-regular.woff2") format("woff2");font-weight:400;font-display:swap}
+:root{
+  --ink:#1F2433; --ink2:rgba(31,36,51,.62); --ink3:rgba(31,36,51,.42);
+  --indigo:#4B4E9E; --teal:#8FC3C4; --coral:#E8604C; --rose:#C73E52;
+  --glass:rgba(255,255,255,.62); --line:rgba(31,36,51,.08);
+  --board:#E9E7EE;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--board);font-family:"Thmanyah Serif Text","Noto Naskh Arabic",serif;color:var(--ink)}
+.board{padding:40px 28px 80px;max-width:1720px;margin:auto}
+.board h1{font-weight:400;font-size:34px;margin:0 0 4px}
+.board > p{margin:0 0 30px;color:var(--ink2);font-size:15px;line-height:1.8;max-width:720px}
+.row{display:flex;flex-wrap:wrap;gap:34px 28px;margin-bottom:56px}
+.row h2{flex-basis:100%;font-weight:400;font-size:22px;margin:0;border-bottom:1px solid rgba(31,36,51,.12);padding-bottom:10px}
+figure{margin:0;display:flex;flex-direction:column;gap:10px;align-items:center}
+figcaption{font-size:13.5px;color:var(--ink2)}
+
+/* ---------- الهاتف ---------- */
+.ph{width:390px;height:844px;position:relative;overflow:hidden;border-radius:44px;box-shadow:0 30px 60px rgba(31,36,51,.18),0 0 0 8px #15171f;background:#DCE0EE;isolation:isolate}
+.ph *{font-weight:400}
+.grain::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:50;opacity:.22;mix-blend-mode:soft-light;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.status{position:absolute;top:14px;left:30px;right:30px;display:flex;justify-content:space-between;font-size:14px;z-index:40;font-family:-apple-system,system-ui,sans-serif;font-weight:600}
+.status b{font-weight:600}
+.scene{position:absolute;top:0;left:0;width:390px;height:696px;object-fit:cover}
+.scene-fade{position:absolute;left:0;right:0;top:520px;height:330px;background:linear-gradient(180deg,rgba(190,198,232,0),#B9C2E6 55%)}
+.n .scene-fade{background:linear-gradient(180deg,rgba(64,52,128,0),#43397F 55%)}
+.top{position:absolute;top:54px;left:20px;right:20px;display:flex;align-items:flex-start;justify-content:space-between;z-index:5;gap:12px}
+.top .t{display:flex;flex-direction:column}
+.top small{font-size:13px;color:var(--ink2)}
+.top h3{margin:2px 0 0;font-size:27px;line-height:1.25;font-weight:400}
+.top h3 em{font-style:normal;color:var(--rose)}
+.pill{height:38px;padding:0 15px;border-radius:999px;display:inline-flex;align-items:center;gap:6px;font-size:14px;white-space:nowrap}
+.pill.dark{background:rgba(31,36,51,.86);color:#fff;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.pill.ghost{border:1.5px solid rgba(199,62,82,.55);color:var(--rose);background:rgba(255,255,255,.35);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.n .top small,.n .top h3{color:#F4F0FF}
+.n .top small{opacity:.7}
+
+/* الراية */
+.flag{position:absolute;z-index:3;pointer-events:none}
+.tag{position:absolute;z-index:4;font-size:12px;color:var(--rose);background:rgba(255,255,255,.55);padding:3px 10px;border-radius:99px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);white-space:nowrap}
+
+/* اللوح الزجاجي */
+.glass{background:var(--glass);-webkit-backdrop-filter:blur(22px) saturate(1.3);backdrop-filter:blur(22px) saturate(1.3);border:1px solid rgba(255,255,255,.55);box-shadow:0 12px 34px rgba(31,36,51,.08)}
+.n .glass{background:rgba(36,30,84,.42);border-color:rgba(255,255,255,.12);color:#F4F0FF;box-shadow:0 12px 34px rgba(0,0,0,.18)}
+.panel{position:absolute;left:12px;right:12px;bottom:106px;border-radius:30px;padding:16px 16px 4px;display:flex;flex-direction:column;gap:8px;overflow:hidden;z-index:6}
+.ph-head{display:flex;align-items:baseline;gap:10px}
+.ph-head span:first-child{font-size:19px;flex-grow:1}
+.ph-head span:last-child{font-size:13px;color:var(--ink2)}
+.n .ph-head span:last-child{color:rgba(244,240,255,.6)}
+.bar{height:6px;border-radius:99px;background:rgba(75,78,158,.12);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(270deg,#4B4E9E,#8FC3C4)}
+.bar.c i{background:linear-gradient(270deg,#C73E52,#E8604C)}
+.n .bar{background:rgba(255,255,255,.12)} .n .bar i{background:linear-gradient(270deg,#F6E7B8,#E8A0A8)}
+.task{display:flex;align-items:center;gap:12px;padding:8px 0;border-top:1px solid var(--line)}
+.task:first-of-type{border-top:0}
+.n .task{border-color:rgba(255,255,255,.08)}
+.ic{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;flex:none}
+.ic svg{width:19px;height:19px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tx{flex-grow:1;display:flex;flex-direction:column;min-width:0}
+.tx b{font-size:15.5px;font-weight:400}
+.tx small{font-size:12px;color:var(--ink3)}
+.n .tx small{color:rgba(244,240,255,.5)}
+.chk{width:28px;height:28px;border-radius:50%;border:2px solid #C9CDE0;flex:none;display:grid;place-items:center}
+.chk.on{background:var(--indigo);border-color:var(--indigo)}
+.chk.on::after{content:"";width:10px;height:6px;border:solid #fff;border-width:0 0 2.5px 2.5px;transform:translateY(-1px) rotate(-45deg)}
+.n .chk{border-color:rgba(255,255,255,.35)}
+.cnt{display:flex;align-items:center;gap:8px;flex:none}
+.cnt button{width:28px;height:28px;border-radius:50%;border:0;background:rgba(75,78,158,.1);color:var(--indigo);font:inherit;font-size:17px;line-height:1}
+.cnt span{min-width:30px;text-align:center;font-size:14px}
+.daily{position:relative}
+.daily::before{content:"";position:absolute;right:-9px;top:12px;bottom:12px;width:3px;border-radius:3px;background:linear-gradient(#E8604C,#C73E52)}
+
+/* شريط التنقّل */
+.nav{position:absolute;bottom:18px;left:16px;right:16px;height:72px;border-radius:30px;display:flex;align-items:center;justify-content:space-around;z-index:20}
+.nav a{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;color:var(--ink);text-decoration:none;opacity:.45;width:56px}
+.nav a.on{opacity:1}
+.nav a.on::after{content:"";width:4px;height:4px;border-radius:50%;background:var(--rose);margin-top:1px}
+.nav svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.n .nav a{color:#F4F0FF}
+.plus{width:56px;height:56px;border-radius:50%;border:0;display:grid;place-items:center;color:#fff;background:radial-gradient(circle at 35% 30%,#F49A86,#E8604C 45%,#C73E52);box-shadow:0 10px 22px rgba(199,62,82,.35),inset 0 1px 0 rgba(255,255,255,.4);margin-top:-14px}
+.plus svg{width:24px;height:24px;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;fill:none}
+.n .plus{background:radial-gradient(circle at 35% 30%,#FFF6DA,#F6E2A6 55%,#E7C277);color:#2A2360;box-shadow:0 0 28px rgba(246,226,166,.45)}
+
+/* بطاقة أُحد */
+.uhud{position:absolute;top:452px;left:14px;right:14px;border-radius:26px;padding:15px 18px;z-index:6;background:rgba(255,240,240,.62)}
+.uhud small{color:var(--rose);font-size:12.5px}
+.uhud p{margin:4px 0 6px;font-size:14px;line-height:1.85;color:var(--ink2)}
+.uhud q{display:block;font-family:Amiri,"Thmanyah Serif Text",serif;font-size:18px;quotes:"«" "»"}
+
+/* الصفحات الأخرى */
+.paper{background:linear-gradient(178deg,#F1EAEE 0%,#E3E1F0 38%,#CCD3EC 100%)}
+.paper .sun{position:absolute;width:220px;height:220px;border-radius:50%;top:-70px;left:-60px;background:radial-gradient(circle,#F4A595 0%,rgba(244,165,149,.45) 40%,rgba(244,165,149,0) 70%);filter:blur(6px)}
+.paper .hill{position:absolute;left:-40px;right:-40px;bottom:-60px;height:340px;background:radial-gradient(60% 70% at 40% 100%,rgba(92,105,200,.38),rgba(92,105,200,0) 70%);filter:blur(18px)}
+.pg{position:absolute;top:54px;left:0;right:0;bottom:0;padding:0 16px 120px;overflow:hidden;z-index:5;display:flex;flex-direction:column;gap:12px}
+.pg-h{display:flex;align-items:flex-end;justify-content:space-between;padding:0 4px 4px}
+.pg-h h3{margin:0;font-size:27px;font-weight:400}
+.pg-h small{font-size:13px;color:var(--ink2)}
+.card{border-radius:24px;padding:14px 16px}
+.card h4{margin:0 0 2px;font-size:17px;font-weight:400}
+.card .sub{font-size:12.5px;color:var(--ink3)}
+.kv{display:flex;justify-content:space-between;font-size:13px;color:var(--ink2);margin:8px 0 6px}
+.chip{display:inline-flex;align-items:center;height:26px;padding:0 11px;border-radius:99px;font-size:12px;background:rgba(75,78,158,.08);color:var(--indigo)}
+.chip.c{background:rgba(232,96,76,.12);color:var(--rose)}
+.chip.t{background:rgba(143,195,196,.25);color:#2E6E70}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.note{border-radius:16px;padding:10px 12px;font-size:13px;line-height:1.85;background:rgba(232,96,76,.1);color:#8A2F3C}
+.field{height:42px;border-radius:14px;background:rgba(255,255,255,.55);border:1px solid rgba(31,36,51,.07);display:flex;align-items:center;padding:0 12px;font-size:13.5px;color:var(--ink3)}
+.dots{display:flex;gap:5px;margin-top:8px}
+.dots i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:10.5px;border:1.5px solid rgba(31,36,51,.14);color:var(--ink3)}
+.dots i.on{background:var(--indigo);border-color:var(--indigo);color:#fff}
+.dots i.off{border-style:dashed;opacity:.45}
+.dots i.miss{border-color:rgba(199,62,82,.5);color:var(--rose)}
+
+/* التقويم */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px 0;text-align:center}
+.cal .wd{font-size:11.5px;color:var(--ink3);padding-bottom:4px}
+.cal .d{height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:14px;font-size:15px;position:relative}
+.cal .d small{font-size:9.5px;color:var(--ink3);line-height:1}
+.cal .d.o{opacity:.3}
+.cal .d.today{background:linear-gradient(160deg,#5C6BC0,#4B4E9E);color:#fff;box-shadow:0 6px 14px rgba(75,78,158,.3)}
+.cal .d.today small{color:rgba(255,255,255,.75)}
+.cal .d::after{content:"";position:absolute;bottom:3px;width:5px;height:5px;border-radius:50%;background:var(--m,transparent)}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--ink2);justify-content:center}
+.legend i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-inline-end:5px}
+
+/* السجل */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{border-radius:20px;padding:12px;text-align:center}
+.stat b{display:block;font-size:24px;font-weight:400}
+.stat small{font-size:11.5px;color:var(--ink2)}
+.heat{display:grid;grid-template-columns:repeat(17,1fr);gap:4px;margin-top:8px}
+.heat i{aspect-ratio:1;border-radius:4px;background:rgba(75,78,158,.08)}
+.heat i.a{background:rgba(75,78,158,.28)} .heat i.b{background:rgba(75,78,158,.55)} .heat i.c{background:#4B4E9E}
+.heat i.x{background:rgba(232,96,76,.45)}
+.trail{height:120px;position:relative;margin-top:6px}
+
+/* ورقة ＋ */
+.dim{position:absolute;inset:0;background:rgba(31,36,51,.28);z-index:30}
+.sheet{position:absolute;left:8px;right:8px;bottom:8px;border-radius:36px;padding:10px 18px 22px;z-index:31;background:rgba(250,248,252,.86);-webkit-backdrop-filter:blur(26px);backdrop-filter:blur(26px)}
+.grab{width:40px;height:5px;border-radius:5px;background:rgba(31,36,51,.18);margin:0 auto 12px}
+.sheet h4{margin:4px 0 10px;font-size:18px;font-weight:400}
+.meters{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.meter{border-radius:20px;padding:12px 8px;text-align:center;background:rgba(255,255,255,.75)}
+.meter small{font-size:11.5px;color:var(--ink2)}
+.meter b{display:block;font-size:22px;font-weight:400;margin:2px 0 6px}
+.meter .cnt{justify-content:center}
+.go{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.go a{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:var(--ink);text-decoration:none}
+.go a span{width:56px;height:56px;border-radius:18px;display:grid;place-items:center;background:rgba(255,255,255,.8)}
+.go svg{width:22px;height:22px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* لوحة الراية */
+.flagboard{display:flex;gap:18px;flex-wrap:wrap}
+.fb{width:250px;height:300px;border-radius:30px;position:relative;overflow:hidden;box-shadow:0 18px 40px rgba(31,36,51,.12)}
+.fb img{position:absolute;width:560px;height:1000px;left:-155px;top:-310px;object-fit:cover}
+.fb span{position:absolute;bottom:14px;right:16px;font-size:13.5px;z-index:4;background:rgba(255,255,255,.6);padding:4px 12px;border-radius:99px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.compare{display:flex;gap:16px;align-items:center;font-size:13px;color:var(--ink2)}
+.compare>div{display:flex;flex-direction:column;align-items:center;gap:8px}
+.chipbox{width:120px;height:140px;border-radius:26px;display:grid;place-items:center;background:linear-gradient(180deg,#F1E6E8,#C8CFEA)}
+</style>
+</head>
+<body>
+<div class="board">
+  <h1>جبل الرماة — العيّنة الكاملة للواجهة</h1>
+  <p>الجبل الضبابيّ نهارًا وليلًا، والرايةُ الجديدة مرسومةٌ بروح الصورة نفسها: قماشٌ مرجانيٌّ يتوهّج كالشمس، تذوب حوافّه في الضباب، وتتخلّله الحُبيبات، وعليه سهمٌ خفيف إشارةً إلى الرماة. وتحتها صفحاتُ التطبيق كلّها بلوحٍ زجاجيّ وشريطِ تنقّلٍ بزرّ ＋ في الوسط.</p>
+
+  <section class="row">
+    <h2>الراية الجديدة</h2>
+    <div class="flagboard" id="flagboard"></div>
+    <div class="compare">
+      <div><div class="chipbox" id="oldflag"></div>القديمة: مسطّحة حادّة</div>
+      <div><div class="chipbox" id="newflag"></div>الجديدة: ضبابيّة متوهّجة</div>
+    </div>
+  </section>
+
+  <section class="row" id="today"><h2>صفحة اليوم</h2></section>
+  <section class="row" id="pages"><h2>بقيّة الصفحات</h2></section>
+</div>
+
+<script>
+"use strict";
+const DAY="../mountain/mist-day.webp", NIGHT="../mountain/mist-night.webp";
+// القمّة في الصورة (245,445) من 564×1006 ← على شاشة 390×696 بمقياس 0.6918
+const K=696/1006, SUM=[250*K-(564*K-390)/2, 449*K];
+// مواضع النزول على السفح الأيسر (بإحداثيات الصورة الأصلية)
+const SLOPE=[[250,449],[300,462],[340,496],[380,532],[420,562],[460,578]].map(([x,y])=>[x*K-(564*K-390)/2,y*K]);
+
+let uid=0;
+function flagSVG(mode="day", h=64){
+  const id="f"+(uid++), w=h*0.78;
+  const cloth = mode==="night" ? ["#F2B0A6","#D9657A","#9E3A64"] : ["#F7A491","#E8604C","#C73E52"];
+  const glow  = mode==="night" ? "#FFF2C8" : "#FF9C86";
+  const ghost = mode==="ghost";
+  const pole = mode==="night" ? "#1E1848" : "#3B3168";
+  const d1="M13 9 C21 5 29 13 46 9 L39 20 L48 31 C33 35 24 27 13 31 Z";
+  const d2="M13 9 C22 12 31 5 46 11 L40 21 L47 31 C32 30 24 34 13 31 Z";
+  return `<svg viewBox="0 0 60 80" width="${w}" height="${h}" aria-hidden="true" style="overflow:visible">
+  <defs>
+    <linearGradient id="${id}c" x1="0" y1="0" x2="1" y2=".3"><stop offset="0" stop-color="${cloth[0]}"/><stop offset=".45" stop-color="${cloth[1]}"/><stop offset="1" stop-color="${cloth[2]}"/></linearGradient>
+    <linearGradient id="${id}p" gradientUnits="userSpaceOnUse" x1="0" y1="5" x2="0" y2="76"><stop offset="0" stop-color="${pole}" stop-opacity=".95"/><stop offset=".7" stop-color="${pole}" stop-opacity=".7"/><stop offset="1" stop-color="${pole}" stop-opacity=".05"/></linearGradient>
+    <filter id="${id}s" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation=".55"/>
+      <feTurbulence type="fractalNoise" baseFrequency="1.6" numOctaves="2" result="n"/><feColorMatrix in="n" type="saturate" values="0" result="g"/>
+      <feComposite in="g" in2="SourceGraphic" operator="in" result="gg"/><feBlend in="SourceGraphic" in2="gg" mode="soft-light"/></filter>
+    <filter id="${id}g" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="7"/></filter>
+    <filter id="${id}m" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="3"/></filter>
+  </defs>
+  ${ghost?"":`<ellipse cx="30" cy="20" rx="22" ry="15" fill="${glow}" opacity="${mode==="night"?.38:.5}" filter="url(#${id}g)"/>`}
+  <line x1="13" y1="5" x2="13" y2="76" stroke="url(#${id}p)" stroke-width="2" stroke-linecap="round" ${ghost?'stroke-dasharray="2 3" opacity=".7"':""}/>
+  <circle cx="13" cy="4.5" r="2" fill="${mode==="night"?"#FFF6DA":"#F7A491"}" opacity="${ghost?.5:1}"/>
+  ${ghost?`<path d="${d1}" fill="rgba(255,255,255,.18)" stroke="${mode==="ghost"?"#C73E52":"#fff"}" stroke-width="1.2" stroke-dasharray="3 3" opacity=".75"/>`
+  :`<path d="${d1}" fill="url(#${id}c)" filter="url(#${id}s)"><animate attributeName="d" dur="3.6s" repeatCount="indefinite" values="${d1};${d2};${d1}" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/></path>
+  <path d="M19 20.5 H36 M33 17.5 L37 20.5 L33 23.5 M19 20.5 L17 18 M19 20.5 L17 23" fill="none" stroke="#FFF4EC" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" opacity=".72"/>
+  ${mode==="night"?`<path d="${d1}" fill="none" stroke="#FFF2C8" stroke-width=".8" opacity=".35"/>`:""}`}
+  <ellipse cx="13" cy="76" rx="9" ry="3" fill="#fff" opacity="${mode==="night"?.18:.55}" filter="url(#${id}m)"/>
+  </svg>`;
+}
+function oldFlag(){return `<svg width="50" height="64" viewBox="0 0 60 80"><defs><linearGradient id="of" x1="0" x2="1"><stop offset="0" stop-color="#E8604C"/><stop offset="1" stop-color="#C73E52"/></linearGradient></defs><line x1="13" y1="6" x2="13" y2="76" stroke="#fff" stroke-width="2.4"/><path d="M13 9 H46 L40 20 L46 31 H13 Z" fill="url(#of)"/><path d="M19 20 H35 M31 16 L35 20 L31 24" stroke="#fff" stroke-width="2" fill="none"/></svg>`}
+
+// يضع الراية بحيث تقع قاعدة السارية على النقطة
+function placeFlag([x,y],mode,h=64){const w=h*.78;return `<div class="flag" style="left:${x-13/60*w}px;top:${y-76/80*h}px">${flagSVG(mode,h)}</div>`}
+
+const ICON={
+ moon:'<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
+ book:'<path d="M6 3h11a1 1 0 0 1 1 1v17l-6-4-6 4V4a1 1 0 0 1 1-1z"/>',
+ open:'<path d="M2 5c3-1.5 7-1.5 10 1 3-2.5 7-2.5 10-1v14c-3-1.5-7-1.5-10 1-3-2.5-7-2.5-10-1z"/><path d="M12 6v14"/>',
+ sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+ leaf:'<path d="M20 4C12 5 7 10 5 20M20 4c0 6-4 11-10 12"/>',
+ dawn:'<path d="M3 18h18M6 18a6 6 0 0 1 12 0M12 6V3M5.6 9.6 4 8M18.4 9.6 20 8"/>',
+ pray:'<path d="M12 3v5M7 21v-6a5 5 0 0 1 10 0v6M4 21h16"/><circle cx="12" cy="9" r="1"/>',
+ quill:'<path d="M20 3c-6 1-11 6-13 13l-2 5 5-2c7-2 12-7 13-13z"/><path d="M5 21l6-6"/>',
+ pen:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M14 6l4 4"/>',
+ globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',
+ chess:'<path d="M8 21h8M9 17h6l1 4H8zM10 17l-1-6h6l-1 6M9 11a3 3 0 1 1 6 0M12 5V3M11 4h2"/>',
+ paper:'<path d="M4 5h13v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M17 9h3v10a2 2 0 0 1-2 2M8 9h5M8 13h5M8 17h3"/>',
+ comb:'<path d="M4 8h16v3H4zM6 11v8M9 11v8M12 11v8M15 11v8M18 11v8"/>',
+ hadith:'<path d="M4 4h10l6 6v10H4z"/><path d="M14 4v6h6M8 13h8M8 17h5"/>',
+ video:'<rect x="2" y="6" width="14" height="12" rx="3"/><path d="m16 10 6-3v10l-6-3"/>',
+ flag:'<path d="M6 21V3M6 4l12 2-4 4 4 4-12 2"/>',
+ cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+ cap:'<path d="M4 19V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M8 7h7"/>',
+ chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+ gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
+ target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+ steps:'<path d="M8 3c2 0 3 2 3 5s-1 5-3 5-3-2-3-5 1-5 3-5zM16 9c2 0 3 2 3 5s-1 5-3 5-3-2-3-5 1-5 3-5zM6 17h4M14 22h4"/>',
+ phone:'<rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/>',
+ tg:'<path d="M21 4 3 11l6 2 2 6 3-4 5 4z"/><path d="m9 13 9-6"/>',
+};
+const ic=(k,bg,st,n)=>`<span class="ic" style="background:${n?"rgba(255,255,255,.1)":bg}"><svg viewBox="0 0 24 24" style="stroke:${n?"#F4F0FF":st}">${ICON[k]}</svg></span>`;
+const PAL={ibada:["#E3F1F1","#3E7F80"],master:["#ECE9F8","#4B4E9E"],skill:["#FFF3DA","#B7832A"],care:["#FBEAE6","#C73E52"],prog:["#E6EEF8","#3D6A9C"]};
+function task(t,{k,cat="ibada",sub="",state="",daily=false,count=null,n=false}={}){
+  const [bg,st]=PAL[cat];
+  const right = count!==null ? `<div class="cnt"><button>−</button><span>${count}</span><button>+</button></div>` : `<span class="chk ${state}"></span>`;
+  return `<div class="task ${daily?"daily":""}">${ic(k,bg,st,n)}<div class="tx"><b>${t}</b>${sub?`<small>${sub}</small>`:""}</div>${right}</div>`;
+}
+function nav(on,n){
+  const a=(id,label,ik)=>`<a class="${on===id?"on":""}"><svg viewBox="0 0 24 24">${ICON[ik]}</svg>${label}</a>`;
+  return `<nav class="nav glass">${a("today","اليوم","flag")}${a("cal","التقويم","cal")}<button class="plus" aria-label="سجّلي"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>${a("masters","الماجستير","cap")}${a("log","السجل","chart")}</nav>`;
+}
+const status=(n)=>`<div class="status" style="color:${n?"#fff":"#1F2433"}"><b>٩:٤١</b><b>●●● ▮</b></div>`;
+function phone(cls,inner,cap){return `<figure><div class="ph grain ${cls}">${inner}</div><figcaption>${cap}</figcaption></figure>`}
+
+/* ---------- لوحة الراية ---------- */
+document.getElementById("flagboard").innerHTML=[
+ [DAY,"day","ثباتٌ على القمّة"],[DAY,"down","نزولٌ مع طيف الراية"],[NIGHT,"night","ليلٌ تحت البدر"]
+].map(([src,m,lab])=>{
+  const base=[93,134];
+  let f;
+  if(m==="down") f=placeFlag([182,180],"day",72)+placeFlag(base,"ghost",72);
+  else f=placeFlag(base,m==="night"?"night":"day",72);
+  return `<div class="fb grain">${`<img src="${src}" alt="">`}${f}<span>${lab}</span></div>`;
+}).join("");
+document.getElementById("oldflag").innerHTML=oldFlag();
+document.getElementById("newflag").innerHTML=flagSVG("day",70);
+
+/* ---------- اليوم ---------- */
+const T=[];
+// ١) نهار ثابت
+T.push(phone("",`
+ ${status()}<img class="scene" src="${DAY}" alt="جبلٌ ضبابيّ وشمسٌ مرجانية والراية على القمّة"><div class="scene-fade"></div>
+ ${placeFlag(SUM,"day",82)}
+ <div class="top"><div class="t"><small>الأربعاء ١٧ جمادى الأولى · ٢٨ أكتوبر</small><h3>ثابتةٌ على القمّة</h3></div><span class="pill dark">١٢ يومًا</span></div>
+ <div class="panel glass" style="top:452px">
+  <div class="ph-head"><span>وِرد اليوم</span><span>٩ من ١٣ · ٦٩٪</span></div>
+  <div class="bar"><i style="width:70%"></i></div>
+  ${task("الصلوات في وقتها",{k:"pray",sub:"٤ من ٥ · بقي العشاء",state:"on",daily:true})}
+  ${task("حفظ وجهٍ جديد",{k:"book",cat:"master",sub:"البقرة · الوجه ٢٣",state:"on"})}
+  ${task("حفظ الشعر",{k:"quill",cat:"skill",sub:"خاصّةٌ بيوم الأربعاء"})}
+  ${task("العناية بالشعر والجسم",{k:"comb",cat:"care",sub:"السبت والأربعاء"})}
+ </div>
+ ${nav("today")}`,"١ · اليوم — نهارًا، ثابتةٌ على القمّة"));
+// ٢) نزول
+T.push(phone("",`
+ ${status()}<img class="scene" src="${DAY}" alt="الراية نزلت على السفح وطيفها على القمّة"><div class="scene-fade"></div>
+ ${placeFlag(SUM,"ghost",82)}<span class="tag" style="left:${SUM[0]-150}px;top:${SUM[1]-92}px">موضعكِ هنا ينتظر</span>
+ ${placeFlag(SLOPE[3],"day",74)}
+ <div class="top"><div class="t"><small>الأربعاء ١٧ جمادى الأولى · ٢٨ أكتوبر</small><h3>نزلتِ <em>٣</em> خطوات</h3></div><span class="pill ghost">عودي إلى موضعكِ</span></div>
+ <div class="uhud glass"><small>من خبر أُحد</small><p>نزل أكثرُ الرماة حين رأوا الغنائم، فالتفّت الخيلُ من الثغرة التي تركوها.</p><q>لا تبرحوا مكانكم هذا حتى أُرسلَ إليكم</q></div>
+ <div class="panel glass" style="top:626px">
+  <div class="ph-head"><span>لتعودي اليوم</span><span>٢ من ١٣ · بقي ٧ مهامّ</span></div>
+  <div class="bar c"><i style="width:15%"></i></div>
+  ${task("دراسة الحديث",{k:"hadith",cat:"master",sub:"كتاب العلم من البخاري · ٤ صفحات"})}
+ </div>
+ ${nav("today")}`,"٢ · اليوم — نزولٌ، والطيف على القمّة"));
+// ٣) ليل
+T.push(phone("n",`
+ ${status(1)}<img class="scene" src="${NIGHT}" alt="جبلٌ ليليّ وبدرٌ والراية على القمّة"><div class="scene-fade"></div>
+ ${placeFlag(SUM,"night",82)}
+ <div class="top"><div class="t"><small>قبل الفجر · ٣:٣٠</small><h3>الرايةُ في موضعها</h3></div></div>
+ <div class="panel glass" style="top:470px">
+  <div class="ph-head"><span>وِرد الليل والسَّحَر</span><span>٠ من ٣</span></div>
+  ${task("الوتر",{k:"moon",sub:"الآن",n:1})}
+  ${task("حفظ وجهٍ جديد",{k:"book",cat:"master",sub:"قبل الفجر",n:1})}
+  ${task("ورد التلاوة",{k:"open",sub:"بين الأذان والإقامة",n:1})}
+ </div>
+ ${nav("today",1)}`,"٣ · اليوم — ليلًا تحت البدر"));
+// ٤) ورقة ＋
+T.push(phone("",`
+ ${status()}<img class="scene" src="${DAY}" alt=""><div class="scene-fade"></div>${placeFlag(SUM,"day",82)}
+ <div class="top"><div class="t"><small>الأربعاء ١٧ جمادى الأولى</small><h3>ثابتةٌ على القمّة</h3></div></div>
+ <div class="dim"></div>
+ <div class="sheet"><div class="grab"></div>
+  <h4>سجّلي سريعًا</h4>
+  <div class="meters">
+   <div class="meter"><small>صفحات القراءة</small><b>١٠</b><div class="cnt"><button>−</button><button>+</button></div></div>
+   <div class="meter"><small>خطوات المشي</small><b>٤٬٢٠٠</b><div class="cnt"><button>−</button><button>+</button></div></div>
+   <div class="meter"><small>وقت الشاشة</small><b>٢:١٥</b><div class="cnt"><button>−</button><button>+</button></div></div>
+  </div>
+  <h4 style="margin-top:18px">انتقلي إلى</h4>
+  <div class="go">
+   <a><span><svg viewBox="0 0 24 24" style="stroke:#B7832A">${ICON.target}</svg></span>المهارات</a>
+   <a><span><svg viewBox="0 0 24 24" style="stroke:#3E7F80">${ICON.open}</svg></span>القراءة</a>
+   <a><span><svg viewBox="0 0 24 24" style="stroke:#C73E52">${ICON.video}</svg></span>المحتوى</a>
+   <a><span><svg viewBox="0 0 24 24" style="stroke:#4B4E9E">${ICON.gear}</svg></span>الإعدادات</a>
+  </div>
+  <h4 style="margin-top:18px">مهمّةٌ لليوم فقط</h4>
+  <div class="field">اكتبي مهمّةً عابرة…</div>
+ </div>`,"٤ · زرّ ＋ — تسجيلٌ سريع وبقيّة الأقسام"));
+document.getElementById("today").insertAdjacentHTML("beforeend",T.join(""));
+
+/* ---------- الصفحات ---------- */
+const bg=`<div class="sun"></div><div class="hill"></div>`;
+const P=[];
+// التقويم
+(function(){
+  const days=["ح","ن","ث","ر","خ","ج","س"];
+  const hf=new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura-nu-arab",{day:"numeric"});
+  const nf=new Intl.NumberFormat("ar-SA-u-nu-arab");
+  let cells=days.map(d=>`<div class="wd">${d}</div>`).join("");
+  const first=new Date(2026,9,1), start=new Date(first); start.setDate(1-first.getDay());
+  const marks={3:"#3E7F80",5:"#3E7F80",6:"#3E7F80",7:"#E8A0A8",8:"#3E7F80",11:"#3E7F80",12:"#3E7F80",13:"#E8A0A8",14:"#3E7F80",15:"#3E7F80",18:"#3E7F80",19:"#3E7F80",20:"#3E7F80",21:"#3E7F80",22:"#3E7F80",24:"#E8A0A8",25:"#3E7F80",26:"#3E7F80",27:"#3E7F80",29:"#C73E52"};
+  for(let i=0;i<35;i++){const d=new Date(start);d.setDate(start.getDate()+i);const o=d.getMonth()!==9;const g=d.getDate();
+    cells+=`<div class="d ${o?"o":""} ${!o&&g===28?"today":""}" style="--m:${!o&&marks[g]&&g!==28?marks[g]:"transparent"}">${nf.format(g)}<small>${hf.format(d)}</small></div>`}
+  P.push(phone("paper",`${status()}${bg}<div class="pg">
+   <div class="pg-h"><h3>التقويم</h3><small>ربيع الآخر — جمادى الأولى ١٤٤٨</small></div>
+   <div class="card glass"><div class="pg-h" style="padding:0 0 10px"><h4 style="margin:0;font-size:18px">أكتوبر ٢٠٢٦</h4><small>‹ ›</small></div><div class="cal">${cells}</div></div>
+   <div class="legend"><span><i style="background:#3E7F80"></i>ثبات</span><span><i style="background:#E8A0A8"></i>نزول</span><span><i style="background:#C73E52"></i>اختبارٌ شهري</span></div>
+   <div class="card glass"><div class="ph-head"><span style="font-size:16px">الأربعاء ١٧ جمادى الأولى</span><span>٧٠٪</span></div>
+    ${task("حفظ الشعر",{k:"quill",cat:"skill",sub:"خاصّةٌ بالأربعاء"})}${task("العناية بالشعر والجسم",{k:"comb",cat:"care",state:"on"})}</div>
+  </div>${nav("cal")}`,"٥ · التقويم — هجريٌّ وميلاديّ"));
+})();
+// الماجستير
+P.push(phone("paper",`${status()}${bg}<div class="pg">
+ <div class="pg-h"><h3>الماجستير</h3><span class="chip c">قادمٌ بعد ٤ أيّام</span></div>
+ <div class="card glass"><h4>الفصل الأول</h4><div class="sub">١ نوفمبر — ٣١ ديسمبر ٢٠٢٦</div>
+  <div class="kv"><span>حفظ القرآن: البقرة وآل عمران والنساء</span><span>٠ / ٦٠ وجهًا</span></div><div class="bar"><i style="width:2%"></i></div>
+  <div class="note" style="margin-top:10px">بقي ٦٠ وجهًا في ٥٣ يوم حفظ، أي نحو ١٫٢ وجهٍ في اليوم؛ فزيدي نصف وجهٍ في ١٤ يومًا منها.</div></div>
+ <div class="card glass"><div class="ph-head"><span style="font-size:17px">كتب الحديث</span><span>هذا الأسبوع</span></div>
+  ${task("نزهة النظر",{k:"hadith",cat:"master",sub:"الأحد والثلاثاء · ٣٢ / ١٢٠ صفحة",count:4})}
+  ${task("كتاب العلم من صحيح البخاري",{k:"hadith",cat:"master",sub:"الإثنين والأربعاء · ١٨ / ٨٠",count:0})}
+  ${task("تدوين السنّة",{k:"hadith",cat:"master",sub:"الخميس · ٠ / ٦٠",count:0})}</div>
+ <div class="card glass"><h4>الاختبار الشامل الشهري</h4><div class="sub">الخميس ٢٦ نوفمبر ٢٠٢٦</div>
+  <div class="kv"><span>الدرجة</span><span>—</span></div><div class="field">مواطن الضعف التي ظهرت في الاختبار</div></div>
+</div>${nav("masters")}`,"٦ · الماجستير — الحفظ والكتب والاختبار"));
+// المهارات
+const wk=(on)=>`<div class="dots">${["ح","ن","ث","ر","خ","ج","س"].map((d,i)=>`<i class="${on[i]||""}">${d}</i>`).join("")}</div>`;
+P.push(phone("paper",`${status()}${bg}<div class="pg">
+ <div class="pg-h"><h3>المهارات والعادات</h3><small>آخر سبعة أيّام</small></div>
+ <div class="card glass"><h4>الدورة العلمية</h4><div class="sub">الجمعة والسبت · ٢ من ٢</div>${wk(["off","off","off","off","off","on","on"])}</div>
+ <div class="card glass"><h4>تعلّم الذكاء الاصطناعي</h4><div class="sub">الإثنين · ١ من ١</div>${wk(["off","on","off","off","off","off","off"])}</div>
+ <div class="card glass"><h4>حفظ الشعر</h4><div class="sub">الأربعاء · اليوم</div>${wk(["off","off","off","","off","off","off"])}</div>
+ <div class="card glass"><h4>صناعة المحتوى</h4><div class="sub">الأحد والثلاثاء والخميس · ١ من ٢</div>${wk(["on","off","miss","off","","off","off"])}</div>
+ <div class="card glass"><h4>الكتابة وتحسين الخطّ</h4><div class="sub">يوميًّا · ٥ من ٦</div>${wk(["on","on","on","","on","miss","on"])}</div>
+ <div class="card glass"><h4>ممارسة الإنجليزية</h4><div class="sub">يوميًّا · ٦ من ٦</div>${wk(["on","on","on","","on","on","on"])}</div>
+</div>${nav("")}`,"٧ · المهارات — أسبوعٌ بنظرة"));
+// القراءة
+P.push(phone("paper",`${status()}${bg}<div class="pg">
+ <div class="pg-h"><h3>القراءة</h3><small>الهدف ١٠ صفحاتٍ يوميًّا</small></div>
+ <div class="stats"><div class="stat glass"><b>٢١٤</b><small>صفحة هذا الشهر</small></div><div class="stat glass"><b>٣</b><small>كتبٌ أتممتِها</small></div><div class="stat glass"><b>٢</b><small>على الرفّ الآن</small></div></div>
+ <div class="card glass"><div class="ph-head"><span style="font-size:17px">أقرأ الآن</span><span>اضغطي «الحالي»</span></div>
+  <div class="task">${ic("open","#E3F1F1","#3E7F80")}<div class="tx"><b>صيد الخاطر</b><small>ابن الجوزي · ١٤٢ / ٥١٠</small><div class="bar" style="margin-top:6px"><i style="width:28%"></i></div></div><span class="chip t">الحالي</span></div>
+  <div class="task">${ic("open","#ECE9F8","#4B4E9E")}<div class="tx"><b>الفوائد</b><small>ابن القيّم · ٦٠ / ٣٢٠</small><div class="bar" style="margin-top:6px"><i style="width:19%"></i></div></div><span class="chip">المرحلة الأولى</span></div></div>
+ <div class="card glass"><h4>أضيفي كتابًا</h4><div style="display:flex;flex-direction:column;gap:8px;margin-top:8px"><div class="field">عنوان الكتاب</div><div style="display:flex;gap:8px"><div class="field" style="flex:2">المؤلّف</div><div class="field" style="flex:1">الصفحات</div></div>
+  <button style="height:44px;border:0;border-radius:14px;color:#fff;font:inherit;font-size:15px;background:linear-gradient(135deg,#5C8EB4,#4B4E9E)">إضافةٌ إلى المكتبة</button></div></div>
+</div>${nav("")}`,"٨ · القراءة — المكتبة والكتاب الحالي"));
+// المحتوى
+P.push(phone("paper",`${status()}${bg}<div class="pg">
+ <div class="pg-h"><h3>المشاريع</h3><small>أين بلغ كلّ مشروع</small></div>
+ ${[["تنهيدة","فكرة"],["إن شاد","هويّة"],["صفحة الحديث البصري","فكرة"]].map(([t,s])=>`<div class="card glass"><h4>${t}</h4><div class="chips" style="margin-top:8px">${["فكرة","هويّة بصرية","أول محتوى","نشرٌ منتظم"].map(c=>`<span class="chip ${c.startsWith(s)?"c":""}">${c}</span>`).join("")}</div></div>`).join("")}
+ <div class="pg-h" style="margin-top:6px"><h3 style="font-size:21px">مسار التعلّم</h3><small>الأحد والثلاثاء والخميس</small></div>
+ <div class="card glass"><div class="ph-head"><span style="font-size:16px">إعداد المحتوى</span><span>١ / ٤</span></div><div class="bar"><i style="width:25%"></i></div>
+  ${task("تحديد الجمهور والرسالة",{k:"video",cat:"care",state:"on"})}${task("كتابة نصٍّ قصير",{k:"pen",cat:"care"})}</div>
+</div>${nav("")}`,"٩ · المحتوى — المشاريع ومسار التعلّم"));
+// السجل
+(function(){
+  const cls=["c","c","b","c","x","c","b","c","c","a","c","b","c","c","x","c","b"];
+  let heat="",sd=7;const rnd=()=>(sd=(sd*9301+49297)%233280)/233280;for(let i=0;i<119;i++){const r=rnd();heat+=`<i class="${i>101?"":r<.12?"x":r<.25?"a":r<.45?"b":"c"}"></i>`}
+  P.push(phone("paper",`${status()}${bg}<div class="pg">
+   <div class="pg-h"><h3>السجل</h3><small>آخر سبعة أيّام</small></div>
+   <div class="stats"><div class="stat glass"><b>٨٤٪</b><small>معدّل الإنجاز</small></div><div class="stat glass"><b>١٢</b><small>التتابع الحالي</small></div><div class="stat glass"><b>١٩</b><small>أطول تتابع</small></div></div>
+   <div class="card glass"><div class="ph-head"><span style="font-size:17px">طريقكِ على الجبل</span><span>٣٠ يومًا</span></div>
+    <svg class="trail" viewBox="0 0 330 120" width="100%" style="transform:scaleX(-1)"><defs><linearGradient id="tr" x1="0" x2="1"><stop offset="0" stop-color="#C73E52"/><stop offset="1" stop-color="#8FC3C4"/></linearGradient></defs>
+     <path d="M0 110 C40 100 60 92 90 70 S140 60 160 66 S200 30 240 26 S300 14 330 12" fill="none" stroke="url(#tr)" stroke-width="3" stroke-linecap="round"/>
+     <path d="M0 110 C40 100 60 92 90 70 S140 60 160 66 S200 30 240 26 S300 14 330 12 V120 H0Z" fill="#4B4E9E" opacity=".08"/>
+     </svg>
+    <div style="position:absolute"></div></div>
+   <div class="card glass"><h4>أقوى الثغور وأضعفها</h4>
+    <div class="kv"><span>العبادات</span><span>٩٢٪</span></div><div class="bar"><i style="width:92%"></i></div>
+    <div class="kv"><span>منهج الماجستير</span><span>٧٨٪</span></div><div class="bar"><i style="width:78%"></i></div>
+    <div class="kv"><span>العناية بالنفس</span><span>٤٠٪</span></div><div class="bar c"><i style="width:40%"></i></div></div>
+   <div class="card glass"><h4>خريطة الثبات</h4><div class="heat">${heat}</div></div>
+  </div>${nav("log")}`,"١٠ · السجل — الطريق والثغور"));
+})();
+// الإعدادات
+P.push(phone("paper",`${status()}${bg}<div class="pg">
+ <div class="pg-h"><h3>الإعدادات</h3></div>
+ <div class="card glass"><h4>التنبيهات اليومية</h4><div class="sub" style="line-height:1.8">٣:٣٠ الوتر · ٦:٠٠ الأذكار وماجريات · ٨:٠٠ الضحى · ١١:٠٠ المهارات · ٣:٤٥ المساء · ٦:١٥ المحاسبة</div>
+  <div class="field" style="margin-top:8px">اسم قناة ntfy</div></div>
+ <div class="card glass"><div class="ph-head"><span style="font-size:17px">قنوات البرامج</span><span>تيليجرام</span></div>
+  ${task("أكاديمية الحديث",{k:"tg",cat:"prog",sub:"بانتظار الرابط"})}${task("مدرسة الأرقم",{k:"tg",cat:"prog",sub:"بانتظار الرابط"})}${task("البناء المنهجي",{k:"tg",cat:"prog",sub:"بانتظار الرابط"})}</div>
+ <div class="card glass"><div class="task" style="border:0;padding:0">${ic("paper","#FFF3DA","#B7832A")}<div class="tx"><b>ماجريات</b><small>عدد اليوم والأرشيف · بعد إنشاء jabal-data</small></div><span class="chk"></span></div></div>
+ <div class="card glass"><h4>أهداف المقاييس</h4><div style="display:flex;gap:8px;margin-top:8px"><div class="field" style="flex:1">٥٠٠٠ خطوة</div><div class="field" style="flex:1">١٠ صفحات</div><div class="field" style="flex:1">١٨٠ دقيقة</div></div></div>
+</div>${nav("")}`,"١١ · الإعدادات — التنبيهات والقنوات والمقاييس"));
+document.getElementById("pages").insertAdjacentHTML("beforeend",P.join(""));
+</script>
+</body>
+</html>
