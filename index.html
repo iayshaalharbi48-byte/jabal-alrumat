@@ -249,6 +249,92 @@ nav.tabs a{display:flex;flex-direction:column;align-items:center;gap:1px;padding
 nav.tabs a[aria-current="page"]{color:var(--on-accent);background:var(--accent)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:9px 18px;border-radius:16px;font-size:14px;font-weight:700;z-index:9;max-width:90vw}
 .empty{text-align:center;padding:22px 12px;color:var(--muted)}
+/* refined layout */
+main{gap:22px}
+.blk-h h2{font-size:21px}
+.hud{position:absolute;left:10px;right:10px;bottom:10px;display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:18px;background:var(--glass);-webkit-backdrop-filter:blur(14px) saturate(1.3);backdrop-filter:blur(14px) saturate(1.3)}
+.hud .ring{width:52px;height:52px;flex:none;color:var(--fg)}
+.hud .st{font-family:var(--f-display);font-size:19px;line-height:1.25}
+.hud .st b{color:var(--cloak);font-weight:400;font-size:24px}
+.hud .ln{font-size:12px;color:var(--muted);line-height:1.45}
+.daynav{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.daynav .c{text-align:center;line-height:1.35}
+.daynav .c b{display:block;font-family:var(--f-display);font-weight:400;font-size:17px}
+.daynav .c span{font-size:12px;color:var(--muted)}
+.chev{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;color:var(--fg);padding:0}
+.chev[disabled]{opacity:.3}
+.quote{margin:0;text-align:center;font-family:var(--f-text);font-size:17px;line-height:1.85;color:var(--fg);padding:0 8px}
+.quote small{display:block;font-family:var(--f-body);font-size:12px;color:var(--muted)}
+.remind2{display:flex;flex-direction:column;gap:4px;border-radius:18px;padding:12px 16px;background:color-mix(in srgb,var(--down) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--down) 35%,transparent)}
+.remind2 b{color:var(--down);font-size:14px}
+.remind2 q{font-family:var(--f-text);font-size:16.5px;line-height:1.8;quotes:"«" "»"}
+.mx{display:grid;grid-template-columns:repeat(3,1fr);background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.mx>div{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 6px;border-inline-start:1px solid var(--line);min-width:0}
+.mx>div:first-child{border-inline-start:0}
+.mx .lb{font-size:12px;color:var(--muted);text-align:center}
+.mx .stepper{gap:4px}
+.mx .stepper button{width:28px;height:28px;border-radius:50%;font-size:16px;border:1px solid var(--line);background:var(--bg);box-shadow:none}
+.mx .stepper input{width:58px;height:32px;border:0;background:transparent;font-size:20px;font-weight:600;color:var(--fg)}
+.mx .goal{font-size:11px;color:var(--muted)}
+.mx .goal.ok{color:var(--ok)} .mx .goal.bad{color:var(--down)}
+.grp{display:flex;flex-direction:column;gap:8px}
+.grp-h{display:flex;align-items:center;gap:10px}
+.grp-h h2{font-size:19px;flex:none}
+.grp-h .pb{flex:1;height:4px;border-radius:99px;background:var(--sunk);overflow:hidden}
+.grp-h .pb i{display:block;height:100%;background:var(--daily2)}
+.grp-h .n{font-size:12.5px;color:var(--muted)}
+.lst{background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.ir{display:flex;align-items:center;gap:12px;padding:11px 14px;border:0;border-top:1px solid var(--line);width:100%;background:none;text-align:start;color:var(--fg);min-height:60px}
+.lst>.ir:first-child{border-top:0}
+.ir.daily{--c1:var(--daily);--c2:var(--daily2)} .ir.special{--c1:var(--special);--c2:var(--special2)}
+.ir .ic{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;flex:none;background:color-mix(in srgb,var(--c1) 15%,transparent);color:var(--c2);transition:background .2s}
+.ir .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.ir .nm{font-weight:600;font-size:15.5px;line-height:1.35}
+.ir .sb{font-size:12.5px;color:var(--muted);line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ir .sb b{color:var(--c2);font-weight:600}
+.ir .ck{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;color:transparent;flex:none;transition:all .2s}
+.ir.done .ck{background:var(--c2);border-color:var(--c2);color:#FFF}
+.ir.done .ic{background:var(--c2);color:#FFF}
+.ir.done .nm{color:var(--muted)}
+.ir .cnt{gap:4px}
+.ir .cnt button{width:30px;height:30px;border-radius:50%;font-size:17px;border:1px solid var(--line);background:var(--bg);box-shadow:none;color:var(--fg)}
+.ir .cnt input{width:44px;height:30px;border:0;background:transparent;font-weight:600;font-size:16px;color:var(--fg)}
+.ir.done .cnt input{color:var(--c2)}
+.ir .pr{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.ir .pr button{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:2px 10px;font-size:12.5px;color:var(--fg)}
+.ir .pr button.on{background:var(--c2);border-color:var(--c2);color:#FFF}
+.ir.pop{animation:pop .45s cubic-bezier(.3,1.6,.5,1)}
+.legend2{display:flex;gap:14px;justify-content:center;font-size:12px;color:var(--muted)}
+.legend2 i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-inline-end:5px}
+/* calendar 2 */
+.calcard{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:14px 10px 10px}
+.calnav{display:flex;align-items:center;justify-content:space-between;padding:0 4px 10px}
+.calnav .t{text-align:center}
+.calnav .t b{display:block;font-family:var(--f-display);font-weight:400;font-size:21px;line-height:1.3}
+.calnav .t span{font-size:12px;color:var(--muted)}
+.cal2{display:grid;grid-template-columns:repeat(7,1fr);row-gap:4px}
+.cal2 .wd{font-size:11.5px;color:var(--muted);text-align:center;padding-bottom:6px}
+.cal2 button.d{background:none;border:0;padding:2px 0 4px;display:flex;flex-direction:column;align-items:center;gap:1px;color:var(--fg);min-width:0}
+.cal2 .n{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-size:15px;font-weight:600;line-height:1;transition:background .15s}
+.cal2 .h{font-size:10px;color:var(--muted);line-height:1.2}
+.cal2 .mk{display:flex;gap:3px;height:5px;align-items:center}
+.cal2 .mk i{width:4px;height:4px;border-radius:50%}
+.cal2 .d.out{opacity:.28}
+.cal2 .d.lv1 .n{background:color-mix(in srgb,var(--daily) 16%,transparent)}
+.cal2 .d.lv2 .n{background:color-mix(in srgb,var(--daily) 34%,transparent)}
+.cal2 .d.lv3 .n{background:var(--daily2);color:#FFF}
+.cal2 .d.miss .n{background:color-mix(in srgb,var(--down) 14%,transparent)}
+.cal2 .d.today .n{box-shadow:inset 0 0 0 2px var(--cloak)}
+.cal2 .d.sel .n{background:var(--accent);color:var(--on-accent);box-shadow:none}
+.daycard{background:var(--surface);border:1px solid var(--line);border-radius:22px;overflow:hidden}
+.daycard .hd{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.daycard .hd .ring{width:46px;height:46px;flex:none;color:var(--fg)}
+.daycard .hd b{display:block;font-family:var(--f-display);font-weight:400;font-size:18px}
+.daycard .hd span{font-size:12.5px;color:var(--muted)}
+.daycard details{border-top:1px solid var(--line)}
+.daycard summary{padding:12px 16px;font-size:14px;color:var(--fg);list-style:none;display:flex;justify-content:space-between}
+.daycard summary::-webkit-details-marker{display:none}
+.daycard .ft{padding:12px 16px;border-top:1px solid var(--line)}
 /* scene */
 .scene{position:relative;border-radius:24px;overflow:hidden;background:var(--sunk)}
 .scene svg{display:block;width:100%;height:auto}
@@ -517,7 +603,7 @@ function render(){
   $("#tabs").innerHTML=TABS.map(([id,t])=>`<a href="#${id}" ${route===id?'aria-current="page"':""}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICONS[id]}</svg>${t}</a>`).join("");
   $("#navLog").toggleAttribute("aria-current",route==="log");if(route==="log")$("#navLog").setAttribute("aria-current","page");
   $("#navPrefs").toggleAttribute("aria-current",route==="prefs");if(route==="prefs")$("#navPrefs").setAttribute("aria-current","page");
-  const t=today();$("#hdrDates").textContent=DAYN[t.getDay()]+" · "+hijri(t)+" · "+greg(t);
+  const t=today();$("#hdrDates").textContent=hijri(t);
   const prevRoute=render._r;render._r=route;
   $("#view").innerHTML=({today:vToday,cal:vCal,quiz:vQuiz,masters:vMasters,skills:vSkills,reading:vReading,content:vContent,log:vLog,prefs:vPrefs})[route]();
   if(route==="today")animateClimber();
@@ -538,7 +624,7 @@ function phaseLine(d){
 const TRAIL="M430 1165 C426.7 1154.2 418.3 1119.2 410 1100 C401.7 1080.8 389.2 1063.3 380 1050 C370.8 1036.7 355.0 1030.0 355 1020 C355.0 1010.0 369.2 999.2 380 990 C390.8 980.8 405.8 973.3 420 965 C434.2 956.7 453.3 949.2 465 940 C476.7 930.8 480.8 919.2 490 910 C499.2 900.8 510.0 893.3 520 885 C530.0 876.7 547.5 867.5 550 860 C552.5 852.5 543.3 846.7 535 840 C526.7 833.3 514.2 827.5 500 820 C485.8 812.5 465.0 803.3 450 795 C435.0 786.7 422.5 777.5 410 770 C397.5 762.5 377.5 755.8 375 750 C372.5 744.2 385.0 740.0 395 735 C405.0 730.0 422.5 725.0 435 720 C447.5 715.0 457.5 710.0 470 705 C482.5 700.0 506.7 697.5 510 690 C513.3 682.5 501.7 670.8 490 660 C478.3 649.2 455.8 633.3 440 625 C424.2 616.7 395.0 615.8 395 610 C395.0 604.2 424.2 596.7 440 590 C455.8 583.3 475.0 576.7 490 570 C505.0 563.3 526.7 557.5 530 550 C533.3 542.5 521.7 533.3 510 525 C498.3 516.7 479.2 506.7 460 500 C440.8 493.3 415.0 490.0 395 485 C375.0 480.0 355.0 474.2 340 470 C325.0 465.8 306.7 465.0 305 460 C303.3 455.0 321.7 445.8 330 440 C338.3 434.2 344.2 430.0 355 425 C365.8 420.0 380.0 415.8 395 410 C410.0 404.2 440.8 397.5 445 390 C449.2 382.5 430.8 371.7 420 365 C409.2 358.3 384.2 355.0 380 350 C375.8 345.0 388.3 340.8 395 335 C401.7 329.2 411.7 320.8 420 315 C428.3 309.2 439.2 305.0 445 300 C450.8 295.0 454.2 290.3 455 285 C455.8 279.7 450.0 273.5 450 268 C450.0 262.5 454.2 254.7 455 252";
 function sceneNow(){const t=new Date(),h=t.getHours()+t.getMinutes()/60;return h<4.75||h>=18.25?"night":h>=15.5?"dusk":"day"}
 const SCENE_LABEL={day:"الصباح",dusk:"الغسق",night:"الليل"};
-function mountainSVG(){
+function mountainSVG(hud){
   const sc=sceneNow(),img=sc==="night"?"art/bg-night.webp":"art/bg-morning.webp",c=climb();
   return `<div class="scene"><svg viewBox="0 150 880 1018" preserveAspectRatio="xMidYMid slice" role="img" aria-label="جبل الرماة: موضعكِ على الطريق إلى القمّة">
   <defs><linearGradient id="dusk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3B2B6E" stop-opacity=".55"/><stop offset=".45" stop-color="#E8806A" stop-opacity=".38"/><stop offset="1" stop-color="#F2B07A" stop-opacity=".18"/></linearGradient>
@@ -550,10 +636,10 @@ function mountainSVG(){
   <path id="trail" d="${TRAIL}" fill="none" stroke="none"/>
   ${c.prov<SUMMIT-3?`<g transform="translate(455 252) scale(.32)" opacity=".55" filter="url(#ghost)"><image href="art/rider.webp" x="-129" y="-218" width="258" height="218"/></g>`:""}
   <g id="climber"><g id="riderflip"><image href="art/rider.webp" x="-129" y="-212" width="258" height="218"/></g></g>
-  <g transform="rotate(-6 790 1080)"><rect x="740" y="1030" width="100" height="100" rx="10" fill="var(--cloak)" opacity=".94"/>
-   <text x="790" y="1072" text-anchor="middle" font-size="28" fill="#FFF" font-family="Aref Ruqaa, serif">لا</text>
-   <text x="790" y="1108" text-anchor="middle" font-size="28" fill="#FFF" font-family="Aref Ruqaa, serif">تبرحوا</text></g>
-  </svg><span class="badge-time">${SCENE_LABEL[sc]}</span></div>`;
+  <g transform="rotate(-6 100 240)"><rect x="50" y="190" width="100" height="100" rx="10" fill="var(--cloak)" opacity=".94"/>
+   <text x="100" y="232" text-anchor="middle" font-size="28" fill="#FFF" font-family="Aref Ruqaa, serif">لا</text>
+   <text x="100" y="268" text-anchor="middle" font-size="28" fill="#FFF" font-family="Aref Ruqaa, serif">تبرحوا</text></g>
+  </svg><span class="badge-time">${SCENE_LABEL[sc]}</span>${hud||""}</div>`;
 }
 let animFrom=null;
 function animateClimber(){
@@ -574,12 +660,21 @@ function animateClimber(){
 }
 function metricHTML(it,e){
   const v=e.d[it.id],has=!(v===undefined||v===null||v==="");
-  let val,note;
-  if(it.type==="limit"){val=has?fmtMin(v):"—";note=has?(+v<=it.limit?`<span class="up">ضمن الحدّ (${fmtMin(it.limit)})</span>`:`<span class="dn">تجاوزتِ الحدّ (${fmtMin(it.limit)})</span>`):`الحدّ الأعلى ${fmtMin(it.limit)}`}
-  else{val=has?fmt(+v):"—";note=`الهدف ${fmt(it.target)} ${esc(it.unit)}`;if(it.id==="reading"){const b=S.books.find(x=>x.id===S.curBook);note+=b?` · ${esc(b.title)}`:' · <a href="#reading">اختاري كتابًا</a>'}}
-  return `<div class="metric"><div class="top"><b>${esc(it.t)}</b><span class="chip ${score(it,e)>=1?"":"blue"}">${score(it,e)>=1?"تمّ":esc(it.unit)}</span></div>
-   <div class="v num">${val}</div><div class="s small muted">${note}</div>
-   <div class="stepper"><button data-act="inc" data-id="${it.id}" data-n="${it.step||1}" aria-label="زيادة">+</button><input type="number" inputmode="numeric" min="0" id="c_${it.id}" data-id="${it.id}" value="${has?+v:""}" placeholder="${it.type==="limit"?"دقائق":"0"}" aria-label="${esc(it.t)}"><button data-act="inc" data-id="${it.id}" data-n="-${it.step||1}" aria-label="نقص">−</button></div></div>`;
+  let goal;
+  if(it.type==="limit")goal=has?(+v<=it.limit?`<span class="goal ok">ضمن الحدّ</span>`:`<span class="goal bad">فوق الحدّ</span>`):`<span class="goal">حدّ ${fmtMin(it.limit)}</span>`;
+  else goal=`<span class="goal ${score(it,e)>=1?"ok":""}">الهدف ${fmt(it.target)}</span>`;
+  const lbl={walk:"خطوات المشي",reading:"صفحات القراءة",screen:"دقائق الجهاز"}[it.id]||it.t;
+  return `<div><span class="lb">${esc(lbl)}</span>
+   <div class="stepper"><button data-act="inc" data-id="${it.id}" data-n="-${it.step||1}" aria-label="نقص">−</button><input type="number" inputmode="numeric" min="0" class="num" id="c_${it.id}" data-id="${it.id}" value="${has?+v:""}" placeholder="—" aria-label="${esc(it.t)}"><button data-act="inc" data-id="${it.id}" data-n="${it.step||1}" aria-label="زيادة">+</button></div>${goal}</div>`;
+}
+function itemRow(it,e,d,ph){
+  const v=e.d[it.id],done=score(it,e)>=1,kc=isDaily(it)?"daily":"special",sub=subFor(it,d,ph);
+  const ic=`<span class="ic" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICO[it.id]||'<circle cx="12" cy="12" r="5"/>'}</svg></span>`;
+  const txt=`<span class="tx"><span class="nm">${esc(it.t)}</span>${sub?`<span class="sb">${sub}</span>`:""}`;
+  if(it.type==="prayers"){const arr=Array.isArray(v)?v:[0,0,0,0,0];
+    return `<div class="ir ${kc} ${done?"done":""}" data-tile="${it.id}">${ic}${txt}<span class="pr">${PRAYERS.map((n,i)=>`<button class="${arr[i]?"on":""}" data-act="pray" data-i="${i}" aria-pressed="${!!arr[i]}">${n}</button>`).join("")}</span></span><button class="ck" data-act="prayAll" data-id="${it.id}" aria-label="${esc(it.t)}">${tick()}</button></div>`}
+  if(it.type==="count")return `<div class="ir ${kc} ${done?"done":""}" data-tile="${it.id}">${ic}${txt}</span><span class="cnt"><button data-act="inc" data-id="${it.id}" data-n="-${it.step||1}" aria-label="نقص">−</button><input type="number" inputmode="numeric" min="0" class="num" id="c_${it.id}" data-id="${it.id}" value="${+v||0}" aria-label="${esc(it.unit)}"><button data-act="inc" data-id="${it.id}" data-n="${it.step||1}" aria-label="زيادة">+</button></span></div>`;
+  return `<button class="ir ${kc} ${done?"done":""}" data-tile="${it.id}" data-act="tog" data-id="${it.id}" aria-pressed="${done}">${ic}${txt}</span><span class="ck">${tick()}</span></button>`;
 }
 function vToday(){
   const d=viewDay,k=key(d),e=entry(k),its=dayItems(d),p=dayPct(d)||0,isT=k===key(today());
@@ -588,29 +683,28 @@ function vToday(){
   const groups=Object.keys(CATS).map(cc=>{
     const list=its.filter(i=>i.cat===cc&&!i.metric);if(!list.length)return"";
     const done=list.filter(i=>score(i,e)>=1).length;
-    return `<section class="blk"><div class="blk-h"><h2>${CATS[cc]}</h2><span class="tag num">${fmt(done)} من ${fmt(list.length)}</span></div><div class="tiles-grid">${list.map(it=>tileHTML(it,e,d,ph)).join("")}</div></section>`;
+    return `<section class="grp"><div class="grp-h"><h2>${CATS[cc]}</h2><span class="pb"><i style="width:${done/list.length*100}%"></i></span><span class="n num">${fmt(done)}/${fmt(list.length)}</span></div><div class="lst">${list.map(it=>itemRow(it,e,d,ph)).join("")}</div></section>`;
   }).join("");
   let remind="";
-  if(isT&&c.last===-1){const q=quoteFor(d,true);remind=`<div class="remind" role="status"><b class="h">نزلتِ أمس خطوةً عن الجبل، فلم يبلغ وِردكِ ٧٠٪</b><span class="small">يوم أحد ترك أكثرُ الرماة مواضعهم حين رأوا الغنائم، فالتفّت الخيل من ورائهم، وانقلب النصر. فاصعدي اليوم إلى موضعكِ.</span><q>${esc(q.t)}</q><span class="small muted">${esc(q.s)}</span></div>`}
+  if(isT&&c.last===-1){const q=quoteFor(d,true);remind=`<div class="remind2" role="status"><b>نزلتِ أمس خطوةً عن الجبل</b><span class="small muted">يوم أحد ترك أكثرُ الرماة مواضعهم حين رأوا الغنائم، فالتفّت الخيل من ورائهم. فاصعدي اليوم إلى موضعكِ.</span><q>${esc(q.t)}</q></div>`}
   const q=quoteFor(addDays(d,3),false);
-  const posTxt=c.prov>=SUMMIT?"بلغتِ القمّة":`الخطوة ${fmt(c.prov)} من ${fmt(SUMMIT)}`;
+  const gap=SUMMIT-c.prov;
+  const status=c.prov>=SUMMIT?`ثابتةٌ على الجبل`:`<b class="num">${fmt(gap)}</b> ${gap<=10&&gap>2?"خطوات":"خطوةً"} دون القمّة`;
+  const line=c.todayUp?"أتممتِ ٧٠٪ اليوم، فصعدتِ خطوة":isT&&c.prov>=SUMMIT&&p>=.7?"أتممتِ ٧٠٪، فلم تبرحي مكانكِ":isT?"أتمّي ٧٠٪ من وِرد اليوم تثبتي على القمّة":esc(phaseLine(d));
+  const hud=`<div class="hud">${ring(p)}<div style="min-width:0"><div class="st">${status}</div><div class="ln">${line} · <span class="num">${fmt(streak())}</span> يومًا متتابعة</div></div></div>`;
   return `
-  <div class="mount">${mountainSVG()}
-   <div class="meta">${ring(p)}<div style="flex:1;min-width:0"><div class="small muted">${esc(phaseLine(d))}</div><div style="display:flex;align-items:baseline;gap:8px">${c.prov>=SUMMIT?`<h2>ثابتةٌ على الجبل</h2></div><div class="small muted">لم تبرحي مكانكِ</div>`:`<span class="bigstep num">${fmt(SUMMIT-c.prov)}</span><h2>${SUMMIT-c.prov<=10&&SUMMIT-c.prov>2?"خطوات":"خطوةً"} دون القمّة</h2></div>`}
-    <div class="small">${c.todayUp?'<span class="up">أتممتِ ٧٠٪ اليوم، فصعدتِ خطوةً نحو موضعكِ</span>':isT&&c.prov>=SUMMIT&&dayPct(d)>=.7?'<span class="up">أتممتِ ٧٠٪، فلم تبرحي القمّة</span>':isT?'أتمّي ٧٠٪ من وِرد اليوم تبقَي على القمّة، وإلّا نزلتِ خطوة':""} · <span class="num">${fmt(streak())}</span> يومًا متتابعة</div></div></div></div>
+  ${mountainSVG(hud)}
+  <div class="daynav"><button class="chev" data-act="day" data-n="-1" aria-label="اليوم السابق"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg></button>
+   <div class="c"><b>${isT?"اليوم، ":""}${DAYN[d.getDay()]} ${esc(hijri(d))}</b><span>${esc(greg(d))} · ${esc(phaseLine(d))}</span></div>
+   ${isT?'<button class="chev" disabled aria-label="اليوم التالي"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 6-6 6 6 6"/></svg></button>':'<button class="chev" data-act="day" data-n="0" aria-label="العودة إلى اليوم"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 6-6 6 6 6"/></svg></button>'}</div>
   ${remind}
-  <div class="btns" style="justify-content:space-between;align-items:center;flex-wrap:nowrap">
-    <button class="btn ghost" data-act="day" data-n="-1">→ السابق</button>
-    <span class="small muted" style="text-align:center">${DAYN[d.getDay()]} · ${esc(hijri(d))}<br>${esc(greg(d))}</span>
-    ${isT?'<button class="btn ghost" disabled style="opacity:.4">التالي ←</button>':'<button class="btn ghost" data-act="day" data-n="0">اليوم</button>'}
-  </div>
-  <p class="motto">«${esc(q.t)}»<small>${esc(q.s)}</small></p>
-  ${mets.length?`<section class="blk"><div class="blk-h"><h2>مقاييس اليوم</h2><span class="tag">المشي والقراءة والجهاز</span></div><div class="metrics">${mets.map(it=>metricHTML(it,e)).join("")}</div></section>`:""}
-  <div class="key"><span><i style="background:var(--daily)"></i>مهامّ يومية ثابتة</span><span><i style="background:var(--special)"></i>مهامّ هذا اليوم من الأسبوع</span></div>
+  ${mets.length?`<div class="mx">${mets.map(it=>metricHTML(it,e)).join("")}</div>`:""}
   ${groups||'<div class="card empty">لا وِرد مجدول لهذا اليوم.</div>'}
+  <div class="legend2"><span><i style="background:var(--daily2)"></i>يومية</span><span><i style="background:var(--special2)"></i>خاصّة بهذا اليوم</span></div>
+  <p class="quote">«${esc(q.t)}»<small>${esc(q.s)}</small></p>
   ${isT&&(d.getDay()===4||d.getDay()===5)?harvestHTML():""}
-  <section class="blk"><div class="blk-h"><h2>محاسبة اليوم</h2><span class="tag">ما الذي أعانكِ، وما الذي عطّلكِ؟</span></div>
-   <textarea class="inp" id="note" data-k="${k}" placeholder="اكتبي سطرين قبل النوم…">${esc(e.note||"")}</textarea></section>`;
+  <section class="grp"><div class="grp-h"><h2>محاسبة اليوم</h2></div>
+   <textarea class="inp" id="note" data-k="${k}" placeholder="ما الذي أعانكِ اليوم، وما الذي عطّلكِ؟">${esc(e.note||"")}</textarea></section>`;
 }
 function rowHTML(it,e,d,ph){
   const v=e.d[it.id],done=score(it,e)>=1,kc=isDaily(it)?"daily":"special";
@@ -718,30 +812,30 @@ const tick=()=>'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stro
 let calM=null,calSel=null;
 function vCal(){
   const t=today();if(!calM)calM=new Date(t.getFullYear(),t.getMonth(),1);if(!calSel)calSel=t;
-  const first=new Date(calM),last=new Date(calM.getFullYear(),calM.getMonth()+1,0);
-  const start=addDays(first,-first.getDay());
-  let hm="";try{const f=new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura-nu-arab",{month:"long",year:"numeric"});const a=f.format(first),b=f.format(last);hm=a===b?a:(a.replace(/\s?\S+\s?هـ?$/,"")+" — "+b)}catch(e){}
-  const c=climb();
-  let cells=DAYS.map((x,i)=>`<div class="dn">${DAYN[i]}</div>`).join("");
-  for(let i=0;i<42;i++){const d=addDays(start,i);if(i>=35&&d>last)break;
-    const its=dayItems(d),sp=its.filter(x=>!isDaily(x)),k=key(d);
-    let hd="";try{hd=new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura-nu-arab",{day:"numeric"}).format(d)}catch(e){}
-    const o=c.hist[k];
-    cells+=`<button class="c ${d.getMonth()!==calM.getMonth()?"out":""} ${k===key(t)?"today":""} ${k===key(calSel)?"sel":""}" data-act="calSel" data-k="${k}" aria-label="${esc(greg(d))}">
-     <span class="g">${fmt(d.getDate())}</span><span class="h">${esc(hd)}</span>
-     <span class="pips">${its.some(isDaily)?'<i style="background:var(--daily)"></i>':""}${sp.length?'<i style="background:var(--special)"></i>':""}${isTestDay(d)&&phaseOf(d)?'<i style="background:var(--down)"></i>':""}${o===1?'<span class="up" style="font-size:9px">▲</span>':o===-1?'<span class="dn" style="font-size:9px">▼</span>':""}</span></button>`}
-  const sd=calSel,sits=dayItems(sd),se=entry(key(sd)),sp=dayPct(sd);
-  const li=(arr,cls)=>arr.map(it=>`<div class="row ${cls} ${score(it,se)>=1?"done":""}"><span class="chk ${score(it,se)>=1?"on":""}" aria-hidden="true">${tick()}</span><div class="txt"><div class="t">${esc(it.t)}</div></div></div>`).join("");
+  const first=new Date(calM),last=new Date(calM.getFullYear(),calM.getMonth()+1,0),start=addDays(first,-first.getDay());
+  let hm="";try{const f=new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura-nu-arab",{month:"long",year:"numeric"});const a=f.format(first),b=f.format(last);hm=a===b?a:a.replace(/\s*\S+\s*هـ?$/,"").replace(/\s*[٠-٩]+\s*هـ?$/,"")+" — "+b}catch(e){}
+  let hf=null;try{hf=new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura-nu-arab",{day:"numeric"})}catch(e){}
+  let cells=["ح","ن","ث","ر","خ","ج","س"].map((x,i)=>`<div class="wd" title="${DAYN[i]}">${x}</div>`).join("");
+  const weeks=Math.ceil((first.getDay()+last.getDate())/7);
+  for(let i=0;i<weeks*7;i++){const d=addDays(start,i),k=key(d),p=S.log[k]&&d<=t?dayPct(d):null;
+    const sp=dayItems(d).some(x=>!isDaily(x)),test=isTestDay(d)&&phaseOf(d);
+    const lv=p===null?"":p>=.7?"lv3":p>=.4?"lv2":p>0?"lv1":"";
+    const miss=d<t&&k>=key(firstDay())&&(p===null||p<.7)&&S.log[key(firstDay())]?" miss":"";
+    cells+=`<button class="d ${d.getMonth()!==calM.getMonth()?"out":""} ${k===key(t)?"today":""} ${k===key(calSel)?"sel":""} ${lv}${lv==="lv3"?"":miss}" data-act="calSel" data-k="${k}" aria-label="${esc(DAYN[d.getDay()]+" "+greg(d))}">
+      <span class="n num">${fmt(d.getDate())}</span><span class="h">${hf?esc(hf.format(d)):""}</span><span class="mk">${test?'<i style="background:var(--down)"></i>':""}</span></button>`}
+  const sd=calSel,sits=dayItems(sd),se=entry(key(sd)),spct=dayPct(sd);
   const daily=sits.filter(isDaily),spec=sits.filter(x=>!isDaily(x));
-  return `<section class="blk"><div class="calhead"><button class="iconbtn" data-act="calM" data-n="-1" aria-label="الشهر السابق">→</button>
-   <div class="t"><b>${esc(monthName(calM))}</b><span>${esc(hm)}</span></div><button class="iconbtn" data-act="calM" data-n="1" aria-label="الشهر التالي">←</button></div>
-   <div class="cal">${cells}</div>
-   <div class="key"><span><i style="background:var(--daily)"></i>مهامّ يومية</span><span><i style="background:var(--special)"></i>مهامّ خاصّة بالأيام</span><span><i style="background:var(--down)"></i>الاختبار الشهري</span><span><span class="up">▲</span> ثبات أو صعود · <span class="dn">▼</span> نزول</span></div></section>
-  <section class="blk"><div class="blk-h"><h2>${DAYN[sd.getDay()]} ${esc(hijri(sd))}</h2><span class="tag">${esc(greg(sd))}${sp!==null&&S.log[key(sd)]?` · ${fmt(Math.round(sp*100))}٪`:""}</span></div>
-   ${phaseOf(sd)?`<div class="small muted">${esc(phaseOf(sd).name)}${phaseOf(sd)&&sd.getDay()<5?` · كتاب اليوم: ${esc(BOOKS[phaseOf(sd).map[sd.getDay()]])}`:""}</div>`:""}
-   ${spec.length?`<div class="blk-h"><h3 style="font-size:17px;color:var(--special)">مهامّ هذا اليوم</h3><span class="tag num">${fmt(spec.length)}</span></div><div class="list">${li(spec,"special")}</div>`:""}
-   <div class="blk-h"><h3 style="font-size:17px;color:var(--daily)">المهامّ اليومية</h3><span class="tag num">${fmt(daily.length)}</span></div><div class="list">${li(daily,"daily")}</div>
-   ${key(sd)<=key(t)?`<button class="btn ghost" data-act="openDay" data-k="${key(sd)}">فتح هذا اليوم للتسجيل</button>`:""}</section>`;
+  const row=(it,cls)=>{const ok=score(it,se)>=1;return `<div class="ir ${cls} ${ok?"done":""}" style="min-height:50px"><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICO[it.id]||'<circle cx="12" cy="12" r="5"/>'}</svg></span><span class="tx"><span class="nm">${esc(it.t)}</span></span><span class="ck">${tick()}</span></div>`};
+  const dd=daily.filter(i=>score(i,se)>=1).length,ph=phaseOf(sd);
+  return `<div class="calcard"><div class="calnav"><button class="chev" data-act="calM" data-n="-1" aria-label="الشهر السابق"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg></button>
+    <div class="t"><b>${esc(monthName(calM))}</b><span>${esc(hm)}</span></div>
+    <button class="chev" data-act="calM" data-n="1" aria-label="الشهر التالي"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 6-6 6 6 6"/></svg></button></div>
+   <div class="cal2">${cells}</div></div>
+  <div class="legend2"><span><i style="background:var(--daily2)"></i>ثبات</span><span><i style="background:color-mix(in srgb,var(--down) 30%,transparent)"></i>نزول</span><span><i style="background:var(--down);border-radius:50%"></i>اختبار شهري</span></div>
+  <div class="daycard"><div class="hd">${ring(spct||0)}<div><b>${DAYN[sd.getDay()]} ${esc(hijri(sd))}</b><span>${esc(greg(sd))}${ph&&sd.getDay()<5?` · ${esc(BOOKS[ph.map[sd.getDay()]])}`:""}</span></div></div>
+   ${spec.length?`<div>${spec.map(it=>row(it,"special")).join("")}</div>`:`<div class="ft small muted">لا مهامّ خاصّة في هذا اليوم.</div>`}
+   <details><summary><span>المهامّ اليومية</span><span class="num muted">${fmt(dd)}/${fmt(daily.length)}</span></summary>${daily.map(it=>row(it,"daily")).join("")}</details>
+   ${key(sd)<=key(t)?`<div class="ft"><button class="btn ghost" style="width:100%" data-act="openDay" data-k="${key(sd)}">${key(sd)===key(t)?"إلى وِرد اليوم":"فتح هذا اليوم للتسجيل"}</button></div>`:""}</div>`;
 }
 function progCount(id){let n=0;for(const k in S.log)if(S.log[k].d[id])n++;return n+(+((S.programs[id]||{}).base)||0)}
 function vPrograms(){
