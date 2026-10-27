@@ -1,0 +1,58 @@
+name: تنبيهات جبل الرماة
+
+on:
+  schedule:
+    # الأوقات بتوقيت UTC (الكويت = UTC+3). قد يتأخّر GitHub بضع دقائق.
+    - cron: "30 0 * * *"   # 03:30 الكويت — الوتر والحفظ
+    - cron: "0 3 * * *"    # 06:00 — الأذكار وماجريات وخطة اليوم
+    - cron: "0 5 * * *"    # 08:00 — الضحى والحديث
+    - cron: "0 8 * * *"    # 11:00 — المهارات
+    - cron: "45 12 * * *"  # 15:45 — أذكار المساء
+    - cron: "15 15 * * *"  # 18:15 — المحاسبة
+  workflow_dispatch:
+    inputs:
+      slot:
+        description: "الفترة (fajr, morning, duha, skills, evening, night, test)"
+        default: "test"
+
+permissions:
+  contents: write
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: تحديد الفترة
+        id: slot
+        run: |
+          case "${{ github.event.schedule }}" in
+            "30 0 * * *")  s=fajr ;;
+            "0 3 * * *")   s=morning ;;
+            "0 5 * * *")   s=duha ;;
+            "0 8 * * *")   s=skills ;;
+            "45 12 * * *") s=evening ;;
+            "15 15 * * *") s=night ;;
+            *)             s="${{ github.event.inputs.slot || 'test' }}" ;;
+          esac
+          echo "slot=$s" >> "$GITHUB_OUTPUT"
+      - name: إرسال التنبيه
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          APP_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
+        run: node scripts/notify.mjs "${{ steps.slot.outputs.slot }}"
+      # يوقف GitHub المهامّ المجدولة بعد ٦٠ يومًا بلا نشاط؛ هذه الخطوة تُبقي المستودع حيًّا.
+      - name: إبقاء المستودع نشطًا
+        if: steps.slot.outputs.slot == 'morning'
+        run: |
+          if [ "$(date -u +%d)" = "01" ]; then
+            date -u > .keepalive
+            git config user.name "jabal-bot"
+            git config user.email "jabal-bot@users.noreply.github.com"
+            git add .keepalive && git commit -m "keepalive" && git push || true
+          fi
