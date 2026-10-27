@@ -64,5 +64,5 @@ function flagIcon(S){
 }
 
 const q=new URLSearchParams(location.search),S=+q.get("s")||1024,mask=q.get("mask")==="1";
-document.getElementById("r").innerHTML=mask?photoIcon(S,"",true,[250,425,470],.3):photoIcon(S,"",true,[250,440,330],.38);
+const night=q.get("night")==="1";document.getElementById("r").innerHTML=mask?photoIcon(S,"",night,[250,425,470],.3):photoIcon(S,"",night,[250,440,330],.38);
 </script></body></html>
