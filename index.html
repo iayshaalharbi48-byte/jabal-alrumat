@@ -513,7 +513,7 @@ nav.tabs .plus[aria-expanded="true"]{transform:rotate(45deg)}
 .sheet h3{font-size:18px;margin:6px 0 10px;display:flex;justify-content:space-between;align-items:baseline}
 .sheet h3 small{font-family:var(--f-body);font-size:12.5px;color:var(--muted)}
 .sheet .mx{background:var(--field)}
-.go{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.go{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
 .go a{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12.5px;color:var(--fg);text-decoration:none}
 .go a span{width:58px;height:58px;border-radius:19px;display:grid;place-items:center;background:var(--field);border:1px solid var(--line)}
 .go svg{width:23px;height:23px}
@@ -565,6 +565,51 @@ nav.tabs .plus[aria-expanded="true"]{transform:rotate(45deg)}
 .hero-motto span:last-child{padding-inline-start:3.2em}
 .hero-motto span:first-child{padding-inline-end:3.2em}
 @media (min-height:760px){.hero-motto{font-size:20px}}
+
+/* ماجريات */
+.mj-wrap{display:flex;flex-direction:column;gap:14px}
+.mj-flag{font-size:13px;color:var(--muted);background:var(--glass);border-radius:14px;padding:8px 14px;border:1px solid var(--glass-line)}
+.mj-paper{background:#F6F2EA;color:#161616;border-radius:22px;padding:18px 18px 22px;box-shadow:0 12px 34px rgba(31,36,51,.12);font-family:var(--f-body);line-height:1.85;font-size:16px}
+.mj-paper a{color:#6E1A26;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+.mj-mast{text-align:center;border-bottom:3px double #161616;padding-bottom:8px;margin-bottom:6px}
+.mj-name{font-family:var(--f-display);font-size:52px;line-height:1.1;color:#6E1A26;letter-spacing:-.5px}
+.mj-meta{display:flex;justify-content:space-between;font-size:12px;color:#5b5550;border-top:1px solid rgba(22,22,22,.25);border-bottom:1px solid rgba(22,22,22,.25);padding:2px 2px}
+.mj-meta:first-child{border-top:0}
+.mj-body .mj-page{padding:14px 0 6px;border-bottom:1px solid rgba(22,22,22,.18)}
+.mj-body .mj-page:last-of-type{border-bottom:0}
+.mj-body .mj-page-title{font-family:var(--f-display);font-size:13px;letter-spacing:.5px;color:#fff;background:#6E1A26;display:inline-block;padding:2px 12px;border-radius:4px;margin:0 0 10px;font-weight:500}
+.mj-body .mj-strip{display:flex;flex-direction:column;gap:2px;font-size:13px;background:rgba(110,26,38,.07);border-radius:10px;padding:8px 12px;margin-bottom:10px}
+.mj-body .mj-urgent{border-inline-start:4px solid #6E1A26;padding:6px 12px;margin:6px 0 12px;font-weight:500;background:rgba(110,26,38,.06)}
+.mj-body .mj-sec{font-family:var(--f-display);font-size:21px;color:#6E1A26;margin:14px 0 6px;padding-bottom:3px;border-bottom:1.5px solid #6E1A26;font-weight:500}
+.mj-body .mj-item{margin:0 0 12px}
+.mj-body .mj-item h4{font-family:var(--f-display);font-size:18px;line-height:1.4;margin:0 0 3px;font-weight:500}
+.mj-body .mj-lead h4{font-size:23px}
+.mj-body p{margin:0 0 6px}
+.mj-body .mj-src{font-size:12.5px;color:#6b635c;margin-top:-2px}
+.mj-body .mj-box{border:1.5px solid rgba(110,26,38,.4);border-radius:12px;padding:10px 14px;margin:10px 0;background:rgba(255,255,255,.4)}
+.mj-body .mj-verse{font-family:"Amiri",var(--f-display),serif;font-size:20px;line-height:2;margin:6px 0;padding:8px 14px;border-inline-start:3px solid #6E1A26;background:rgba(110,26,38,.05)}
+.mj-body .mj-poem p{font-family:"Amiri",serif;font-size:19px;line-height:1.9;margin:0 0 6px}
+.mj-body .mj-poem span{display:block}
+.mj-body .mj-poem span:first-child{padding-inline-end:1.6em}
+.mj-body .mj-poem span:last-child{text-align:left;padding-inline-start:1.6em}
+.mj-body .mj-words{display:grid;gap:8px}
+.mj-body .mj-photo{margin:8px 0}
+.mj-body .mj-photo img{width:100%;border-radius:10px;display:block;filter:saturate(.95)}
+.mj-body figcaption{font-size:13px;color:#5b5550;margin-top:4px}
+.mj-body .mj-puzzle{background:rgba(255,255,255,.5);border-radius:12px;padding:10px 14px;margin:8px 0}
+.mj-body table{border-collapse:collapse;margin:6px auto}
+.mj-body td,.mj-body th{border:1px solid rgba(22,22,22,.4);padding:4px 7px;font-size:14px;text-align:center}
+.mj-body .mj-grid td{width:28px;height:28px;padding:0}
+.mj-body .mj-grid td.x{background:#161616}
+.mj-body .mj-sports{font-size:14px;border-top:1px dashed rgba(22,22,22,.3);padding-top:6px}
+.mj-body .mj-colophon{font-size:12.5px;color:#6b635c;border-top:3px double #161616;padding-top:8px;margin-top:10px}
+.mj-body .mj-note{font-size:13px;color:#6E1A26}
+.mj-body ul,.mj-body ol{margin:0 0 6px;padding-inline-start:22px}
+.mj-arch{display:flex;flex-direction:column;gap:8px}
+.mj-arch b{font-family:var(--f-display);font-size:18px}
+.mj-chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+.mj-chip{flex:none;height:34px;padding:0 13px;border-radius:99px;border:1px solid var(--line);background:var(--field);color:var(--fg);font-size:13px}
+.mj-chip.on{background:#6E1A26;color:#fff;border-color:#6E1A26}
 </style>
 
 </head>
@@ -821,8 +866,8 @@ const ICONS={
  content:'<rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/>'
 };
 const NAV=[["today","اليوم",'<path d="M6 21V3M6 4l12 2-4 4 4 4-12 2"/>'],["cal","التقويم",'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'],null,["masters","الماجستير",ICONS.masters],["log","السجل",'<path d="M4 20V10M10 20V4M16 20v-7"/>']];
-const TITLES={cal:"التقويم",quiz:"الاختبار الشهري",masters:"الماجستير",skills:"المهارات",reading:"القراءة",content:"المحتوى",log:"السجل",prefs:"الإعدادات"};
-const VIEWS=["today","cal","quiz","masters","skills","reading","content","log","prefs"];
+const TITLES={majariyat:"ماجريات",cal:"التقويم",quiz:"الاختبار الشهري",masters:"الماجستير",skills:"المهارات",reading:"القراءة",content:"المحتوى",log:"السجل",prefs:"الإعدادات"};
+const VIEWS=["today","cal","quiz","masters","skills","reading","content","log","prefs","majariyat"];
 let route="today",viewDay=today();
 function render(){
   const h=(location.hash||"").slice(1);route=VIEWS.includes(h)?h:"today";
@@ -833,9 +878,10 @@ function render(){
   $("#navPrefs").toggleAttribute("hidden",route==="prefs");
   const t=today();$("#hdrDates").textContent=DAYN[t.getDay()]+" "+hijri(t);$("#hdrTitle").textContent=TITLES[route]||"جبل الرماة";
   render._r=route;
-  $("#view").innerHTML=({today:vToday,cal:vCal,quiz:vQuiz,masters:vMasters,skills:vSkills,reading:vReading,content:vContent,log:vLog,prefs:vPrefs})[route]();
+  $("#view").innerHTML=({majariyat:vMajariyat,today:vToday,cal:vCal,quiz:vQuiz,masters:vMasters,skills:vSkills,reading:vReading,content:vContent,log:vLog,prefs:vPrefs})[route]();
   $("#sheet").innerHTML=sheetOpen?sheetHTML():"";
   if(route==="today")animateFlag();
+  if(route==="majariyat")mjLoad();
 }
 
 function ring(p){
@@ -934,9 +980,63 @@ function animateFlag(){
 }
 window.addEventListener("resize",()=>{if(route==="today")layoutHero()});
 
+
+/* ---------- ماجريات: العدد اليومي من المستودع الخاص ---------- */
+const MJK="jabal-mj";
+let MJ={index:null,html:{},sel:null,status:"",loading:false};
+try{const c=JSON.parse(localStorage.getItem(MJK)||"null");if(c&&c.index){MJ.index=c.index;MJ.html=c.html||{}}}catch(e){}
+function mjSaveCache(){try{const keep={};(MJ.index||[]).slice(0,7).forEach(x=>{if(MJ.html[x.date])keep[x.date]=MJ.html[x.date]});localStorage.setItem(MJK,JSON.stringify({index:MJ.index,html:keep}))}catch(e){}}
+function mjUrl(p){return `https://api.github.com/repos/${SY.repo||"iayshaalharbi48-byte/jabal-data"}/contents/majariyat/${p}?t=${Date.now()}`}
+async function mjGet(p){const r=await fetch(mjUrl(p),{headers:{"Authorization":"Bearer "+SY.token,"Accept":"application/vnd.github.raw+json","X-GitHub-Api-Version":"2022-11-28"}});if(r.status===404)return null;if(!r.ok)throw new Error(r.status);return r.text()}
+async function mjLoad(force){
+  if(!SY.token||MJ.loading)return;
+  const need=!MJ.index||force||!MJ._fresh;
+  try{
+    if(need){MJ.loading=true;const t=await mjGet("index.json");MJ.index=t?JSON.parse(t):[];MJ._fresh=true;MJ.status=""}
+    const sel=MJ.sel||(MJ.index[0]&&MJ.index[0].date);
+    if(sel&&!MJ.html[sel]){MJ.loading=true;const it=MJ.index.find(x=>x.date===sel);const h=it?await mjGet(it.file):null;MJ.html[sel]=h||""}
+    mjSaveCache();
+  }catch(err){MJ.status=String(err.message)==="401"||String(err.message)==="403"?"رمز المزامنة لا يملك صلاحية القراءة":"تعذّر الاتصال، فهذه آخر نسخةٍ محفوظة"}
+  MJ.loading=false;if(route==="majariyat")$("#view").innerHTML=vMajariyat();
+}
+const MJ_TAGS=new Set("SECTION H2 H3 H4 P A UL OL LI BLOCKQUOTE STRONG B EM I SMALL SPAN DIV BR HR TABLE THEAD TBODY TR TH TD FIGURE FIGCAPTION IMG".split(" "));
+function mjClean(html){
+  const doc=new DOMParser().parseFromString(`<div>${html}</div>`,"text/html"),root=doc.body.firstChild;
+  const walk=el=>{for(const c of [...el.children]){
+    if(!MJ_TAGS.has(c.tagName)){c.replaceWith(...(["SCRIPT","STYLE","IFRAME","OBJECT","EMBED","LINK","META","FORM"].includes(c.tagName)?[]:c.childNodes));continue}
+    for(const at of [...c.attributes]){const n=at.name.toLowerCase();
+      if(n==="class"){c.setAttribute("class",at.value.split(/\s+/).filter(x=>/^(mj-[a-z-]+|x)$/.test(x)).join(" "));continue}
+      if(c.tagName==="A"&&n==="href"&&/^https:\/\//i.test(at.value))continue;
+      if(c.tagName==="IMG"&&(n==="alt"||(n==="src"&&/^https:\/\//i.test(at.value))))continue;
+      if((c.tagName==="TD"||c.tagName==="TH")&&(n==="colspan"||n==="rowspan"))continue;
+      c.removeAttribute(at.name)}
+    if(c.tagName==="A"){c.setAttribute("target","_blank");c.setAttribute("rel","noopener noreferrer")}
+    if(c.tagName==="IMG"){c.setAttribute("loading","lazy");c.setAttribute("referrerpolicy","no-referrer")}
+    walk(c)}};
+  walk(root);return root.innerHTML;
+}
+function vMajariyat(){
+  if(!SY.token&&!MJ.index)return `<div class="card stack"><b style="font-size:17px">ماجريات تصل إلى هنا كلّ صباح</b><span class="small muted">تُحفظ أعداد الصحيفة في مستودعكِ الخاص، ويقرؤها التطبيق برمز المزامنة نفسه. فعّلي المزامنة في الإعدادات ليظهر عدد اليوم.</span><a class="btn" href="#prefs" style="text-decoration:none;text-align:center">إلى الإعدادات</a></div>`;
+  if(!MJ.index)return `<div class="card empty">${MJ.status?esc(MJ.status):"يُجلب عدد اليوم…"}</div>`;
+  if(!MJ.index.length)return `<div class="card stack"><b style="font-size:17px">لم يصدر عددٌ بعد</b><span class="small muted">يُعدّ العدد آليًّا كلّ صباح قبل السادسة، ويظهر هنا حين يصدر.</span></div>`;
+  const sel=MJ.sel||MJ.index[0].date,it=MJ.index.find(x=>x.date===sel)||MJ.index[0],h=MJ.html[it.date];
+  const tk=key(today()),stale=MJ.index[0].date!==tk;
+  const arch=MJ.index.slice(0,30).map(x=>`<button class="mj-chip ${x.date===it.date?"on":""}" data-act="mjSel" data-d="${esc(x.date)}">${esc(x.day||"")} ${fmt(+x.date.slice(8))}${x.kind==="weekly"?" · أسبوعي":""}</button>`).join("");
+  return `<div class="mj-wrap">
+   ${MJ.status?`<div class="mj-flag">${esc(MJ.status)}</div>`:""}
+   ${stale&&it.date===MJ.index[0].date?`<div class="mj-flag">لم يصدر عدد اليوم بعد؛ هذا آخر عدد.</div>`:""}
+   <div class="mj-paper">
+    <header class="mj-mast"><div class="mj-meta"><span>العدد ${fmt(it.no||0)}${it.kind==="weekly"?" · الأسبوعي":""}</span><span>${esc(it.day||"")} ${esc(it.hijri||"")}</span></div>
+     <div class="mj-name">ماجريات</div><div class="mj-meta"><span>${esc(greg(parse(it.date)))}</span><span>قراءةٌ للصباح</span></div></header>
+    ${h===undefined?`<p class="mj-note">يُجلب العدد…</p>`:h===""?`<p class="mj-note">تعذّر فتح هذا العدد.</p>`:`<div class="mj-body">${mjClean(h)}</div>`}
+   </div>
+   <div class="mj-arch"><b>الأرشيف</b><div class="mj-chips">${arch}</div></div>
+   <button class="btn ghost" data-act="mjRefresh" style="width:100%">تحديث</button></div>`;
+}
+
 /* ---------- ورقة ＋ ---------- */
 let sheetOpen=false;
-const GO=[["skills","المهارات",'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',"#B7832A"],
+const GO=[["majariyat","ماجريات",'<rect x="3" y="4" width="15" height="16" rx="2"/><path d="M18 8h3v10a2 2 0 0 1-2 2M6 8h9M6 12h9M6 16h6"/>',"#6E1A26"],["skills","المهارات",'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',"#B7832A"],
  ["reading","القراءة",'<path d="M2 5c3-1 7-1 10 1 3-2 7-2 10-1v14c-3-1-7-1-10 1-3-2-7-2-10-1z"/><path d="M12 6v14"/>',"#3E7F80"],
  ["content","المحتوى",'<rect x="2" y="6" width="14" height="12" rx="3"/><path d="m16 10 6-3v10l-6-3"/>',"#C73E52"],
  ["prefs","الإعدادات",'<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',"#4B4E9E"]];
@@ -1069,7 +1169,7 @@ function subFor(it,d,ph){
   if(it.id==="test")sub="سجّلي الدرجة في صفحة الماجستير";
   if(it.id==="course")sub=S.course?`<b>${esc(S.course)}</b>`:'تُحدَّد لاحقًا';
   if(it.id==="poetry"){const cur=S.poems.find(p=>!p.done);sub=cur?`<b>${esc(cur.title)}</b>`:'اختاري قصيدة الأسبوع'}
-  if(it.id==="majariyat")sub=S.majLink?`<a href="${esc(S.majLink)}" target="_blank" rel="noopener">افتحي عدد اليوم</a>`:"أول ما يُقرأ صباحًا";
+  if(it.id==="majariyat")sub=`<a href="#majariyat">افتحي عدد اليوم</a>`;
   if(it.id==="sport")sub=`الهدف ${fmt(it.target)} دقيقة`;
   if(it.prog){const pr=S.programs[it.id]||{};sub=pr.note?`<b>${esc(pr.note)}</b>`:(it.sub?esc(it.sub):"")}
   if(it.id==="hifz"&&d.getDay()===6&&ph)sub=`حفظٌ ومراجعة · ${esc(ph.quran)}`;
@@ -1365,6 +1465,8 @@ document.addEventListener("click",ev=>{
    case"goTask":{const el=document.querySelector(".ir:not(.done)");if(el)el.scrollIntoView({behavior:"smooth",block:"center"});return}
    case"exOpen":exOpen=!exOpen;break;
    case"ex":{const e=entry(k,true),v=b.dataset.v;if(v){if((v==="sick"||v==="travel")&&EX_CAP-exUsed(viewDay,k)<=0){toast("استُنفدت أيام المرض والسفر لهذا الشهر");return}e.ex=v;toast(v==="hayd"?"يومُ عذر: أُخفيت الصلوات، والراية لا تنزل":"يومُ عذر: الراية ثابتةٌ في موضعها")}else delete e.ex;exOpen=false;save();break}
+   case"mjSel":MJ.sel=b.dataset.d;$("#view").innerHTML=vMajariyat();mjLoad();window.scrollTo(0,0);return;
+   case"mjRefresh":MJ._fresh=false;MJ.sel=null;MJ.html={};mjLoad(true);toast("يُحدَّث…");return;
    case"tog":setVal(id,!entry(k).d[id]);break;
    case"pray":{const e=entry(k,true);const arr=Array.isArray(e.d.salah)?e.d.salah.slice():[0,0,0,0,0];arr[+b.dataset.i]=arr[+b.dataset.i]?0:1;setVal("salah",arr);break}
    case"prayAll":{const v=entry(k).d.salah;const all=Array.isArray(v)&&v.every(Boolean);setVal("salah",all?[0,0,0,0,0]:[1,1,1,1,1]);break}
