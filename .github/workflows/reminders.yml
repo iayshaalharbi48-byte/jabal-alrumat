@@ -39,6 +39,8 @@ jobs:
             *)             s="${{ github.event.inputs.slot || 'test' }}" ;;
           esac
           echo "slot=$s" >> "$GITHUB_OUTPUT"
+      - name: تثبيت مكتبة التنبيهات
+        run: npm install --no-save --no-audit --no-fund web-push@3
       - name: إرسال التنبيه
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}

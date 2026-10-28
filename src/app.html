@@ -1481,7 +1481,7 @@ function vLog(){
 
 let confirmReset=false;
 function vPrefs(){
-  return `<section class="blk"><div class="blk-h"><h2>التنبيهات اليومية</h2></div>
+  return pushPrefsHTML()+`<section class="blk"><div class="blk-h"><h2>تنبيهات ntfy (الاحتياط)</h2></div>
   <div class="card stack small">
    <p style="margin:0">تأتي التنبيهات من مهامّ مجدولة على GitHub، وتصلكِ عبر تطبيق <b>ntfy</b>. اكتبي هنا اسم القناة نفسه المحفوظ في GitHub لتجرّبي التنبيه من هنا.</p>
    <div class="grid2"><div class="field"><label for="ntfyTopic">اسم قناة ntfy</label><input class="inp" id="ntfyTopic" dir="ltr" value="${esc(S.ntfy)}" placeholder="jabal-xxxxxxxx"></div><div style="align-self:end"><button class="btn ghost" data-act="ntfyTest" type="button">أرسلي تنبيهًا تجريبيًا</button></div></div>
@@ -1644,6 +1644,73 @@ function foRender(){
   },1000);
 }
 
+/* ---------- تنبيهات التطبيق (Web Push) ---------- */
+const VAPID_PUB="BAZd2H2CGHhkDkLWgUtlNYq1YTrAP0rJ87l1h8I9H9H-AradpYTZXH8-tYnMHjcOVCrLt2bxcyMx0Yyg2-X-9S8";
+const standalone=()=>(window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone===true;
+const pushOK=()=>"serviceWorker" in navigator&&"PushManager" in window&&"Notification" in window;
+let pushState=(()=>{try{return localStorage.getItem("jabal-push")||""}catch(e){return""}})();
+function setPush(s){pushState=s;try{s?localStorage.setItem("jabal-push",s):localStorage.removeItem("jabal-push")}catch(e){}}
+function b64u(s){const p="=".repeat((4-s.length%4)%4),r=atob((s+p).replace(/-/g,"+").replace(/_/g,"/"));return Uint8Array.from(r,c=>c.charCodeAt(0))}
+function dataUrl(p){return `https://api.github.com/repos/${SY.repo||"iayshaalharbi48-byte/jabal-data"}/contents/${p}`}
+async function subsWrite(fn){
+  for(let i=0;i<2;i++){
+    const g=await fetch(dataUrl("push/subs.json")+"?t="+Date.now(),{headers:ghHeaders()});
+    let sha=null,cur={subs:[]};
+    if(g.ok){const j=await g.json();sha=j.sha;try{cur=JSON.parse(b64d(j.content))}catch(e){}}else if(g.status!==404)throw new Error(g.status);
+    cur.subs=fn(cur.subs||[]);
+    const body={message:"اشتراك التنبيهات",content:b64e(JSON.stringify(cur,null,1))};if(sha)body.sha=sha;
+    const r=await fetch(dataUrl("push/subs.json"),{method:"PUT",headers:{...ghHeaders(),"Content-Type":"application/json"},body:JSON.stringify(body)});
+    if(r.ok)return;if(r.status!==409&&r.status!==422)throw new Error(r.status);
+  }
+  throw new Error("conflict");
+}
+async function pushEnable(){
+  if(!pushOK()||!standalone()){toast("افتحي جبل الرماة من أيقونته على الشاشة الرئيسية، ثم فعّليها من هنا");return}
+  if(!SY.token){toast("فعّلي المزامنة أولًا في أسفل هذه الصفحة");return}
+  const perm=await Notification.requestPermission();
+  if(perm!=="granted"){toast("لم يُؤذن بالتنبيهات؛ يمكنكِ السماح لها من إعدادات الهاتف ← الإشعارات ← جبل الرماة");return}
+  try{
+    const reg=await navigator.serviceWorker.ready;
+    const sub=(await reg.pushManager.getSubscription())||await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(VAPID_PUB)});
+    const j=sub.toJSON();
+    await subsWrite(list=>list.filter(x=>x.endpoint!==j.endpoint).concat({endpoint:j.endpoint,keys:j.keys,ua:navigator.userAgent.slice(0,90),at:new Date().toISOString()}));
+    setPush("on");render();
+    reg.showNotification("جبل الرماة",{body:"فُعّلت التنبيهات، فستصلكِ من هنا في مواعيدها.",icon:"icon-192-v4.png",tag:"jabal-test",lang:"ar",dir:"rtl"});
+    toast("فُعّلت تنبيهات التطبيق");
+  }catch(e){toast("تعذّر التفعيل ("+(e.message||e)+")، فأعيدي المحاولة")}
+}
+async function pushOff(){
+  try{const reg=await navigator.serviceWorker.ready,sub=await reg.pushManager.getSubscription();
+    if(sub){const ep=sub.endpoint;await sub.unsubscribe();if(SY.token)await subsWrite(list=>list.filter(x=>x.endpoint!==ep))}}catch(e){}
+  setPush("");render();toast("أُوقفت تنبيهات التطبيق");
+}
+function widgetCopy(){
+  // Safari يشترط أن تبدأ الكتابة إلى الحافظة في لحظة اللمس، فنمرّر وعد الجلب إلى ClipboardItem
+  const get=()=>fetch("widget/jabal-widget.js?t="+Date.now()).then(r=>{if(!r.ok)throw 0;return r.text()});
+  const ok=()=>toast("نُسخ نصّ الأداة، فالصقيه في Scriptable"),bad=()=>toast("تعذّر النسخ؛ افتحي «عرض النصّ» وانسخيه");
+  try{
+    if(window.ClipboardItem&&navigator.clipboard&&navigator.clipboard.write){
+      navigator.clipboard.write([new ClipboardItem({"text/plain":get().then(t=>new Blob([t],{type:"text/plain"}))})]).then(ok).catch(()=>get().then(t=>navigator.clipboard.writeText(t)).then(ok).catch(bad));return}
+    get().then(t=>navigator.clipboard.writeText(t)).then(ok).catch(bad);
+  }catch(e){bad()}
+}
+function pushPrefsHTML(){
+  const perm="Notification" in window?Notification.permission:"unsupported";
+  const on=pushState==="on"&&perm==="granted";
+  const st=!pushOK()?"افتحي التطبيق من أيقونته على الشاشة الرئيسية ليُتاح هذا":!standalone()?"مفتوحٌ في المتصفّح؛ افتحيه من أيقونته":on?"مفعّلة على هذا الجهاز":perm==="denied"?"مرفوضة من إعدادات الهاتف":"غير مفعّلة";
+  return `<section class="blk"><div class="blk-h"><h2>تنبيهات التطبيق</h2><span class="tag">${esc(st)}</span></div>
+  <div class="card stack small"><p style="margin:0">تصلكِ التنبيهات باسم «جبل الرماة» وأيقونته، وإن لمستِها فتحت صفحة اليوم. وما دامت مفعّلة لا يُرسَل إلى ntfy شيء.</p>
+   <div class="btns">${on?`<button class="btn ghost" data-act="pushOn" type="button">تجديد الاشتراك</button><button class="btn warn" data-act="pushOff" type="button">إيقاف</button>`:`<button class="btn" data-act="pushOn" type="button">فعّلي التنبيهات</button>`}</div>
+   ${perm==="denied"?'<p class="muted" style="margin:0">لإعادتها: الإعدادات ← الإشعارات ← جبل الرماة ← السماح.</p>':""}</div></section>
+  <section class="blk"><div class="blk-h"><h2>أداة الشاشة الرئيسية</h2><span class="tag">عبر تطبيق Scriptable</span></div>
+  <div class="card stack small"><ol style="margin:0;padding-inline-start:20px;line-height:1.9">
+   <li>نزّلي تطبيق <b>Scriptable</b> المجّاني من متجر التطبيقات.</li>
+   <li>انسخي نصّ الأداة من الزرّ أدناه.</li>
+   <li>في Scriptable: ＋ ← الصقي ← سمّي النصّ «جبل الرماة» ← شغّليه مرّةً واحدة والصقي رمز المزامنة حين يُطلب.</li>
+   <li>اضغطي مطوّلًا على الشاشة الرئيسية ← تعديل ← إضافة أداة ← Scriptable، ثم اختاري «جبل الرماة» من إعدادات الأداة. واسحبيها فوق أداةٍ أخرى لتصير في الحزمة المتكدّسة.</li></ol>
+   <div class="btns"><button class="btn" data-act="widgetCopy" type="button">نسخ نصّ الأداة</button><a class="btn ghost" href="widget/jabal-widget.js" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center">عرض النصّ</a></div></div></section>`;
+}
+
 /* ---------- events ---------- */
 function setVal(id,val){const k=key(viewDay),e=entry(k,true);e.d[id]=val;
   if(id==="hadith"){const p=phaseOf(viewDay);if(p)e.b=p.map[viewDay.getDay()]}
@@ -1689,6 +1756,9 @@ document.addEventListener("click",ev=>{
    case"itemOn":{const it=S.items.find(x=>x.id===id);it.on=!it.on;save();break}
    case"itemDay":{const it=S.items.find(x=>x.id===id),x=+b.dataset.x;it.days=it.days.includes(x)?it.days.filter(y=>y!==x):it.days.concat(x).sort();save();break}
    case"ntfyTest":sendTest();return;
+   case"pushOn":pushEnable();return;
+   case"pushOff":pushOff();return;
+   case"widgetCopy":widgetCopy();return;
    case"export":{const txt=JSON.stringify(S);const ta=$("#backup");ta.value=txt;
      (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast("نُسخت النسخة الاحتياطية")).catch(()=>{ta.select();toast("حدّدتُ النص، فانسخيه يدويًا")});return}
    case"import":{try{const o=JSON.parse($("#backup").value);if(!o||!o.items||!o.log)throw 0;localStorage.setItem(KEY,JSON.stringify(o));S=load();save();toast("استُعيدت بياناتكِ")}catch(e){toast("النص الملصق ليس نسخةً احتياطية صالحة")}break}
@@ -1763,7 +1833,7 @@ function ghHeaders(){return{"Authorization":"Bearer "+SY.token,"Accept":"applica
 function summary(){
   const t=today(),its=dayItems(t),e=entry(key(t)),c=climb(),h=weekHarvest();
   return{date:key(t),pct:dayPct(t)||0,done:its.filter(i=>score(i,e)>=1).length,total:its.length,
-    remaining:its.filter(i=>score(i,e)<1).map(i=>i.t),ok:dayState(t)==="up",need:needLine(t),todos:(e.todo||[]).filter(x=>!x.done).map(x=>x.t),focus:+e.focus||0,pos:c.prov,summit:SUMMIT,lastResult:c.last??null,
+    remaining:its.filter(i=>score(i,e)<1).map(i=>i.t),ok:dayState(t)==="up",need:needLine(t),todos:(e.todo||[]).filter(x=>!x.done).map(x=>x.t),focus:+e.focus||0,next:(nextItem(t)||{}).t||null,pos:c.prov,summit:SUMMIT,lastResult:c.last??null,
     week:{avg:h.avg,ups:h.ups,downs:h.downs,best:h.best?h.best.t:null,weak:h.weak?h.weak.t:null}};
 }
 async function syncPull(manual){

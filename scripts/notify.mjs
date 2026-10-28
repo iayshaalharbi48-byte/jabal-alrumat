@@ -1,4 +1,4 @@
-// جبل الرماة — يرسل تنبيه الفترة المطلوبة إلى ntfy (وإلى تيليجرام إن وُجدت مفاتيحه).
+// جبل الرماة — يرسل تنبيه الفترة إلى التطبيق نفسه (Web Push)، وإلّا إلى ntfy احتياطًا (وإلى تيليجرام إن وُجدت مفاتيحه).
 // الاستعمال: node scripts/notify.mjs <slot>
 // slot: fajr | morning | duha | skills | evening | night
 
@@ -161,11 +161,46 @@ function build(sum) {
   return { title, message, tags };
 }
 
+// تنبيهات التطبيق نفسه (Web Push): المفاتيح والاشتراكات في المستودع الخاص
+async function dataFile(path) {
+  const r = await fetch(`https://api.github.com/repos/${DATA_REPO}/contents/${path}?t=${Date.now()}`, {
+    headers: { Authorization: `Bearer ${DATA_TOKEN}`, Accept: "application/vnd.github+json" },
+  });
+  if (!r.ok) return null;
+  const j = await r.json();
+  return { sha: j.sha, data: JSON.parse(Buffer.from(j.content, "base64").toString("utf8")) };
+}
+async function sendPush(title, message) {
+  if (!DATA_TOKEN || !DATA_REPO) return 0;
+  let webpush;
+  try { webpush = (await import("web-push")).default; } catch (e) { console.log("web-push غير مثبّت"); return 0; }
+  const keys = await dataFile("push/vapid.json"), subs = await dataFile("push/subs.json");
+  if (!keys || !subs || !(subs.data.subs || []).length) { console.log("push: لا اشتراكات"); return 0; }
+  webpush.setVapidDetails(keys.data.subject, keys.data.publicKey, keys.data.privateKey);
+  const url = (APP_URL || "./") + "#today";
+  const payload = JSON.stringify({ title, body: message, tag: SLOT, url });
+  let ok = 0; const dead = new Set();
+  for (const s of subs.data.subs) {
+    try { await webpush.sendNotification({ endpoint: s.endpoint, keys: s.keys }, payload, { TTL: 3 * 3600, urgency: "high" }); ok++; }
+    catch (e) { console.log("push:", e.statusCode || e.message); if (e.statusCode === 404 || e.statusCode === 410) dead.add(s.endpoint); }
+  }
+  if (dead.size) {
+    subs.data.subs = subs.data.subs.filter((x) => !dead.has(x.endpoint));
+    await fetch(`https://api.github.com/repos/${DATA_REPO}/contents/push/subs.json`, {
+      method: "PUT", headers: { Authorization: `Bearer ${DATA_TOKEN}`, Accept: "application/vnd.github+json" },
+      body: JSON.stringify({ message: "حذف اشتراكٍ منتهٍ", sha: subs.sha, content: Buffer.from(JSON.stringify(subs.data, null, 1)).toString("base64") }),
+    }).catch(() => {});
+  }
+  console.log("push: أُرسل إلى", ok);
+  return ok;
+}
+
 async function main() {
   const sum = await getSummary();
   const { title, message, tags } = build(sum);
-  let sent = 0;
-  if (TOPIC) {
+  let sent = await sendPush(title, message);
+  // ntfy احتياطٌ فقط: يُستعمل إن لم يصل التنبيه إلى التطبيق
+  if (TOPIC && !sent) {
     const body = { topic: TOPIC, title, message, tags, priority: 4 };
     if (APP_URL) body.click = APP_URL;
     const r = await fetch("https://ntfy.sh/", { method: "POST", body: JSON.stringify(body) });
@@ -182,7 +217,7 @@ async function main() {
     if (!r.ok) process.exitCode = 1; else sent++;
   }
   if (!sent && !TOPIC && !(TG_TOKEN && TG_CHAT)) {
-    console.error("لم يُضبط NTFY_TOPIC ولا مفاتيح تيليجرام في أسرار المستودع.");
+    console.error("لا اشتراك في تنبيهات التطبيق، ولم يُضبط NTFY_TOPIC ولا مفاتيح تيليجرام.");
     process.exitCode = 1;
   }
   console.log(`[${SLOT}] ${title}\n${message}`);
