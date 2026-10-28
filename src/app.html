@@ -824,7 +824,7 @@ function migrate(s){
   return s;
 }
 let S=load();
-function save(){S._u=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}schedulePush()}
+function save(){S._u=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}schedulePush();fbSchedule()}
 
 /* ---------- utils ---------- */
 const $=s=>document.querySelector(s);
@@ -1492,7 +1492,7 @@ function vLog(){
 
 let confirmReset=false;
 function vPrefs(){
-  return pushPrefsHTML()+`<section class="blk"><div class="blk-h"><h2>تنبيهات ntfy (الاحتياط)</h2></div>
+  return fbPrefsHTML()+pushPrefsHTML()+`<section class="blk"><div class="blk-h"><h2>تنبيهات ntfy (الاحتياط)</h2></div>
   <div class="card stack small">
    <p style="margin:0">تأتي التنبيهات من مهامّ مجدولة على GitHub، وتصلكِ عبر تطبيق <b>ntfy</b>. اكتبي هنا اسم القناة نفسه المحفوظ في GitHub لتجرّبي التنبيه من هنا.</p>
    <div class="grid2"><div class="field"><label for="ntfyTopic">اسم قناة ntfy</label><input class="inp" id="ntfyTopic" dir="ltr" value="${esc(S.ntfy)}" placeholder="jabal-xxxxxxxx"></div><div style="align-self:end"><button class="btn ghost" data-act="ntfyTest" type="button">أرسلي تنبيهًا تجريبيًا</button></div></div>
@@ -1858,6 +1858,108 @@ function islDayHTML(d){
   return rows.length?`<div class="isl">${rows.join("")}</div>`:"";
 }
 
+/* ---------- Firebase: الحساب والمزامنة يومًا بيوم ----------
+   الإعدادات وثيقةٌ واحدة users/{uid}، وكلّ يومٍ وثيقةٌ مستقلّة users/{uid}/days/{YYYY-MM-DD}،
+   يُحفظ فيها النصّ كاملًا (j) ووقت آخر تعديل (u). فإن عدّل جهازان أيّامًا مختلفة اندمجت، وإن عدّلا اليوم نفسه غلب الأحدث.
+   ويبقى GitHub لماجريات والتنبيهات والأداة ونسخةٍ احتياطية. */
+const FBC={apiKey:"AIzaSyCla8le1BfABTgph4TeGFefS-ZO2m_z1oU",authDomain:"jabal-alrumat.firebaseapp.com",projectId:"jabal-alrumat",
+  storageBucket:"jabal-alrumat.firebasestorage.app",messagingSenderId:"59602873203",appId:"1:59602873203:web:f027ac4d97a02080ba7306"};
+const FBU="https://www.gstatic.com/firebasejs/10.14.1/";
+const FBK="jabal-fb";
+let FBF="";let FB={m:null,user:null,status:"",unsub:[],ready:false,timer:null,busy:false,err:""};
+let FS={};   // ما زُومن آخر مرّة: {uid, days:{k:hash}, u:{k:وقت}, set:hash, setu:وقت}
+function fsLoad(uid){try{const x=JSON.parse(localStorage.getItem(FBK+"-s")||"null");FS=x&&x.uid===uid?x:{uid,days:{},u:{},set:"",setu:0}}catch(e){FS={uid,days:{},u:{},set:"",setu:0}}}
+function fsSave(){try{localStorage.setItem(FBK+"-s",JSON.stringify(FS))}catch(e){}}
+function h32(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return(h>>>0).toString(36)}
+function setJSON(){const o={};for(const k in S)if(k!=="log"&&k!=="_u")o[k]=S[k];return JSON.stringify(o)}
+function writeLocal(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const FB_ERR={"auth/invalid-credential":"البريد أو كلمة المرور غير صحيحة","auth/wrong-password":"كلمة المرور غير صحيحة","auth/user-not-found":"لا حساب بهذا البريد، فأنشئيه أولًا",
+  "auth/email-already-in-use":"لهذا البريد حسابٌ من قبل، فادخلي به","auth/weak-password":"كلمة المرور قصيرة؛ اجعليها ستة أحرفٍ فأكثر","auth/invalid-email":"البريد غير صحيح",
+  "auth/network-request-failed":"تعذّر الاتصال بالإنترنت","auth/too-many-requests":"محاولاتٌ كثيرة، فانتظري قليلًا","auth/api-key-not-valid.-please-pass-a-valid-api-key.":"مفتاح Firebase في التطبيق غير صحيح",
+  "permission-denied":"رفضت قواعد الأمان الطلب؛ تحقّقي من نشر القواعد"};
+const fbMsg=e=>FB_ERR[(e&&e.code)||""]||((e&&e.code)?"خطأ: "+e.code:"تعذّر الاتصال بـ Firebase");
+async function fbInit(){
+  if(FB.m)return FB.m;
+  try{
+    const [a,au,fs]=await Promise.all([import(FBU+"firebase-app.js"),import(FBU+"firebase-auth.js"),import(FBU+"firebase-firestore.js")]);
+    const app=a.initializeApp(FBC),auth=au.getAuth(app),db=fs.getFirestore(app);
+    FB.m={au,fs,auth,db};
+    au.onAuthStateChanged(auth,u=>{const was=FB.user?FB.user.uid:null;FB.user=u||null;if((u?u.uid:null)===was)return;if(u){try{localStorage.setItem(FBK,"1")}catch(e){}fbStart()}else fbStop();if(route==="prefs")render()});
+    return FB.m;
+  }catch(e){FB.status="تعذّر تحميل Firebase (لا اتصال؟)";if(route==="prefs")render();return null}
+}
+function fbStop(){for(const f of FB.unsub)try{f()}catch(e){}FB.unsub=[];FB.ready=false;FB.status=""}
+/* أوّل ما يدخل: يجلب ما في السحابة ويدمجه، ثم يرفع ما ينقصها، ثم يستمع للتغيّرات */
+async function fbStart(){
+  const {fs,db}=FB.m,uid=FB.user.uid;fbStop();fsLoad(uid);FB.status="جارٍ الدمج…";if(route==="prefs")render();
+  try{
+    const setRef=fs.doc(db,"users",uid),daysRef=fs.collection(db,"users",uid,"days");
+    const [sd,ds]=await Promise.all([fs.getDoc(setRef),fs.getDocs(daysRef)]);
+    let changed=false;
+    if(sd.exists()){const r=sd.data();
+      if(r.u>(FS.setu||0)&&(FS.set||r.u>(S._u||0))){S=migrate({...JSON.parse(r.j),log:S.log,_u:S._u});FS.setu=r.u;FS.set=h32(setJSON());changed=true}}
+    ds.forEach(d=>{const r=d.data(),k=d.id;if(fbApplyDay(k,r))changed=true});
+    fsSave();if(changed){writeLocal();render()}
+    FB.ready=true;FB.status="تعمل";
+    await fbPush(true);
+    FB.unsub.push(fs.onSnapshot(daysRef,snap=>{let ch=false;snap.docChanges().forEach(c=>{if(c.type==="removed"||c.doc.metadata.hasPendingWrites)return;if(fbApplyDay(c.doc.id,c.doc.data()))ch=true});if(ch){fsSave();writeLocal();fbRerender()}}));
+    FB.unsub.push(fs.onSnapshot(setRef,d=>{if(!d.exists()||d.metadata.hasPendingWrites)return;const r=d.data();if(r.u>(FS.setu||0)){S=migrate({...JSON.parse(r.j),log:S.log,_u:S._u});FS.setu=r.u;FS.set=h32(setJSON());fsSave();writeLocal();fbRerender()}}));
+  }catch(e){FB.status=fbMsg(e);FB.ready=false}
+  if(route==="prefs")render();
+}
+/* يُطبَّق يومٌ من السحابة إن كان أحدث ممّا عندنا */
+function fbApplyDay(k,r){
+  if(!r||!r.j)return false;
+  const known=FS.u[k]||0;
+  if(r.u<=known)return false;
+  if(!known&&S.log[k]&&r.u<=(S._u||0))return false;   // يومٌ محلّيّ لم يُزامَن بعد وهو الأحدث: يُرفع لاحقًا
+  S.log[k]=JSON.parse(r.j);FS.u[k]=r.u;FS.days[k]=h32(JSON.stringify(S.log[k]));return true;
+}
+function fbRerender(){const y=window.scrollY;animFrom=null;render();window.scrollTo(0,y)}
+function fbSchedule(){if(!FB.ready)return;clearTimeout(FB.timer);FB.timer=setTimeout(()=>fbPush(),1500)}
+async function fbPush(){
+  if(!FB.ready||FB.busy||!FB.user)return;FB.busy=true;
+  const {fs,db}=FB.m,uid=FB.user.uid,now=Date.now();
+  try{
+    const ops=[];
+    for(const k in S.log){const j=JSON.stringify(S.log[k]),hs=h32(j);if(FS.days[k]!==hs)ops.push(["d",k,j,hs])}
+    const sj=setJSON(),sh=h32(sj);if(FS.set!==sh)ops.push(["s",null,sj,sh]);
+    for(let i=0;i<ops.length;i+=400){
+      const b=fs.writeBatch(db);
+      for(const [t,k,j] of ops.slice(i,i+400))b.set(t==="s"?fs.doc(db,"users",uid):fs.doc(db,"users",uid,"days",k),{j,u:now});
+      await b.commit();
+      for(const [t,k,,hs] of ops.slice(i,i+400)){if(t==="s"){FS.set=hs;FS.setu=now}else{FS.days[k]=hs;FS.u[k]=now}}
+      fsSave();
+    }
+    FB.status="آخر مزامنة "+new Date().toLocaleTimeString("ar-EG",{hour:"numeric",minute:"2-digit"});
+  }catch(e){FB.status=fbMsg(e)}
+  FB.busy=false;if(route==="prefs")render();
+}
+async function fbAuth(kind){
+  const em=($("#fbEmail")||{}).value?.trim()||"",pw=($("#fbPass")||{}).value||"";
+  if(!em){toast("اكتبي بريدكِ أولًا");return}
+  if(kind!=="reset"&&!pw){toast("اكتبي كلمة المرور");return}
+  const m=await fbInit();if(!m){toast(FB.status);return}
+  try{
+    if(kind==="in")await m.au.signInWithEmailAndPassword(m.auth,em,pw);
+    else if(kind==="up")await m.au.createUserWithEmailAndPassword(m.auth,em,pw);
+    else{await m.au.sendPasswordResetEmail(m.auth,em);toast("أُرسل رابط تعيين كلمة المرور إلى بريدكِ");return}
+    toast(kind==="up"?"أُنشئ حسابكِ، وتُرفع بياناتكِ الآن":"دخلتِ، وتُدمج بياناتكِ الآن");
+  }catch(e){toast(fbMsg(e))}
+}
+async function fbOut(){if(!FB.m)return;await FB.m.au.signOut(FB.m.auth);try{localStorage.removeItem(FBK)}catch(e){}toast("خرجتِ من الحساب، وبقيت بياناتكِ على هذا الجهاز")}
+function fbPrefsHTML(){
+  const u=FB.user;
+  if(u)return `<section class="blk"><div class="blk-h"><h2>الحساب</h2><span class="tag">${esc(FB.status||"…")}</span></div>
+   <div class="card stack small"><p style="margin:0">داخلةٌ باسم <b dir="ltr">${esc(u.email||"")}</b>. يُزامَن كلّ يومٍ على حدة لحظةَ تسجيله، فإن فتحتِ التطبيق على جهازٍ آخر وجدتِ تقدّمكِ فيه.</p>
+   <div class="btns"><button class="btn ghost" data-act="fbSync" type="button">مزامنة الآن</button><button class="btn warn" data-act="fbOut" type="button">خروج</button></div></div></section>`;
+  return `<section class="blk"><div class="blk-h"><h2>الحساب</h2><span class="tag">${esc(FB.status||"غير مسجّلة")}</span></div>
+   <div class="card stack small"><p style="margin:0">ادخلي ليُحفظ تقدّمكِ في حسابكِ ويُدمج بين أجهزتكِ يومًا بيوم. وأوّل دخولٍ يرفع ما على هذا الجهاز كلّه.</p>
+   <div class="grid2"><div class="field"><label for="fbEmail">البريد</label><input class="inp" id="fbEmail" type="email" dir="ltr" autocomplete="username" inputmode="email" value="${esc(FBF)}"></div>
+   <div class="field"><label for="fbPass">كلمة المرور</label><input class="inp" id="fbPass" type="password" dir="ltr" autocomplete="current-password"></div></div>
+   <div class="btns"><button class="btn" data-act="fbIn" type="button">دخول</button><button class="btn ghost" data-act="fbUp" type="button">إنشاء حساب</button><button class="linkbtn" data-act="fbReset" type="button">نسيتُ كلمة المرور</button></div></div></section>`;
+}
+
 /* ---------- events ---------- */
 function setVal(id,val){const k=key(viewDay),e=entry(k,true);e.d[id]=val;
   if(id==="hadith"){const p=phaseOf(viewDay);if(p)e.b=p.map[viewDay.getDay()]}
@@ -1903,6 +2005,11 @@ document.addEventListener("click",ev=>{
    case"itemOn":{const it=S.items.find(x=>x.id===id);it.on=!it.on;save();break}
    case"itemDay":{const it=S.items.find(x=>x.id===id),x=+b.dataset.x;it.days=it.days.includes(x)?it.days.filter(y=>y!==x):it.days.concat(x).sort();save();break}
    case"ntfyTest":sendTest();return;
+   case"fbIn":fbAuth("in");return;
+   case"fbUp":fbAuth("up");return;
+   case"fbReset":fbAuth("reset");return;
+   case"fbOut":fbOut();return;
+   case"fbSync":fbPush();toast("تُزامَن الآن");return;
    case"pushOn":pushEnable();return;
    case"pushOff":pushOff();return;
    case"widgetCopy":widgetCopy();return;
@@ -1952,6 +2059,7 @@ document.addEventListener("change",ev=>{
   if(rr){render();window.scrollTo(0,keepY)}
 });
 document.addEventListener("input",ev=>{
+  if(ev.target.id==="fbEmail")FBF=ev.target.value;
   if(ev.target.id==="note"){const e=entry(ev.target.dataset.k,true);e.note=ev.target.value;save()}
 });
 document.addEventListener("submit",ev=>{
@@ -2014,5 +2122,6 @@ render();
 if(FO){if(FO.stage==="run"&&FO.pause==null&&foLeft()<=0)foFinish(false);else foRender()}
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&FO&&FO.stage==="run"){if(FO.pause==null&&foLeft()<=0)foFinish(false);else{if(FO.pause==null)foWake(true);foRender()}}});
 syncPull(false);
+try{if(localStorage.getItem(FBK))fbInit()}catch(e){}
 })();
 </script>
