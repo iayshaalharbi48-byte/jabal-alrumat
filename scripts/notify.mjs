@@ -139,9 +139,11 @@ function build(sum) {
         const rem = (sum.remaining || []).slice(0, 7);
         message = `أتممتِ ${ar(sum.done)} من ${ar(sum.total)} (${ar(pct)}٪).`;
         if (rem.length) message += "\nبقي عليكِ:\n" + bullets(rem);
-        message += sum.pct >= 0.7 ? "\n\nبلغتِ ٧٠٪، فأنتِ ثابتةٌ على الجبل." : `\n\nبقي ${ar(70 - pct)}٪ حتى لا تنزلي خطوة.\n\n` + quote(true);
+        if (sum.ok !== undefined) message += sum.ok ? "\n\nأتممتِ الأساس ونصف المكمّلات، فأنتِ ثابتةٌ على الجبل." : `\n\n${sum.need || "لم يكتمل الأساس بعد"}، وإلّا نزلتِ خطوة.\n\n` + quote(true);
+        else message += sum.pct >= 0.7 ? "\n\nبلغتِ ٧٠٪، فأنتِ ثابتةٌ على الجبل." : `\n\nبقي ${ar(70 - pct)}٪ حتى لا تنزلي خطوة.\n\n` + quote(true);
+        if ((sum.todos || []).length) message += "\n\nومن مهامّ اليوم:\n" + bullets(sum.todos.slice(0, 5)) + "\n(ما لم يتمّ انقليه إلى الغد)";
       } else {
-        message = (sum ? "لم تسجّلي شيئًا اليوم بعد. " : "سجّلي ما أنجزتِ في جبل الرماة. ") + "إن لم يبلغ وِردكِ ٧٠٪ نزلتِ خطوةً عن الجبل.\n\n" + quote(true);
+        message = (sum ? "لم تسجّلي شيئًا اليوم بعد. " : "سجّلي ما أنجزتِ في جبل الرماة. ") + "إن لم تُتمّي الأساس ونصف المكمّلات نزلتِ خطوةً عن الجبل.\n\n" + quote(true);
       }
       if (dow === 4 && sum && sum.week) {
         const w = sum.week;
