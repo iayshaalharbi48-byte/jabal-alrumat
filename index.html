@@ -681,6 +681,15 @@ body.focusing{overflow:hidden}
 .sheet .fo-start{width:100%;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px}
 .sheet .td.add{padding:0;border:0;margin-bottom:6px}
 @media (prefers-reduced-motion:reduce){.fo{animation:none}.fo-ring circle:last-child{transition:none}}
+
+/* الصيام والمناسبات */
+.tc-isl{display:flex;flex-direction:column;gap:2px;font-size:12.5px;color:var(--muted);line-height:1.6}
+.tc-isl b{color:var(--ok);font-weight:500;margin-inline-end:4px}
+.isl{display:flex;flex-direction:column;gap:8px;padding:12px 16px;border-top:1px solid var(--line)}
+.isl-r{display:flex;flex-direction:column;border-inline-start:3px solid var(--ok);padding-inline-start:10px;line-height:1.5}
+.isl-r.ev{border-color:var(--gold)} .isl-r.eid{border-color:var(--special2)}
+.isl-r b{font-weight:500;font-size:14.5px} .isl-r small{font-size:12px;color:var(--muted)}
+.cal2 .mk i.fa{background:var(--ok)} .cal2 .mk i.ev{background:var(--gold)} .cal2 .mk i.eid{background:var(--special2)}
 </style>
 
 </head>
@@ -1177,6 +1186,7 @@ function vToday(){
    ${nr?`<div class="bar2"><span title="الأساس"><i style="width:${P.core.length?P.cd/P.core.length*100:100}%"></i></span><span title="المكمّلات" class="sup"><i style="width:${Math.min(100,P.sp/.5*100)}%"></i></span></div>`:`<div class="bar"><i style="width:${Math.round(p*100)}%"></i></div>`}
    <div class="tc-line">${line} · ${esc(phaseLine(d))}${e.focus?` · تركيز ${fmtMin(e.focus)}`:""}</div>
    ${isT&&st!=="up"&&needLine(d)?`<div class="tc-need">${esc(needLine(d))}</div>`:""}
+   ${isT?islTodayHTML(d):""}
    ${exUI}</div>
   ${isT?nextHTML(d):""}
   ${remind}
@@ -1306,7 +1316,7 @@ function vCal(){
     const lv=ds==="hold"?"exd":p===null?"":ds==="up"?"lv3":p>=.4?"lv2":p>0?"lv1":"";
     const miss=d<t&&k>=key(firstDay())&&ds!=="up"&&ds!=="hold"&&S.log[key(firstDay())]?" miss":"";
     cells+=`<button class="d ${d.getMonth()!==calM.getMonth()?"out":""} ${k===key(t)?"today":""} ${k===key(calSel)?"sel":""} ${lv}${lv==="lv3"||lv==="exd"?"":miss}" data-act="calSel" data-k="${k}" aria-label="${esc(DAYN[d.getDay()]+" "+greg(d))}">
-      <span class="n num">${fmt(d.getDate())}</span><span class="h">${hf?esc(hf.format(d)):""}</span><span class="mk">${test?'<i style="background:var(--down)"></i>':""}</span></button>`}
+      <span class="n num">${fmt(d.getDate())}</span><span class="h">${hf?esc(hf.format(d)):""}</span><span class="mk">${test?'<i style="background:var(--down)"></i>':""}${(()=>{const x=islDay(d);return (x.ev?`<i class="${x.ev.k==="eid"?"eid":x.ev.k==="fast"?"fa":"ev"}"></i>`:"")+(x.fast.length&&!(x.ev&&x.ev.k==="fast")?'<i class="fa"></i>':"")})()}</span></button>`}
   const sd=calSel,sits=dayItems(sd),se=entry(key(sd)),spct=dayPct(sd);
   const daily=sits.filter(isDaily),spec=sits.filter(x=>!isDaily(x));
   const row=(it,cls)=>{const ok=score(it,se)>=1;return `<div class="ir ${cls} ${ok?"done":""}" style="min-height:50px"><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICO[it.id]||'<circle cx="12" cy="12" r="5"/>'}</svg></span><span class="tx"><span class="nm">${esc(it.t)}</span></span><span class="ck">${tick()}</span></div>`};
@@ -1315,8 +1325,9 @@ function vCal(){
     <div class="t"><b>${esc(monthName(calM))}</b><span>${esc(hm)}</span></div>
     <button class="chev" data-act="calM" data-n="1" aria-label="الشهر التالي"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 6-6 6 6 6"/></svg></button></div>
    <div class="cal2">${cells}</div></div>
-  <div class="legend2"><span><i style="background:var(--daily2)"></i>ثبات</span><span><i style="background:color-mix(in srgb,var(--down) 30%,transparent)"></i>نزول</span><span><i style="background:color-mix(in srgb,var(--gold) 45%,transparent)"></i>عذر</span><span><i style="background:var(--down);border-radius:50%"></i>اختبار شهري</span></div>
+  <div class="legend2"><span><i style="background:var(--daily2)"></i>ثبات</span><span><i style="background:color-mix(in srgb,var(--down) 30%,transparent)"></i>نزول</span><span><i style="background:color-mix(in srgb,var(--gold) 45%,transparent)"></i>عذر</span><span><i style="background:var(--down);border-radius:50%"></i>اختبار شهري</span><span><i style="background:var(--ok);border-radius:50%"></i>صيام</span><span><i style="background:var(--gold);border-radius:50%"></i>مناسبة</span><span><i style="background:var(--special2);border-radius:50%"></i>عيد</span></div>
   <div class="daycard"><div class="hd">${ring(spct||0)}<div><b>${DAYN[sd.getDay()]} ${esc(hijri(sd))}</b><span>${esc(greg(sd))}${ph&&sd.getDay()<5?` · ${esc(BOOKS[ph.map[sd.getDay()]])}`:""}</span></div></div>
+   ${islDayHTML(sd)}
    ${spec.length?`<div>${spec.map(it=>row(it,"special")).join("")}</div>`:`<div class="ft small muted">لا مهامّ خاصّة في هذا اليوم.</div>`}
    <details><summary><span>المهامّ اليومية</span><span class="num muted">${fmt(dd)}/${fmt(daily.length)}</span></summary>${daily.map(it=>row(it,"daily")).join("")}</details>
    ${key(sd)<=key(t)?`<div class="ft"><button class="btn ghost" style="width:100%" data-act="openDay" data-k="${key(sd)}">${key(sd)===key(t)?"إلى وِرد اليوم":"فتح هذا اليوم للتسجيل"}</button></div>`:""}</div>`;
@@ -1730,12 +1741,12 @@ function pushPrefsHTML(){
    صغيرة ومتوسطة × نهار وليل × «اليوم» و«يومٌ جديد لم يُسجَّل»)، وتُرفع مع الملخّص في progress.json. */
 const WS={S:340,M:728,H:340};
 function wsTexts(sum,fresh){
+  /* نمطٌ بسيط: سطرٌ خافت وسطرٌ واحدٌ ظاهر، والراية على الجبل تكفي عن الباقي */
   const gap=Math.max(0,(sum.summit||SUMMIT)-(sum.pos??SUMMIT));
-  const status=gap===0?"الرايةُ في موضعها":"نزلت "+steps(gap).replace(/<[^>]+>/g,"");
-  if(!fresh)return{status,line:"لم تسجّلي اليوم بعد، فلا تبرحي مكانكِ",next:null,extra:""};
-  const line=sum.ok?"ثبتِّ اليوم ✓":(sum.need||`أتممتِ ${fmt(sum.done)} من ${fmt(sum.total)}`);
-  const ex=[];if((sum.todos||[]).length)ex.push("مهامّ اليوم "+fmt(sum.todos.length));if(sum.focus)ex.push("تركيز "+fmtMin(sum.focus));
-  return{status,line,next:sum.next||null,extra:ex.join(" · ")};
+  if(!fresh)return{sub:"لم تسجّلي اليوم بعد",main:"لا تبرحي مكانكِ",gap};
+  if(sum.ok)return{sub:sum.next?"ثمّ "+sum.next:"",main:"ثبتِّ اليوم",gap};
+  const sub=sum.nc?"بقي "+fmt(sum.nc)+" من الأساس":sum.ns?"بقي "+nTasks(sum.ns):"";
+  return{sub,main:sum.next||"أتمّي وِردكِ",gap};
 }
 function wsWrap(x,t,w,max){
   const words=t.split(" "),out=[];let cur="";
@@ -1745,20 +1756,16 @@ function wsWrap(x,t,w,max){
   return out;
 }
 function wsCell(x,ox,oy,W,big,night,T){
-  const H=WS.H,pr=34,pl=28,pt=26,pb=28,R=ox+W-pr,w=W-pr-pl;
+  const H=WS.H,pr=36,pl=30,pb=30,R=ox+W-pr,w=W-pr-pl;
   x.save();x.beginPath();x.rect(ox,oy,W,H);x.clip();
   x.direction="rtl";x.textAlign="right";x.textBaseline="alphabetic";
   const fg=night?"#F6F2FF":"#1F2433";
-  const put=(t,font,y,alpha)=>{x.font=font;x.fillStyle=fg;x.globalAlpha=alpha??1;x.fillText(t,R,y);x.globalAlpha=1};
-  put("جبل الرماة",'400 22px "Thmanyah Serif Text"',oy+pt+20,.7);
-  put(T.status,`500 ${big?40:34}px "Thmanyah Serif Display"`,oy+pt+20+(big?46:42));
-  // من الأسفل إلى الأعلى
+  const put=(t,y,alpha)=>{x.fillStyle=fg;x.globalAlpha=alpha??1;x.fillText(t,R,y);x.globalAlpha=1};
   let y=oy+H-pb;
-  if(big&&T.extra){put(T.extra,'400 22px "Thmanyah Serif Text"',y,.8);y-=34}
-  if(T.next){x.font=`500 ${big?28:25}px "Thmanyah Serif Text"`;const ls=wsWrap(x,"التالية: "+T.next,w,big?1:2);
-    for(let i=ls.length-1;i>=0;i--){put(ls[i],x.font,y);y-=big?36:32}y-=4}
-  x.font=`400 ${big?26:24}px "Thmanyah Serif Text"`;const ls=wsWrap(x,T.line,w,2);
-  for(let i=ls.length-1;i>=0;i--){put(ls[i],x.font,y);y-=big?34:31}
+  x.font=`500 ${big?44:36}px "Thmanyah Serif Display"`;
+  const ls=wsWrap(x,T.main,w,big?1:2);
+  for(let i=ls.length-1;i>=0;i--){put(ls[i],y);y-=big?50:42}
+  if(T.sub){x.font=`400 ${big?24:22}px "Thmanyah Serif Text"`;const s2=wsWrap(x,T.sub,w,1);put(s2[0],y+4,.68)}
   x.restore();
 }
 async function wsSprite(sum){
@@ -1807,6 +1814,62 @@ async function wsPush(sm){
     if(r.ok)try{localStorage.setItem("jabal-ws",sig)}catch(e){}
   }catch(e){}
   wsBusy=false;
+}
+
+/* ---------- الصيام المستحبّ والمناسبات الإسلامية (بتقويم أم القرى) ---------- */
+let hNumF=null;try{hNumF=new Intl.DateTimeFormat("en-u-ca-islamic-umalqura-nu-latn",{day:"numeric",month:"numeric",year:"numeric"})}catch(e){}
+function hNum(d){if(!hNumF)return null;const o={};for(const p of hNumF.formatToParts(d))if(p.type==="day"||p.type==="month"||p.type==="year")o[p.type]=parseInt(p.value,10);return o.day?{d:o.day,m:o.month,y:o.year}:null}
+const ISL_EV={
+ "1-1":{t:"رأس السنة الهجرية",k:"ev"},
+ "1-9":{t:"تاسوعاء",k:"fast",n:"«لئن بقيتُ إلى قابلٍ لأصومنّ التاسع» · رواه مسلم"},
+ "1-10":{t:"يوم عاشوراء",k:"fast",n:"يكفّر السنة التي قبله · رواه مسلم"},
+ "8-1":{t:"دخول شعبان",k:"ev",n:"كان النبيّ ﷺ يُكثر الصيام فيه · متفقٌ عليه"},
+ "9-1":{t:"أوّل رمضان",k:"ev"},
+ "9-21":{t:"العشر الأواخر",k:"ev",n:"تحرّوا ليلة القدر في الوتر منها · رواه البخاري"},
+ "10-1":{t:"عيد الفطر",k:"eid"},
+ "10-2":{t:"ستٌّ من شوّال",k:"ev",n:"من صام رمضان ثمّ أتبعه ستًّا من شوّال كان كصيام الدهر · رواه مسلم"},
+ "12-1":{t:"عشر ذي الحجّة",k:"ev",n:"العمل الصالح فيها أحبّ إلى الله · رواه البخاري"},
+ "12-9":{t:"يوم عرفة",k:"fast",n:"يكفّر السنة التي قبله والتي بعده · رواه مسلم"},
+ "12-10":{t:"عيد الأضحى",k:"eid"},
+ "12-11":{t:"أيام التشريق",k:"eid",n:"أيّام أكلٍ وشربٍ وذكرٍ لله · رواه مسلم"},
+ "12-12":{t:"أيام التشريق",k:"eid"},
+ "12-13":{t:"أيام التشريق",k:"eid"}
+};
+/* يُرجع {h, ev, fast:[أسباب الصيام], noFast} */
+function islDay(d){
+  const h=hNum(d);if(!h)return{h:null,ev:null,fast:[],noFast:false};
+  const ev=ISL_EV[h.m+"-"+h.d]||null,noFast=!!(ev&&ev.k==="eid"),ram=h.m===9,fast=[];
+  if(!noFast&&!ram){
+    if(ev&&ev.k==="fast")fast.push(ev.t);
+    if(h.d>=13&&h.d<=15)fast.push("الأيام البيض");
+    if(d.getDay()===1)fast.push("الاثنين");
+    if(d.getDay()===4)fast.push("الخميس");
+  }
+  return{h,ev,fast,noFast,ram};
+}
+const FAST_NOTE={"الأيام البيض":"ثلاثة أيامٍ من كلّ شهر · رواه الترمذي","الاثنين":"تُعرض الأعمال يوم الاثنين والخميس · رواه الترمذي","الخميس":"تُعرض الأعمال يوم الاثنين والخميس · رواه الترمذي"};
+function islLine(d){
+  const x=islDay(d),parts=[];
+  if(x.ev&&x.ev.k!=="fast")parts.push(x.ev.t);
+  if(x.ram)parts.push("صيام رمضان");
+  if(x.fast.length)parts.push("صيامٌ مستحبّ: "+andList(x.fast));
+  if(x.noFast&&x.ev)parts.push("لا يُصام");
+  return parts.join(" · ");
+}
+/* سطرٌ في بطاقة اليوم: صيامُ اليوم، ومن العصر تذكيرٌ بصيام الغد ليُبيَّت */
+function islTodayHTML(d){
+  const now=new Date(),h=now.getHours()+now.getMinutes()/60,out=[];
+  const a=islLine(d);if(a)out.push(`<span><b>اليوم</b> ${esc(a)}</span>`);
+  if(h>=15){const t=islDay(addDays(d,1));const b=islLine(addDays(d,1));
+    if(b)out.push(`<span><b>غدًا</b> ${esc(b)}${t.fast.length||t.ram?" · بيّتي النيّة وتسحّري":""}</span>`)}
+  return out.length?`<div class="tc-isl">${out.join("")}</div>`:"";
+}
+function islDayHTML(d){
+  const x=islDay(d);if(!x.h)return"";const rows=[];
+  if(x.ev)rows.push(`<div class="isl-r ${x.ev.k}"><b>${esc(x.ev.t)}</b>${x.ev.n?`<small>${esc(x.ev.n)}</small>`:""}${x.noFast?"<small>يحرم صومه</small>":""}</div>`);
+  if(x.ram&&!(x.ev&&x.ev.t==="أوّل رمضان"))rows.push(`<div class="isl-r ev"><b>رمضان</b><small>صيامه فريضة</small></div>`);
+  for(const f of x.fast)if(!(x.ev&&x.ev.t===f))rows.push(`<div class="isl-r fast"><b>صيامٌ مستحبّ: ${esc(f)}</b>${FAST_NOTE[f]?`<small>${esc(FAST_NOTE[f])}</small>`:""}</div>`);
+  return rows.length?`<div class="isl">${rows.join("")}</div>`:"";
 }
 
 /* ---------- events ---------- */
@@ -1931,7 +1994,7 @@ function ghHeaders(){return{"Authorization":"Bearer "+SY.token,"Accept":"applica
 function summary(){
   const t=today(),its=dayItems(t),e=entry(key(t)),c=climb(),h=weekHarvest();
   return{date:key(t),pct:dayPct(t)||0,done:its.filter(i=>score(i,e)>=1).length,total:its.length,
-    remaining:its.filter(i=>score(i,e)<1).map(i=>i.t),ok:dayState(t)==="up",need:needLine(t),todos:(e.todo||[]).filter(x=>!x.done).map(x=>x.t),focus:+e.focus||0,next:(nextItem(t)||{}).t||null,pos:c.prov,summit:SUMMIT,lastResult:c.last??null,
+    remaining:its.filter(i=>score(i,e)<1).map(i=>i.t),ok:dayState(t)==="up",need:needLine(t),todos:(e.todo||[]).filter(x=>!x.done).map(x=>x.t),focus:+e.focus||0,next:(nextItem(t)||{}).t||null,...(()=>{const n=need(t);return{nc:n.coreLeft.length,ns:n.supNeed}})(),pos:c.prov,summit:SUMMIT,lastResult:c.last??null,
     week:{avg:h.avg,ups:h.ups,downs:h.downs,best:h.best?h.best.t:null,weak:h.weak?h.weak.t:null}};
 }
 async function syncPull(manual){

@@ -93,6 +93,23 @@ async function getSummary() {
   } catch (e) { console.log("data error", e.message); return null; }
 }
 
+// صيام الغد المستحبّ (بتقويم أم القرى) لتذكير المساء
+function fastTomorrow() {
+  const t = new Date(now.getTime() + 864e5);
+  const o = {};
+  for (const p of new Intl.DateTimeFormat("en-u-ca-islamic-umalqura-nu-latn", { day: "numeric", month: "numeric", timeZone: "UTC" }).formatToParts(t)) o[p.type] = +p.value;
+  const m = o.month, d = o.day, wd = t.getUTCDay(), r = [];
+  if (m === 9) return "غدًا من رمضان";
+  if ((m === 10 && d === 1) || (m === 12 && d >= 10 && d <= 13)) return "";
+  if (m === 12 && d === 9) r.push("يوم عرفة");
+  if (m === 1 && d === 9) r.push("تاسوعاء");
+  if (m === 1 && d === 10) r.push("عاشوراء");
+  if (d >= 13 && d <= 15) r.push("من الأيام البيض");
+  if (wd === 1) r.push("الاثنين");
+  if (wd === 4) r.push("الخميس");
+  return r.length ? `غدًا صيامٌ مستحبّ: ${r.join(" و")}، فبيّتي النيّة وتسحّري.` : "";
+}
+
 function build(sum) {
   let title, message, tags;
   switch (SLOT) {
@@ -150,6 +167,7 @@ function build(sum) {
         message += `\n\nحصاد الأسبوع: معدّل ${ar(Math.round(w.avg * 100))}٪، ثبات ${ar(w.ups)} أيام، ونزول ${ar(w.downs)}.`;
         if (w.weak && w.weak !== w.best) message += `\nأضعف الثغور: ${w.weak}، فاجعليه همّ الأسبوع المقبل.`;
       }
+      { const f = fastTomorrow(); if (f) message += "\n\n" + f; }
       tags = ["memo"];
       break;
     }

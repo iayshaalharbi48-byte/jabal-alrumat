@@ -1,5 +1,5 @@
 // يحفظ التطبيق ليعمل دون اتصال، ويجلب أحدث نسخة متى توفّر الاتصال.
-const CACHE = "jabal-v21";
+const CACHE = "jabal-v22";
 const FILES = ["./", "index.html", "manifest.webmanifest", "icon-192-v4.png", "icon-512-v4.png", "apple-touch-icon-v4.png", "art/mist-day.webp", "art/mist-night.webp"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES))); self.skipWaiting(); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k))))); self.clients.claim(); });

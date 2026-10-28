@@ -112,7 +112,7 @@ function background(art, W, H, gap, sprite, cell) {
   ctx.respectScreenScale = true;
   ctx.setFillColor(new Color(night ? "#2B2560" : "#E5E1F0"));
   ctx.fillRect(new Rect(0, 0, W, H));
-  const px = W * (W > H ? 0.4 : 0.24), py = H * 0.58;   // موضع القمّة في الأداة
+  const px = W * (W > H ? 0.3 : 0.3), py = H * (W > H ? 0.56 : 0.5);   // موضع القمّة في الأداة
   // أصغر تكبيرٍ يغطّي الأداة كلّها والقمّة في موضعها
   const scale = Math.max((W - px) / (IMG_W - PEAK[0]), px / PEAK[0], py / PEAK[1], (H - py) / (IMG_H - PEAK[1]));
   const iw = IMG_W * scale, ih = IMG_H * scale;
@@ -122,9 +122,9 @@ function background(art, W, H, gap, sprite, cell) {
   ctx.setFillColor(new Color(night ? "#1C1748" : "#FFFFFF", night ? 0.28 : 0.22));
   ctx.fillRect(new Rect(0, 0, W, H));
   // ستارٌ متدرّج في أسفل الأداة حيث النصوص
-  for (let i = 0; i < 6; i++) {
-    ctx.setFillColor(new Color(night ? "#1C1748" : "#FFFFFF", night ? 0.07 : 0.05));
-    ctx.fillRect(new Rect(0, H * (0.5 + i * 0.06), W, H));
+  for (let i = 0; i < 40; i++) {   // تدرّجٌ ناعم بلا خطوط ظاهرة
+    ctx.setFillColor(new Color(night ? "#1C1748" : "#FFFFFF", night ? 0.011 : 0.008));
+    ctx.fillRect(new Rect(0, H * (0.45 + i * 0.0125), W, H));
   }
   const fs = Math.max(0.7, W / 340);
   if (gap > 0) drawFlag(ctx, px, py, fs, true);
@@ -137,17 +137,14 @@ function background(art, W, H, gap, sprite, cell) {
 
 // ---------- النصوص ----------
 function texts(sum) {
-  if (!sum) return { head: "جبل الرماة", status: "شغّلي النصّ في Scriptable", line: "والصقي رمز المزامنة", next: null, gap: 0 };
-  if (sum._err) return { head: "جبل الرماة", status: "الرمز غير صالح", line: "شغّلي النصّ وأدخلي الرمز من جديد", next: null, gap: 0 };
-  const pos = sum.pos ?? sum.summit ?? 100, summit = sum.summit || 100, gap = Math.max(0, summit - pos);
-  const status = gap === 0 ? "الرايةُ في موضعها" : `نزلت ${steps(gap)}`;
-  const fresh = sum.date === todayKey;
-  let line, next = null;
-  if (!fresh) line = "لم تسجّلي اليوم بعد، فلا تبرحي مكانكِ";
-  else if (sum.ok) line = "ثبتِّ اليوم ✓";
-  else line = sum.need || `أتممتِ ${ar(sum.done)} من ${ar(sum.total)}`;
-  if (fresh) next = sum.next || null;
-  return { head: "جبل الرماة", status, line, next, gap, todos: fresh ? (sum.todos || []).length : 0, focus: fresh ? sum.focus || 0 : 0 };
+  // نمطٌ بسيط: سطرٌ خافت وسطرٌ واحدٌ ظاهر
+  if (!sum) return { sub: "شغّلي النصّ في Scriptable", main: "جبل الرماة", gap: 0 };
+  if (sum._err) return { sub: "شغّلي النصّ وأدخلي الرمز", main: "الرمز غير صالح", gap: 0 };
+  const gap = Math.max(0, (sum.summit || 100) - (sum.pos ?? sum.summit ?? 100));
+  if (sum.date !== todayKey) return { sub: "لم تسجّلي اليوم بعد", main: "لا تبرحي مكانكِ", gap };
+  if (sum.ok) return { sub: sum.next ? "ثمّ " + sum.next : "", main: "ثبتِّ اليوم", gap };
+  const sub = sum.nc ? "بقي " + ar(sum.nc) + " من الأساس" : sum.ns ? "بقي " + ar(sum.ns) + " مكمّلة" : "";
+  return { sub, main: sum.next || "أتمّي وِردكِ", gap };
 }
 
 function txt(stack, s, size, opts = {}) {
@@ -171,36 +168,25 @@ async function build(family) {
 
   if (family && family.startsWith("accessory")) {
     w.addAccessoryWidgetBackground = family === "accessoryCircular";
-    const a = (s, b) => { const t = w.addText(s); t.font = b ? Font.boldSystemFont(13) : Font.systemFont(12); t.rightAlignText(); t.lineLimit = 1; t.minimumScaleFactor = 0.7; };
-    a(T.status, true);
-    a(T.line);
-    if (T.next) a("التالية: " + T.next);
+    const a = (t, b) => { const x = w.addText(t); x.font = b ? Font.boldSystemFont(14) : Font.systemFont(11); x.rightAlignText(); x.lineLimit = 1; x.minimumScaleFactor = 0.7; };
+    if (T.sub) a(T.sub);
+    a(T.main, true);
     return w;
   }
 
   const big = family === "medium" || family === "large";
   const W = big ? 728 : 340, H = family === "large" ? 760 : 340;
-  // لوح النصوص: الصفوف ٠ نهار/اليوم، ١ ليل/اليوم، ٢ نهار/يوم جديد، ٣ ليل/يوم جديد؛ والأعمدة صغيرة ثم متوسطة
+  // لوح النصوص بخطّ ثمانية: الصفوف ٠ نهار/اليوم، ١ ليل/اليوم، ٢ نهار/يوم جديد، ٣ ليل/يوم جديد؛ والأعمدة صغيرة ثم متوسطة
   const sprite = sum && !sum._err && family !== "large" ? await loadSprite() : null;
-  const row = (sum && sum.date === todayKey ? 0 : 2) + (night ? 1 : 0);
-  const cell = sprite ? [big ? 340 : 0, row * 340] : null;
+  const rIdx = (sum && sum.date === todayKey ? 0 : 2) + (night ? 1 : 0);
+  const cell = sprite ? [big ? 340 : 0, rIdx * 340] : null;
   w.backgroundImage = background(await loadArt(), W, H, T.gap, sprite, cell);
-  w.setPadding(14, 14, 14, 16);
-  if (sprite) return w;   // النصوص في الصورة، فلا حاجة إلى خطّ النظام
-
-  txt(row(w), T.head, 11, { alpha: 0.65 });
-  w.addSpacer(1);
-  txt(row(w), T.status, big ? 18 : 16, { bold: true, shadow: true });
+  w.setPadding(14, 14, 16, 18);
+  if (sprite) return w;
+  // احتياط: خطّ النظام بالترتيب نفسه
   w.addSpacer();
-  txt(row(w), T.line, big ? 13 : 12, { lines: 2, shadow: true });
-  if (T.next) { w.addSpacer(3); txt(row(w), "التالية: " + T.next, big ? 14 : 12.5, { bold: true, lines: big ? 1 : 2, shadow: true }); }
-  if (big && (T.todos || T.focus)) {
-    w.addSpacer(3);
-    const parts = [];
-    if (T.todos) parts.push(`مهامّ اليوم ${ar(T.todos)}`);
-    if (T.focus) parts.push(`تركيز ${ar(T.focus)} د`);
-    txt(row(w), parts.join(" · "), 11, { alpha: 0.75 });
-  }
+  if (T.sub) txt(row(w), T.sub, big ? 12 : 11, { alpha: 0.68 });
+  txt(row(w), T.main, big ? 21 : 18, { bold: true, lines: big ? 1 : 2 });
   return w;
 }
 
