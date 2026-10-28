@@ -690,6 +690,21 @@ body.focusing{overflow:hidden}
 .isl-r.ev{border-color:var(--gold)} .isl-r.eid{border-color:var(--special2)}
 .isl-r b{font-weight:500;font-size:14.5px} .isl-r small{font-size:12px;color:var(--muted)}
 .cal2 .mk i.fa{background:var(--ok)} .cal2 .mk i.ev{background:var(--gold)} .cal2 .mk i.eid{background:var(--special2)}
+
+/* ===== النمط الليلي «حبرٌ وفضّة»: أعلى تباين، وحدودٌ فضّية تفصل البطاقات عن الخلفية ===== */
+:root[data-scene="night"]{--bg:#0E0F22;--sky:linear-gradient(180deg,#0B0C1C 0%,#12132B 60%,#1A1A3A 100%);
+ --glass:rgba(27,28,54,.94);--glass-line:rgba(226,228,255,.22);--line:rgba(226,228,255,.13);--field:rgba(255,255,255,.07);
+ --fg:#F3F4FB;--muted:#BFC2DD;--daily:#B7B4F7;--daily2:#9893EE;--accent:#F2D493}
+
+:root[data-scene="night"] .btn.ghost{background:transparent;color:var(--accent);border:1.5px solid color-mix(in srgb,var(--accent) 55%,transparent)}
+:root[data-scene="night"] .nx-a .btn.ghost{background:transparent}
+:root[data-scene="night"] .ir:not(.done) .ck,:root[data-scene="night"] .td:not(.done) .ck{border-color:color-mix(in srgb,var(--fg) 45%,transparent);background:transparent}
+:root[data-scene="night"] .ir.done .nm{opacity:.75}
+:root[data-scene="night"] .ir,:root[data-scene="night"] .td,:root[data-scene="night"] .mx>.mrow{border-color:var(--line)}
+:root[data-scene="night"] :is(.card,.list,.lst,.metric,.mx,.calcard,.daycard,.remind2,.today-card,.nx){background:var(--glass);border:1px solid var(--glass-line);box-shadow:0 1px 0 rgba(255,255,255,.06) inset,0 14px 30px rgba(0,0,0,.28)}
+:root[data-scene="night"] nav.tabs{background:var(--glass);border-color:var(--glass-line)}
+:root[data-scene="night"] .grp-h .pb,:root[data-scene="night"] .bar2 span,:root[data-scene="night"] .mbar{background:rgba(255,255,255,.12)}
+
 </style>
 
 </head>
@@ -952,7 +967,7 @@ const VIEWS=["today","cal","quiz","masters","skills","reading","content","log","
 let route="today",viewDay=today();
 function render(){
   const h=(location.hash||"").slice(1);route=VIEWS.includes(h)?h:"today";
-  const sc=sceneNow();document.documentElement.dataset.scene=sc==="night"?"night":"day";
+  const sc=sceneNow();document.documentElement.dataset.scene=sc==="night"?"night":"day";{const m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",sc==="night"?"#0E0F22":"#EFE8EE")}
   document.body.dataset.route=route;
   $("#tabs").innerHTML=NAV.map(n=>n?`<a href="#${n[0]}" ${route===n[0]?'aria-current="page"':""}><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${n[2]}</svg>${n[1]}</a>`
     :`<button class="plus" data-act="sheet" aria-expanded="${sheetOpen}" aria-label="سجّلي سريعًا وبقيّة الأقسام"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>`).join("");
