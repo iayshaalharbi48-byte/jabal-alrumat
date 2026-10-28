@@ -547,6 +547,12 @@ nav.tabs .plus[aria-expanded="true"]{transform:rotate(45deg)}
 .mrow .stepper button:active{background:var(--accent-soft)}
 .mrow .stepper input{width:62px;height:44px;border:0;border-inline:1px solid var(--line);border-radius:0;background:none;font-size:19px;font-weight:500;color:var(--fg);padding:0}
 .sheet .mx{background:var(--field)}
+
+.hero-motto{position:absolute;z-index:4;left:0;right:0;bottom:118px;margin:0;display:flex;flex-direction:column;align-items:center;gap:2px;
+  font-family:"Amiri",var(--f-display),serif;font-size:19px;line-height:1.55;color:rgba(255,255,255,.93);text-shadow:0 1px 14px rgba(31,36,80,.55);pointer-events:none}
+.hero-motto span:last-child{padding-inline-start:3.2em}
+.hero-motto span:first-child{padding-inline-end:3.2em}
+@media (min-height:760px){.hero-motto{font-size:20px}}
 </style>
 
 <header class="top"><div class="wrap hdr">
@@ -645,7 +651,7 @@ const QBANK=[
  {b:"ilm",q:"حديث «من كذب عليّ متعمّدًا فليتبوّأ مقعده من النار» أورده البخاري في باب:",o:["إثم من كذب على النبي ﷺ","كتابة العلم","الفهم في العلم","الغضب في الموعظة"]}
 ];
 const QUOTES=[
- {t:"سنظلّ في جبل الرماة، وخلفنا صوتُ النبيّ ﷺ يهزّنا: لا تبرحوا",s:"من عهدكِ لنفسكِ",firm:1},
+ {t:"سنظلُّ في جبلِ الرماةِ وخلفَنا  ·  صوتُ النبيِّ يهزُّنا: لا تبرحوا",s:"شعار جبل الرماة",firm:1},
  {t:"شُدّي مِئزرَكِ، فهذا أوانُ جِدّكِ وزمانُ مجدِكِ",s:"من عهدكِ لنفسكِ",firm:1},
  {t:"إذا سوّفتِ نِمتِ، وأدلجَ الناس",s:"من عهدكِ لنفسكِ",firm:1},
  {t:"إن رأيتمونا تخطفنا الطير فلا تبرحوا مكانكم هذا حتى أرسل إليكم",s:"وصيّة النبي ﷺ للرماة يوم أحد · رواه البخاري (٣٠٣٩) عن البراء بن عازب",firm:1},
@@ -877,6 +883,7 @@ function heroHTML(c,d){
    <div class="hero-flag" id="flagGhost" ${gap>0?"":"hidden"}>${flagSVG(night?"ghostN":"ghost")}</div>
    <span class="hero-tag" id="flagTag" ${gap>0?"":"hidden"}>موضعكِ هنا ينتظر</span>
    <div class="hero-flag" id="flagMain">${flagSVG(night?"night":"day")}</div>
+   <p class="hero-motto" aria-label="شعار التطبيق"><span>سنظلُّ في جبلِ الرماةِ وخلفَنا</span><span>صوتُ النبيِّ ﷺ يهزُّنا: لا تبرحوا</span></p>
    <div class="hero-top"><div><small>${DAYN[d.getDay()]} ${esc(hijri(d))} · ${esc(greg(d).replace(/\s*[٠-٩0-9]{4}$/,""))}</small><h2>${title}</h2></div>${pill}</div>
   </section>`;
 }
