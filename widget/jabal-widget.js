@@ -48,6 +48,20 @@ async function loadSummary() {
   } catch (e) {}
   return fm.fileExists(cache) ? JSON.parse(fm.readString(cache)) : null;
 }
+// لوح نصوص الأداة بخطّ ثمانية، يرسمه التطبيق ويرفعه إلى widget.png
+async function loadSprite() {
+  const p = fm.joinPath(dir, "text.png");
+  if (Keychain.contains(KC)) {
+    try {
+      const r = new Request(`https://api.github.com/repos/${REPO}/contents/widget.png?t=${Date.now()}`);
+      r.headers = { Authorization: "Bearer " + Keychain.get(KC), Accept: "application/vnd.github.raw+json", "X-GitHub-Api-Version": "2022-11-28" };
+      r.timeoutInterval = 15;
+      const img = await r.loadImage();
+      if (r.response.statusCode === 200 && img) { fm.writeImage(p, img); return img; }
+    } catch (e) {}
+  }
+  return fm.fileExists(p) ? fm.readImage(p) : null;
+}
 async function loadArt() {
   const name = night ? "mist-night.webp" : "mist-day.webp";
   const p = fm.joinPath(dir, name);
@@ -91,7 +105,7 @@ function drawFlag(ctx, x, y, s, ghost) {
     ctx.fillEllipse(new Rect(x + 6.5 * s, y - 29 * s, 5 * s, 5 * s));
   }
 }
-function background(art, W, H, gap) {
+function background(art, W, H, gap, sprite, cell) {
   const ctx = new DrawContext();
   ctx.size = new Size(W, H);
   ctx.opaque = true;
@@ -107,10 +121,17 @@ function background(art, W, H, gap) {
   // ستارٌ خفيف يعين على القراءة
   ctx.setFillColor(new Color(night ? "#1C1748" : "#FFFFFF", night ? 0.28 : 0.22));
   ctx.fillRect(new Rect(0, 0, W, H));
+  // ستارٌ متدرّج في أسفل الأداة حيث النصوص
+  for (let i = 0; i < 6; i++) {
+    ctx.setFillColor(new Color(night ? "#1C1748" : "#FFFFFF", night ? 0.07 : 0.05));
+    ctx.fillRect(new Rect(0, H * (0.5 + i * 0.06), W, H));
+  }
   const fs = Math.max(0.7, W / 340);
   if (gap > 0) drawFlag(ctx, px, py, fs, true);
   const [rx, ry] = ridgeAt(gapFrac(gap));
   drawFlag(ctx, ox + rx * scale, oy + ry * scale, fs, false);
+  // نصوص الأداة بخطّ ثمانية، رسمها التطبيق نفسه
+  if (sprite && cell) ctx.drawImageAtPoint(sprite, new Point(-cell[0], -cell[1]));
   return ctx.getImage();
 }
 
@@ -158,9 +179,14 @@ async function build(family) {
   }
 
   const big = family === "medium" || family === "large";
-  const W = big ? 720 : 340, H = family === "large" ? 760 : 340;
-  w.backgroundImage = background(await loadArt(), W, H, T.gap);
+  const W = big ? 728 : 340, H = family === "large" ? 760 : 340;
+  // لوح النصوص: الصفوف ٠ نهار/اليوم، ١ ليل/اليوم، ٢ نهار/يوم جديد، ٣ ليل/يوم جديد؛ والأعمدة صغيرة ثم متوسطة
+  const sprite = sum && !sum._err && family !== "large" ? await loadSprite() : null;
+  const row = (sum && sum.date === todayKey ? 0 : 2) + (night ? 1 : 0);
+  const cell = sprite ? [big ? 340 : 0, row * 340] : null;
+  w.backgroundImage = background(await loadArt(), W, H, T.gap, sprite, cell);
   w.setPadding(14, 14, 14, 16);
+  if (sprite) return w;   // النصوص في الصورة، فلا حاجة إلى خطّ النظام
 
   txt(row(w), T.head, 11, { alpha: 0.65 });
   w.addSpacer(1);
