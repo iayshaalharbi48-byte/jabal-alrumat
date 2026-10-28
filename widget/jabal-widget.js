@@ -1,10 +1,12 @@
 // جبل الرماة — أداة الشاشة الرئيسية والحزمة المتكدّسة (تطبيق Scriptable)
-// تقرأ تقدّمكِ من المستودع الخاص jabal-data، وتعرض موضع الراية وما بقي لتثبتي وخطوتكِ التالية.
-// الرمز يُحفظ في سلسلة مفاتيح الهاتف (Keychain) ولا يُكتب في هذا النص.
+// تقرأ ملخّص يومكِ من Firebase بمعرّفٍ خاصّ بكِ، فلا تحتاج رمزًا ولا كلمة مرور.
+// يُضاف المعرّف تلقائيًّا حين تنسخين النصّ من إعدادات جبل الرماة وأنتِ داخلةٌ في حسابكِ.
 
+const WID = "";   // معرّف الأداة (يملؤه التطبيق عند النسخ)
 const APP = "https://iayshaalharbi48-byte.github.io/jabal-alrumat/";
-const REPO = "iayshaalharbi48-byte/jabal-data";
-const KC = "jabal-token";
+const FB_KEY = "AIzaSyCla8le1BfABTgph4TeGFefS-ZO2m_z1oU";
+const FB_DOC = "https://firestore.googleapis.com/v1/projects/jabal-alrumat/databases/(default)/documents/widgets/";
+const KC = "jabal-wid";
 const fm = FileManager.local();
 const dir = fm.joinPath(fm.cacheDirectory(), "jabal-widget");
 if (!fm.fileExists(dir)) fm.createDirectory(dir);
@@ -15,52 +17,44 @@ const now = new Date();
 const todayKey = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 const h = now.getHours() + now.getMinutes() / 60;
 const night = h < 4.75 || h >= 18.25;
-const steps = (n) => n === 1 ? "خطوةً واحدة" : n === 2 ? "خطوتين" : n <= 10 ? `${ar(n)} خطوات` : `${ar(n)} خطوةً`;
 
-// ---------- الرمز ----------
-async function askToken() {
+// ---------- المعرّف ----------
+const wid = () => WID || (Keychain.contains(KC) ? Keychain.get(KC) : "");
+async function askWid() {
   const a = new Alert();
-  a.title = "رمز المزامنة";
-  a.message = "الصقي رمز الوصول نفسه الذي في إعدادات المزامنة في جبل الرماة (يبدأ بـ github_pat_). يُحفظ في سلسلة مفاتيح الهاتف.";
-  a.addSecureTextField("github_pat_…", "");
+  a.title = "معرّف الأداة";
+  a.message = "انسخيه من جبل الرماة: الإعدادات ← أداة الشاشة الرئيسية ← «نسخ معرّف الأداة».";
+  a.addTextField("المعرّف", "");
   a.addAction("حفظ");
   a.addCancelAction("إلغاء");
-  if ((await a.presentAlert()) === -1) return null;
+  if ((await a.presentAlert()) === -1) return;
   const t = a.textFieldValue(0).trim();
   if (t) Keychain.set(KC, t);
-  return t || null;
 }
 
-// ---------- البيانات ----------
+// ---------- البيانات: وثيقة الأداة في Firebase ----------
+let SPRITE = null;
 async function loadSummary() {
-  const cache = fm.joinPath(dir, "summary.json");
-  if (!Keychain.contains(KC)) return fm.fileExists(cache) ? JSON.parse(fm.readString(cache)) : null;
+  const cache = fm.joinPath(dir, "summary.json"), imgP = fm.joinPath(dir, "text.png");
+  const fromCache = () => { if (fm.fileExists(imgP)) SPRITE = fm.readImage(imgP); return fm.fileExists(cache) ? JSON.parse(fm.readString(cache)) : null; };
+  const id = wid();
+  if (!id) return null;
   try {
-    const r = new Request(`https://api.github.com/repos/${REPO}/contents/progress.json?t=${Date.now()}`);
-    r.headers = { Authorization: "Bearer " + Keychain.get(KC), Accept: "application/vnd.github.raw+json", "X-GitHub-Api-Version": "2022-11-28" };
+    const r = new Request(FB_DOC + encodeURIComponent(id) + "?key=" + FB_KEY);
     r.timeoutInterval = 15;
     const j = await r.loadJSON();
-    if (r.response.statusCode === 200 && j && j.summary) {
-      fm.writeString(cache, JSON.stringify(j.summary));
-      return j.summary;
+    const code = r.response.statusCode;
+    if (code === 200 && j.fields && j.fields.s) {
+      const sum = JSON.parse(j.fields.s.stringValue);
+      fm.writeString(cache, JSON.stringify(sum));
+      if (j.fields.img && j.fields.img.stringValue) {
+        try { SPRITE = Image.fromData(Data.fromBase64String(j.fields.img.stringValue)); fm.writeImage(imgP, SPRITE); } catch (e) {}
+      } else if (fm.fileExists(imgP)) SPRITE = fm.readImage(imgP);
+      return sum;
     }
-    if (r.response.statusCode === 401 || r.response.statusCode === 403) return { _err: "token" };
+    if (code === 404 || code === 403) return { _err: "wid" };
   } catch (e) {}
-  return fm.fileExists(cache) ? JSON.parse(fm.readString(cache)) : null;
-}
-// لوح نصوص الأداة بخطّ ثمانية، يرسمه التطبيق ويرفعه إلى widget.png
-async function loadSprite() {
-  const p = fm.joinPath(dir, "text.png");
-  if (Keychain.contains(KC)) {
-    try {
-      const r = new Request(`https://api.github.com/repos/${REPO}/contents/widget.png?t=${Date.now()}`);
-      r.headers = { Authorization: "Bearer " + Keychain.get(KC), Accept: "application/vnd.github.raw+json", "X-GitHub-Api-Version": "2022-11-28" };
-      r.timeoutInterval = 15;
-      const img = await r.loadImage();
-      if (r.response.statusCode === 200 && img) { fm.writeImage(p, img); return img; }
-    } catch (e) {}
-  }
-  return fm.fileExists(p) ? fm.readImage(p) : null;
+  return fromCache();
 }
 async function loadArt() {
   const name = night ? "mist-night.webp" : "mist-day.webp";
@@ -138,8 +132,8 @@ function background(art, W, H, gap, sprite, cell) {
 // ---------- النصوص ----------
 function texts(sum) {
   // نمطٌ بسيط: سطرٌ خافت وسطرٌ واحدٌ ظاهر
-  if (!sum) return { sub: "شغّلي النصّ في Scriptable", main: "جبل الرماة", gap: 0 };
-  if (sum._err) return { sub: "شغّلي النصّ وأدخلي الرمز", main: "الرمز غير صالح", gap: 0 };
+  if (!sum) return { sub: "انسخي النصّ من إعدادات التطبيق", main: "جبل الرماة", gap: 0 };
+  if (sum._err) return { sub: "افتحي التطبيق وادخلي حسابكِ", main: "لم تُنشأ بعد", gap: 0 };
   const gap = Math.max(0, (sum.summit || 100) - (sum.pos ?? sum.summit ?? 100));
   if (sum.date !== todayKey) return { sub: "لم تسجّلي اليوم بعد", main: "لا تبرحي مكانكِ", gap };
   if (sum.ok) return { sub: sum.next ? "ثمّ " + sum.next : "", main: "ثبتِّ اليوم", gap };
@@ -177,7 +171,7 @@ async function build(family) {
   const big = family === "medium" || family === "large";
   const W = big ? 728 : 340, H = family === "large" ? 760 : 340;
   // لوح النصوص بخطّ ثمانية: الصفوف ٠ نهار/اليوم، ١ ليل/اليوم، ٢ نهار/يوم جديد، ٣ ليل/يوم جديد؛ والأعمدة صغيرة ثم متوسطة
-  const sprite = sum && !sum._err && family !== "large" ? await loadSprite() : null;
+  const sprite = sum && !sum._err && family !== "large" ? SPRITE : null;
   const rIdx = (sum && sum.date === todayKey ? 0 : 2) + (night ? 1 : 0);
   const cell = sprite ? [big ? 340 : 0, rIdx * 340] : null;
   w.backgroundImage = background(await loadArt(), W, H, T.gap, sprite, cell);
@@ -194,19 +188,19 @@ async function build(family) {
 if (config.runsInWidget) {
   Script.setWidget(await build(config.widgetFamily));
 } else {
-  if (!Keychain.contains(KC)) await askToken();
+  if (!wid()) await askWid();
   const m = new Alert();
   m.title = "جبل الرماة";
   m.message = "اختاري معاينة، ثم أضيفي الأداة من الشاشة الرئيسية.";
   m.addAction("معاينة صغيرة");
   m.addAction("معاينة متوسطة");
   m.addAction("معاينة شاشة القفل");
-  m.addAction("تغيير الرمز");
+  m.addAction("تغيير المعرّف");
   m.addCancelAction("إغلاق");
   const c = await m.presentSheet();
   if (c === 0) (await build("small")).presentSmall();
   else if (c === 1) (await build("medium")).presentMedium();
   else if (c === 2) (await build("accessoryRectangular")).presentAccessoryRectangular();
-  else if (c === 3) await askToken();
+  else if (c === 3) await askWid();
 }
 Script.complete();

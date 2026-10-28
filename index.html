@@ -1711,7 +1711,8 @@ async function pushOff(){
 }
 function widgetCopy(){
   // Safari يشترط أن تبدأ الكتابة إلى الحافظة في لحظة اللمس، فنمرّر وعد الجلب إلى ClipboardItem
-  const get=()=>fetch("widget/jabal-widget.js?t="+Date.now()).then(r=>{if(!r.ok)throw 0;return r.text()});
+  const w=FB.user?fbWid():"";
+  const get=()=>fetch("widget/jabal-widget.js?t="+Date.now()).then(r=>{if(!r.ok)throw 0;return r.text()}).then(t=>w?t.replace('const WID = "";',`const WID = "${w}";`):t);
   const ok=()=>toast("نُسخ نصّ الأداة، فالصقيه في Scriptable"),bad=()=>toast("تعذّر النسخ؛ افتحي «عرض النصّ» وانسخيه");
   try{
     if(window.ClipboardItem&&navigator.clipboard&&navigator.clipboard.write){
@@ -1727,13 +1728,18 @@ function pushPrefsHTML(){
   <div class="card stack small"><p style="margin:0">تصلكِ التنبيهات باسم «جبل الرماة» وأيقونته، وإن لمستِها فتحت صفحة اليوم. وما دامت مفعّلة لا يُرسَل إلى ntfy شيء.</p>
    <div class="btns">${on?`<button class="btn ghost" data-act="pushOn" type="button">تجديد الاشتراك</button><button class="btn warn" data-act="pushOff" type="button">إيقاف</button>`:`<button class="btn" data-act="pushOn" type="button">فعّلي التنبيهات</button>`}</div>
    ${perm==="denied"?'<p class="muted" style="margin:0">لإعادتها: الإعدادات ← الإشعارات ← جبل الرماة ← السماح.</p>':""}</div></section>
-  <section class="blk"><div class="blk-h"><h2>أداة الشاشة الرئيسية</h2><span class="tag">عبر تطبيق Scriptable</span></div>
-  <div class="card stack small"><ol style="margin:0;padding-inline-start:20px;line-height:1.9">
+  ${widgetPrefsHTML()}`;
+}
+function widgetPrefsHTML(){
+  const on=!!FB.user;
+  return `<section class="blk"><div class="blk-h"><h2>أداة الشاشة الرئيسية</h2><span class="tag">${on?"تقرأ من حسابكِ":"تحتاج الدخول إلى حسابكِ"}</span></div>
+  <div class="card stack small">${on?"":`<p style="margin:0">ادخلي حسابكِ من قسم «الحساب» أعلى هذه الصفحة أوّلًا، فالأداة تقرأ ملخّص يومكِ منه بلا رمزٍ ولا كلمة مرور.</p>`}
+   <ol style="margin:0;padding-inline-start:20px;line-height:1.9">
    <li>نزّلي تطبيق <b>Scriptable</b> المجّاني من متجر التطبيقات.</li>
-   <li>انسخي نصّ الأداة من الزرّ أدناه.</li>
-   <li>في Scriptable: ＋ ← الصقي ← سمّي النصّ «جبل الرماة» ← شغّليه مرّةً واحدة والصقي رمز المزامنة حين يُطلب.</li>
-   <li>اضغطي مطوّلًا على الشاشة الرئيسية ← تعديل ← إضافة أداة ← Scriptable، ثم اختاري «جبل الرماة» من إعدادات الأداة. واسحبيها فوق أداةٍ أخرى لتصير في الحزمة المتكدّسة.</li></ol>
-   <div class="btns"><button class="btn" data-act="widgetCopy" type="button">نسخ نصّ الأداة</button><a class="btn ghost" href="widget/jabal-widget.js" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center">عرض النصّ</a></div></div></section>`;
+   <li>اضغطي «نسخ نصّ الأداة» أدناه؛ فيه معرّفكِ الخاصّ جاهزًا.</li>
+   <li>في Scriptable: افتحي «جبل الرماة» (أو ＋ لنصٍّ جديد)، واحذفي ما فيه، والصقي، ثم «Done».</li>
+   <li>اضغطي مطوّلًا على الشاشة الرئيسية ← تعديل ← إضافة أداة ← Scriptable، واختاري «جبل الرماة» من إعدادات الأداة، ثم اسحبيها فوق أداةٍ أخرى لتصير في الحزمة المتكدّسة.</li></ol>
+   <div class="btns"><button class="btn" data-act="widgetCopy" type="button" ${on?"":"disabled"}>نسخ نصّ الأداة</button>${on?`<button class="btn ghost" data-act="widCopy" type="button">نسخ معرّف الأداة</button>`:""}</div></div></section>`;
 }
 
 /* ---------- نصوص أداة الشاشة بخطّ ثمانية ----------
@@ -1947,7 +1953,23 @@ async function fbPush(){
     }
     FB.status="آخر مزامنة "+new Date().toLocaleTimeString("ar-EG",{hour:"numeric",minute:"2-digit"});
   }catch(e){FB.status=fbMsg(e)}
-  FB.busy=false;if(route==="prefs")render();
+  FB.busy=false;fbWidget();if(route==="prefs")render();
+}
+/* وثيقة الأداة widgets/{wid}: ملخّصٌ صغير ولوح النصوص بخطّ ثمانية؛ تُقرأ بالمعرّف وحده، ولا يكتبها إلّا صاحبها */
+function fbWid(){if(!S.wid){const a=new Uint8Array(18);crypto.getRandomValues(a);S.wid="w"+btoa(String.fromCharCode(...a)).replace(/[+/=]/g,c=>c==="+"?"-":c==="/"?"_":"");save()}return S.wid}
+async function fbWidget(){
+  if(!FB.ready||!FB.user)return;
+  try{
+    const {fs,db}=FB.m,sm=summary(),wid=fbWid();
+    const slim={date:sm.date,pos:sm.pos,summit:sm.summit,ok:sm.ok,need:sm.need,nc:sm.nc,ns:sm.ns,next:sm.next,done:sm.done,total:sm.total,todos:sm.todos,focus:sm.focus};
+    const sj=JSON.stringify(slim),sig=JSON.stringify([wsTexts(sm,true),wsTexts(sm,false),sm.date]);
+    const hs=h32(sj),hg=h32(sig);
+    if(FS.ws===hs&&FS.wsig===hg&&FS.wid===wid)return;
+    const data={owner:FB.user.uid,s:sj,u:Date.now()};
+    if(FS.wsig!==hg||FS.wid!==wid)data.img=(await wsSprite(sm)).split(",")[1];
+    await fs.setDoc(fs.doc(db,"widgets",wid),data,{merge:true});
+    FS.ws=hs;FS.wsig=hg;FS.wid=wid;fsSave();
+  }catch(e){}
 }
 async function fbAuth(kind){
   const em=($("#fbEmail")||{}).value?.trim()||"",pw=($("#fbPass")||{}).value||"";
@@ -2027,6 +2049,7 @@ document.addEventListener("click",ev=>{
    case"pushOn":pushEnable();return;
    case"pushOff":pushOff();return;
    case"widgetCopy":widgetCopy();return;
+   case"widCopy":{const w=fbWid();(navigator.clipboard?navigator.clipboard.writeText(w):Promise.reject()).then(()=>toast("نُسخ معرّف الأداة")).catch(()=>toast(w));return}
    case"export":{const txt=JSON.stringify(S);const ta=$("#backup");ta.value=txt;
      (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast("نُسخت النسخة الاحتياطية")).catch(()=>{ta.select();toast("حدّدتُ النص، فانسخيه يدويًا")});return}
    case"import":{try{const o=JSON.parse($("#backup").value);if(!o||!o.items||!o.log)throw 0;localStorage.setItem(KEY,JSON.stringify(o));S=load();save();toast("استُعيدت بياناتكِ")}catch(e){toast("النص الملصق ليس نسخةً احتياطية صالحة")}break}
