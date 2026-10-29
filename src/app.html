@@ -1069,16 +1069,40 @@ let MJ={index:null,html:{},sel:null,status:"",loading:false};
 try{const c=JSON.parse(localStorage.getItem(MJK)||"null");if(c&&c.index){MJ.index=c.index;MJ.html=c.html||{}}}catch(e){}
 function mjSaveCache(){try{const keep={};(MJ.index||[]).slice(0,7).forEach(x=>{if(MJ.html[x.date])keep[x.date]=MJ.html[x.date]});localStorage.setItem(MJK,JSON.stringify({index:MJ.index,html:keep}))}catch(e){}}
 function mjUrl(p){return `https://api.github.com/repos/${SY.repo||"iayshaalharbi48-byte/jabal-data"}/contents/majariyat/${p}?t=${Date.now()}`}
-async function mjGet(p){const r=await fetch(mjUrl(p),{headers:{"Authorization":"Bearer "+SY.token,"Accept":"application/vnd.github.raw+json","X-GitHub-Api-Version":"2022-11-28"}});if(r.status===404)return null;if(!r.ok)throw new Error(r.status);return r.text()}
+async function mjGetGH(p){const r=await fetch(mjUrl(p),{headers:{"Authorization":"Bearer "+SY.token,"Accept":"application/vnd.github.raw+json","X-GitHub-Api-Version":"2022-11-28"}});if(r.status===404)return null;if(!r.ok)throw new Error(r.status);return r.text()}
+/* المصدر الأوّل: Firestore بحساب البريد (users/{uid}/majariyat/…) ينسخه إليه Action في jabal-data؛ وإلا فـ GitHub برمز المزامنة */
+const fbSigned=()=>{try{return !!(FB.user||localStorage.getItem(FBK))}catch(e){return !!FB.user}};
+async function mjFB(){
+  if(!fbSigned())return null;
+  const m=await fbInit();if(!m)return null;
+  try{if(m.auth.authStateReady)await m.auth.authStateReady()}catch(e){}
+  return FB.user?{fs:m.fs,db:m.db,uid:FB.user.uid}:null;
+}
+async function mjGetFB(fb,p){
+  const id=p==="index.json"?"index":p.replace(/^issues\//,"").replace(/\.html$/,"");
+  const d=await fb.fs.getDoc(fb.fs.doc(fb.db,"users",fb.uid,"majariyat",id));
+  if(!d.exists())return null;const r=d.data();return id==="index"?r.j:r.h;
+}
 async function mjLoad(force){
-  if(!SY.token||MJ.loading)return;
+  if(MJ.loading)return;
+  if(!SY.token&&!fbSigned())return;
+  MJ.loading=true;
+  const fb=await mjFB();
+  /* يُجرَّب Firebase، فإن لم يجد شيئًا (لم يُنسخ بعد) ووُجد رمز GitHub رجع إليه */
+  const get=async p=>{let v=null,fbErr=null;
+    if(fb){try{v=await mjGetFB(fb,p)}catch(e){fbErr=e}}
+    if(v==null&&SY.token)v=await mjGetGH(p);
+    else if(v==null&&fbErr)throw fbErr;
+    return v};
   const need=!MJ.index||force||!MJ._fresh;
   try{
-    if(need){MJ.loading=true;const t=await mjGet("index.json");MJ.index=t?JSON.parse(t):[];MJ._fresh=true;MJ.status=""}
+    if(!fb&&!SY.token)throw new Error("nofb");
+    if(need){const t=await get("index.json");MJ.index=t?JSON.parse(t):[];MJ._fresh=true;MJ.status=""}
     const sel=MJ.sel||(MJ.index[0]&&MJ.index[0].date);
-    if(sel&&!MJ.html[sel]){MJ.loading=true;const it=MJ.index.find(x=>x.date===sel);const h=it?await mjGet(it.file):null;MJ.html[sel]=h||""}
+    if(sel&&!MJ.html[sel]){const it=MJ.index.find(x=>x.date===sel);const h=it?await get(it.file):null;MJ.html[sel]=h||""}
     mjSaveCache();
-  }catch(err){MJ.status=String(err.message)==="401"||String(err.message)==="403"?"رمز المزامنة لا يملك صلاحية القراءة":"تعذّر الاتصال، فهذه آخر نسخةٍ محفوظة"}
+  }catch(err){const m=String((err&&(err.code||err.message))||"");
+    MJ.status=m==="401"||m==="403"?"رمز المزامنة لا يملك صلاحية القراءة":m==="permission-denied"?"رفضت قواعد Firebase قراءة ماجريات":m==="nofb"?"تعذّر الدخول إلى حسابكِ في Firebase، فهذه آخر نسخةٍ محفوظة":"تعذّر الاتصال، فهذه آخر نسخةٍ محفوظة"}
   MJ.loading=false;if(route==="majariyat")$("#view").innerHTML=vMajariyat();
 }
 const MJ_TAGS=new Set("SECTION H2 H3 H4 P A UL OL LI BLOCKQUOTE STRONG B EM I SMALL SPAN DIV BR HR TABLE THEAD TBODY TR TH TD FIGURE FIGCAPTION IMG".split(" "));
@@ -1098,7 +1122,7 @@ function mjClean(html){
   walk(root);return root.innerHTML;
 }
 function vMajariyat(){
-  if(!SY.token&&!MJ.index)return `<div class="card stack"><b style="font-size:17px">ماجريات تصل إلى هنا كلّ صباح</b><span class="small muted">تُحفظ أعداد الصحيفة في مستودعكِ الخاص، ويقرؤها التطبيق برمز المزامنة نفسه. فعّلي المزامنة في الإعدادات ليظهر عدد اليوم.</span><a class="btn" href="#prefs" style="text-decoration:none;text-align:center">إلى الإعدادات</a></div>`;
+  if(!SY.token&&!fbSigned()&&!MJ.index)return `<div class="card stack"><b style="font-size:17px">ماجريات تصل إلى هنا كلّ صباح</b><span class="small muted">تصل أعداد الصحيفة إلى حسابكِ، فادخلي ببريدكِ من الإعدادات ليظهر عدد اليوم.</span><a class="btn" href="#prefs" style="text-decoration:none;text-align:center">إلى الإعدادات</a></div>`;
   if(!MJ.index)return `<div class="card empty">${MJ.status?esc(MJ.status):"يُجلب عدد اليوم…"}</div>`;
   if(!MJ.index.length)return `<div class="card stack"><b style="font-size:17px">لم يصدر عددٌ بعد</b><span class="small muted">يُعدّ العدد آليًّا كلّ صباح قبل السادسة، ويظهر هنا حين يصدر.</span></div>`;
   const sel=MJ.sel||MJ.index[0].date,it=MJ.index.find(x=>x.date===sel)||MJ.index[0],h=MJ.html[it.date];
@@ -1905,7 +1929,7 @@ async function fbInit(){
     const [a,au,fs]=await Promise.all([import(FBU+"firebase-app.js"),import(FBU+"firebase-auth.js"),import(FBU+"firebase-firestore.js")]);
     const app=a.initializeApp(FBC),auth=au.getAuth(app),db=fs.getFirestore(app);
     FB.m={au,fs,auth,db};
-    au.onAuthStateChanged(auth,u=>{const was=FB.user?FB.user.uid:null;FB.user=u||null;if((u?u.uid:null)===was)return;if(u){try{localStorage.setItem(FBK,"1")}catch(e){}fbStart()}else fbStop();if(route==="prefs")render()});
+    au.onAuthStateChanged(auth,u=>{const was=FB.user?FB.user.uid:null;FB.user=u||null;if((u?u.uid:null)===was)return;if(u){try{localStorage.setItem(FBK,"1")}catch(e){}fbStart();if(route==="majariyat"){MJ._fresh=false;mjLoad(true)}}else fbStop();if(route==="prefs")render()});
     return FB.m;
   }catch(e){FB.status="تعذّر تحميل Firebase (لا اتصال؟)";if(route==="prefs")render();return null}
 }
