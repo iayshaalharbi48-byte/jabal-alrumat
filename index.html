@@ -1725,7 +1725,7 @@ function setPush(s){pushState=s;try{s?localStorage.setItem("jabal-push",s):local
 function b64u(s){const p="=".repeat((4-s.length%4)%4),r=atob((s+p).replace(/-/g,"+").replace(/_/g,"/"));return Uint8Array.from(r,c=>c.charCodeAt(0))}
 function dataUrl(p){return `https://api.github.com/repos/${SY.repo||"iayshaalharbi48-byte/jabal-data"}/contents/${p}`}
 async function subsWrite(fn){
-  for(let i=0;i<2;i++){
+  for(let i=0;i<3;i++){
     const g=await fetch(dataUrl("push/subs.json")+"?t="+Date.now(),{headers:ghHeaders()});
     let sha=null,cur={subs:[]};
     if(g.ok){const j=await g.json();sha=j.sha;try{cur=JSON.parse(b64d(j.content))}catch(e){}}else if(g.status!==404)throw new Error(g.status);
