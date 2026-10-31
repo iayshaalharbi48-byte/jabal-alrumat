@@ -2,6 +2,6 @@
   "name": "jabal-alrumat",
   "private": true,
   "scripts": {
-    "test": "node --test tests/rules.test.mjs"
+    "test": "node --test tests/rules.test.mjs tests/e2e.test.mjs"
   }
 }
