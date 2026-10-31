@@ -17,7 +17,7 @@ const EXPORTS = [
   "S", "key", "parse", "addDays", "today", "dayState", "dayParts", "dayPct", "score",
   "streak", "climb", "exOf", "dayItems", "exUsed", "gapFrac", "islDay", "hNum",
   "scheduled", "phaseOf", "quoteFor", "entry", "newRule", "isCore", "EX_CAP", "SUMMIT",
-  "HAYD_HIDE", "CORE", "RULE_FROM",
+  "HAYD_HIDE", "CORE", "RULE_FROM", "migrate", "blank",
 ];
 src = src.slice(0, close) + `return {${EXPORTS.join(",")}};\n` + src.slice(close);
 
