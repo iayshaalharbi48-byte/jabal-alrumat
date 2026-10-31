@@ -1,0 +1,7 @@
+{
+  "name": "jabal-alrumat",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/rules.test.mjs"
+  }
+}

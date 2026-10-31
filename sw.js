@@ -1,11 +1,17 @@
 // يحفظ التطبيق ليعمل دون اتصال، ويجلب أحدث نسخة متى توفّر الاتصال.
-const CACHE = "jabal-v27";
+const CACHE = "jabal-v28";
 const FILES = ["./", "index.html", "manifest.webmanifest", "icon-192-v4.png", "icon-512-v4.png", "apple-touch-icon-v4.png", "art/mist-day.webp", "art/mist-night.webp"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES))); self.skipWaiting(); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k))))); self.clients.claim(); });
+// الشبكة أولًا، فإن تأخّرت أكثر من ٢٫٥ ث أو انقطعت أُعيد المخزّن. هكذا يبقى الجديد طازجًا متى توفّر الاتصال،
+// ولا يتعطّل الفتح على الشبكات البطيئة.
+const NET_TIMEOUT = 2500;
+const withTimeout = (p, ms) => new Promise((res, rej) => { const t = setTimeout(() => rej(new Error("timeout")), ms); p.then(v => { clearTimeout(t); res(v); }, err => { clearTimeout(t); rej(err); }); });
 self.addEventListener("fetch", e => {
   if (e.request.method !== "GET") return;
-  e.respondWith(fetch(e.request).then(r => { const copy = r.clone(); if (r.ok && new URL(e.request.url).origin === location.origin) caches.open(CACHE).then(c => c.put(e.request, copy)); return r; })
+  const same = new URL(e.request.url).origin === location.origin;
+  e.respondWith(withTimeout(fetch(e.request), NET_TIMEOUT)
+    .then(r => { if (r.ok && same) { const copy = r.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)); } return r; })
     .catch(() => caches.match(e.request).then(m => m || caches.match("index.html"))));
 });
 // تنبيهات التطبيق: تصل من المهامّ المجدولة على GitHub بمفاتيح VAPID

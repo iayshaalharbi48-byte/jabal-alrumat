@@ -188,6 +188,27 @@ async function dataFile(path) {
   const j = await r.json();
   return { sha: j.sha, data: JSON.parse(Buffer.from(j.content, "base64").toString("utf8")) };
 }
+// يحذف الاشتراكات المنتهية. إن تعارضت الكتابة مع تعديلٍ من التطبيق (409/422) يُعاد القراءة والمحاولة،
+// لأن الكتابة بـ sha لا تكتب فوق تغييرٍ لم يُقرأ؛ وأي فشل آخر يُسجَّل بدل ابتلاعه.
+async function removeDeadSubs(dead, attempts = 3) {
+  for (let i = 0; i < attempts; i++) {
+    const subs = await dataFile("push/subs.json");
+    if (!subs) { console.log("push: تعذّر قراءة الاشتراكات لحذف المنتهية"); return false; }
+    const before = (subs.data.subs || []).length;
+    subs.data.subs = (subs.data.subs || []).filter((x) => !dead.has(x.endpoint));
+    if (subs.data.subs.length === before) return true;
+    const r = await fetch(`https://api.github.com/repos/${DATA_REPO}/contents/push/subs.json`, {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${DATA_TOKEN}`, Accept: "application/vnd.github+json" },
+      body: JSON.stringify({ message: "حذف اشتراكٍ منتهٍ", sha: subs.sha, content: Buffer.from(JSON.stringify(subs.data, null, 1)).toString("base64") }),
+    }).catch((e) => ({ ok: false, status: 0, _e: e }));
+    if (r.ok) return true;
+    if (r.status !== 409 && r.status !== 422) { console.log("push: فشل حذف الاشتراكات المنتهية", r.status || r._e?.message); return false; }
+  }
+  console.log("push: تعارضت الكتابة ثلاث مرات، ستُحذف الاشتراكات المنتهية في التشغيل القادم");
+  return false;
+}
+
 async function sendPush(title, message) {
   if (!DATA_TOKEN || !DATA_REPO) return 0;
   let webpush;
@@ -202,13 +223,7 @@ async function sendPush(title, message) {
     try { await webpush.sendNotification({ endpoint: s.endpoint, keys: s.keys }, payload, { TTL: 3 * 3600, urgency: "high" }); ok++; }
     catch (e) { console.log("push:", e.statusCode || e.message); if (e.statusCode === 404 || e.statusCode === 410) dead.add(s.endpoint); }
   }
-  if (dead.size) {
-    subs.data.subs = subs.data.subs.filter((x) => !dead.has(x.endpoint));
-    await fetch(`https://api.github.com/repos/${DATA_REPO}/contents/push/subs.json`, {
-      method: "PUT", headers: { Authorization: `Bearer ${DATA_TOKEN}`, Accept: "application/vnd.github+json" },
-      body: JSON.stringify({ message: "حذف اشتراكٍ منتهٍ", sha: subs.sha, content: Buffer.from(JSON.stringify(subs.data, null, 1)).toString("base64") }),
-    }).catch(() => {});
-  }
+  if (dead.size) await removeDeadSubs(dead);
   console.log("push: أُرسل إلى", ok);
   return ok;
 }
