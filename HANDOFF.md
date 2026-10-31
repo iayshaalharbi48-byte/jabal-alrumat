@@ -12,7 +12,7 @@
 | `src/app.html` | **المصدر الحقيقي** للتطبيق (ملفٌّ واحد: HTML + CSS + JS، وخطّ ثمانية مضمَّن فيه) |
 | `src/build.py` | يحوّل `src/app.html` إلى `index.html` (يضيف manifest والأيقونات وsw، ويُبقي الخطّ مضمَّنًا) — يُشغَّل من داخل `src/`: `python3 build.py` |
 | `index.html` | الناتج المنشور على GitHub Pages — لا يُعدَّل يدويًّا |
-| `sw.js` | عامل الخدمة؛ **ارفعي رقم `CACHE`** (الآن jabal-v28) مع كلّ نشر |
+| `sw.js` | عامل الخدمة؛ **ارفعي رقم `CACHE`** (الآن jabal-v29) مع كلّ نشر |
 | `art/` | صورتا الجبل الضبابي المستعملتان: `mist-day.webp` و`mist-night.webp` |
 | `scripts/notify.mjs` + `.github/workflows/reminders.yml` | التنبيهات اليومية (فجر، صباح، ضحى، مهارات، مساء، ليل): **إلى التطبيق نفسه بـ Web Push**، وntfy احتياطٌ إن لم يوجد اشتراك |
 | `widget/jabal-widget.js` | أداة الشاشة الرئيسية والحزمة المتكدّسة وشاشة القفل عبر تطبيق **Scriptable** (تُنسخ من الإعدادات) |
