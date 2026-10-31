@@ -221,6 +221,7 @@ nav.tabs{position:fixed;z-index:6;bottom:calc(10px + env(safe-area-inset-bottom,
 nav.tabs .in{max-width:640px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr);padding:6px}
 nav.tabs a{display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 0 5px;font-size:11px;font-weight:700;color:var(--muted);text-decoration:none;border-radius:20px}
 nav.tabs a[aria-current="page"]{color:var(--on-accent);background:var(--accent)}
+.netbar{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:7px 14px;border-radius:14px;font-size:13px;z-index:10;max-width:92vw;text-align:center}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:9px 18px;border-radius:16px;font-size:14px;font-weight:700;z-index:9;max-width:90vw}
 .empty{text-align:center;padding:22px 12px;color:var(--muted)}
 /* refined layout */
@@ -705,7 +706,8 @@ body.focusing{overflow:hidden}
 
 <nav class="tabs" aria-label="الأقسام"><div class="in" id="tabs"></div></nav>
 <div id="sheet"></div>
-<div class="toast" id="toast" hidden></div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="netbar" id="net" role="status" aria-live="polite" hidden>لا يوجد اتصالٌ بالإنترنت، والتغييرات محفوظةٌ على جهازكِ وستُزامَن حين يعود.</div>
 <div id="focus"></div>
 
 <script>
@@ -2188,6 +2190,8 @@ document.addEventListener("visibilitychange",()=>{if(document.visibilityState===
 window.addEventListener("hashchange",()=>{confirmReset=false;sheetOpen=false;render();window.scrollTo(0,0)});
 document.addEventListener("keydown",ev=>{if(ev.key==="Escape"&&sheetOpen){sheetOpen=false;render()}});
 setInterval(()=>{const sc=sceneNow()==="night"?"night":"day";if(document.documentElement.dataset.scene!==sc&&document.visibilityState==="visible")render()},60000);
+function netShow(){const n=$("#net");if(n)n.hidden=navigator.onLine!==false}
+window.addEventListener("online",netShow);window.addEventListener("offline",netShow);netShow();
 render();
 if(FO){if(FO.stage==="run"&&FO.pause==null&&foLeft()<=0)foFinish(false);else foRender()}
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&FO&&FO.stage==="run"){if(FO.pause==null&&foLeft()<=0)foFinish(false);else{if(FO.pause==null)foWake(true);foRender()}}});
