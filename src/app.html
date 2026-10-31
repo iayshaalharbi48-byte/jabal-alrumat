@@ -1097,7 +1097,14 @@ async function mjLoad(force){
   const need=!MJ.index||force||!MJ._fresh;
   try{
     if(!fb&&!SY.token)throw new Error("nofb");
-    if(need){const t=await get("index.json");MJ.index=t?JSON.parse(t):[];MJ._fresh=true;MJ.status=""}
+    if(need){const t=await get("index.json");
+      if(!t){
+        /* لم يوجد الفهرس في أيّ مصدر: صرّحي بالسبب بدل «لم يصدر عدد» */
+        const em=FB.user&&FB.user.email;
+        MJ.status=!fb?"لستِ داخلةً في حسابكِ على هذا الجهاز؛ ادخلي من الإعدادات ← الحساب، ثم اضغطي «تحديث»"
+          :`لا أعداد في حسابكِ (${em||"؟"})؛ تأكّدي أنّه البريد نفسه المحفوظ في GitHub باسم FIREBASE_EMAIL`;
+        if(!MJ.index)MJ.index=[];
+      }else{MJ.index=JSON.parse(t);MJ._fresh=true;MJ.status=""}}
     const sel=MJ.sel||(MJ.index[0]&&MJ.index[0].date);
     if(sel&&!MJ.html[sel]){const it=MJ.index.find(x=>x.date===sel);const h=it?await get(it.file):null;MJ.html[sel]=h||""}
     mjSaveCache();
@@ -1124,6 +1131,7 @@ function mjClean(html){
 function vMajariyat(){
   if(!SY.token&&!fbSigned()&&!MJ.index)return `<div class="card stack"><b style="font-size:17px">ماجريات تصل إلى هنا كلّ صباح</b><span class="small muted">تصل أعداد الصحيفة إلى حسابكِ، فادخلي ببريدكِ من الإعدادات ليظهر عدد اليوم.</span><a class="btn" href="#prefs" style="text-decoration:none;text-align:center">إلى الإعدادات</a></div>`;
   if(!MJ.index)return `<div class="card empty">${MJ.status?esc(MJ.status):"يُجلب عدد اليوم…"}</div>`;
+  if(!MJ.index.length&&MJ.status)return `<div class="card stack"><b style="font-size:17px">لم تصل الأعداد</b><span class="small muted">${esc(MJ.status)}</span><button class="btn ghost" data-act="mjRefresh">تحديث</button></div>`;
   if(!MJ.index.length)return `<div class="card stack"><b style="font-size:17px">لم يصدر عددٌ بعد</b><span class="small muted">يُعدّ العدد آليًّا كلّ صباح قبل السادسة، ويظهر هنا حين يصدر.</span></div>`;
   const sel=MJ.sel||MJ.index[0].date,it=MJ.index.find(x=>x.date===sel)||MJ.index[0],h=MJ.html[it.date];
   const tk=key(today()),stale=MJ.index[0].date!==tk;
