@@ -139,3 +139,46 @@ test("مفتاح اليوم يُحوَّل إلى التاريخ نفسه ذها
   const k = "2026-11-04";
   assert.equal(A.key(A.parse(k)), k);
 });
+
+// ---- الترحيل: خطأه يُفقد بيانات المستخدمة، لذا يُختبر صراحةً ----
+test("الترحيل من نسخة قديمة يضيف يوم الحفظ الجمعة (٦) لبند الحفظ", () => {
+  const old = { sv: 1, items: [{ id: "hifz", t: "حفظ", days: [0, 1, 2, 3, 4], type: "count", target: 1 }], log: {}, phases: [] };
+  const s = A.migrate(old);
+  assert.equal(s.sv, 2);
+  const hifz = s.items.find((i) => i.id === "hifz");
+  assert.ok(hifz.days.includes(6), "يوم ٦ يجب أن يُضاف");
+});
+
+test("الترحيل يضيف الحقول الناقصة دون أن يمسّ البيانات الموجودة", () => {
+  const old = { sv: 2, items: [], log: { "2026-10-01": { d: { wird: true } } } };
+  const s = A.migrate(old);
+  assert.equal(s.log["2026-10-01"].d.wird, true, "السجل القديم يبقى كما هو");
+  assert.equal(typeof s.tests, "object", "الحقول الناقصة تُملأ من الافتراضي");
+  assert.ok(s.items.length > 0, "البنود الافتراضية تُضاف");
+});
+
+test("الترحيل من لا شيء يعطي الحالة الافتراضية", () => {
+  const s = A.migrate(null);
+  assert.equal(s.sv, 2);
+  assert.equal(s.name, "عائشة");
+});
+
+// ---- السلسلة: تُحسب من اليوم الفعلي، فنبني الأيام نسبةً إليه ----
+test("السلسلة: يوم العذر المرضي لا يكسر السلسلة", () => {
+  A.S.log = {};
+  const today = A.today();
+  const y = A.addDays(today, -1), b = A.addDays(today, -2), c = A.addDays(today, -3);
+  fill(y, { core: true, sup: "all" });
+  fill(b, { core: false, ex: "sick" });
+  fill(c, { core: true, sup: "all" });
+  assert.equal(A.streak(), 2);
+});
+
+test("السلسلة: يوم ناقص يقطعها", () => {
+  A.S.log = {};
+  const today = A.today();
+  const y = A.addDays(today, -1), b = A.addDays(today, -2);
+  fill(y, { core: true, sup: "all" });
+  fill(b, { core: false, sup: "none" });
+  assert.equal(A.streak(), 1);
+});
