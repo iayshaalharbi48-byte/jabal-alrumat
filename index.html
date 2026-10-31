@@ -841,7 +841,7 @@ function blank(){return{v:1,name:"عائشة",items:DEFAULT_ITEMS.map(i=>({...i,
   totals:{},log:{},tests:{},poems:[],books:[],curBook:null,course:"",majLink:"",ntfy:"",lastHifz:{},projects:{},tracks:{},pieces:[],myQuotes:[],seenPos:null,programs:{},_u:0,sv:2}}
 function load(){
   let s=null;
-  try{s=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){}
+  try{s=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){console.warn("جبل الرماة:",e)}
   return migrate(s);
 }
 function migrate(s){
@@ -855,7 +855,7 @@ function migrate(s){
   return s;
 }
 let S=load();
-function save(){S._u=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}schedulePush();fbSchedule()}
+function save(){S._u=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){console.warn("جبل الرماة:",e)}schedulePush();fbSchedule()}
 
 /* ---------- utils ---------- */
 const $=s=>document.querySelector(s);
@@ -867,8 +867,8 @@ const parse=k=>{const[y,m,d]=k.split("-").map(Number);return new Date(y,m-1,d)};
 const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
 const today=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
 let hijriF,gregF;
-try{hijriF=new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura-nu-arab",{day:"numeric",month:"long",year:"numeric"})}catch(e){}
-try{gregF=new Intl.DateTimeFormat("ar-EG",{day:"numeric",month:"long",year:"numeric"})}catch(e){}
+try{hijriF=new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura-nu-arab",{day:"numeric",month:"long",year:"numeric"})}catch(e){console.warn("جبل الرماة:",e)}
+try{gregF=new Intl.DateTimeFormat("ar-EG",{day:"numeric",month:"long",year:"numeric"})}catch(e){console.warn("جبل الرماة:",e)}
 const hijri=d=>hijriF?hijriF.format(d).replace(/\s?هـ$/,"")+" هـ":"";
 const greg=d=>gregF?gregF.format(d):key(d);
 const monthName=d=>{try{return new Intl.DateTimeFormat("ar-EG",{month:"long",year:"numeric"}).format(d)}catch(e){return key(d).slice(0,7)}};
@@ -1067,7 +1067,7 @@ function animateFlag(){
   const c=climb(),to=c.prov;
   let from=animFrom;if(from===null){from=S.seenPos!==null&&S.seenPos!==undefined?S.seenPos:to}
   animFrom=to;
-  if(S.seenPos!==to){S.seenPos=to;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+  if(S.seenPos!==to){S.seenPos=to;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){console.warn("جبل الرماة:",e)}}
   layoutHero();
   const fr=v=>gapFrac(SUMMIT-v);
   const reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1082,8 +1082,8 @@ window.addEventListener("resize",()=>{if(route==="today")layoutHero()});
 /* ---------- ماجريات: العدد اليومي من المستودع الخاص ---------- */
 const MJK="jabal-mj";
 let MJ={index:null,html:{},sel:null,status:"",loading:false};
-try{const c=JSON.parse(localStorage.getItem(MJK)||"null");if(c&&c.index){MJ.index=c.index;MJ.html=c.html||{}}}catch(e){}
-function mjSaveCache(){try{const keep={};(MJ.index||[]).slice(0,7).forEach(x=>{if(MJ.html[x.date])keep[x.date]=MJ.html[x.date]});localStorage.setItem(MJK,JSON.stringify({index:MJ.index,html:keep}))}catch(e){}}
+try{const c=JSON.parse(localStorage.getItem(MJK)||"null");if(c&&c.index){MJ.index=c.index;MJ.html=c.html||{}}}catch(e){console.warn("جبل الرماة:",e)}
+function mjSaveCache(){try{const keep={};(MJ.index||[]).slice(0,7).forEach(x=>{if(MJ.html[x.date])keep[x.date]=MJ.html[x.date]});localStorage.setItem(MJK,JSON.stringify({index:MJ.index,html:keep}))}catch(e){console.warn("جبل الرماة:",e)}}
 function mjUrl(p){return `https://api.github.com/repos/${SY.repo||"iayshaalharbi48-byte/jabal-data"}/contents/majariyat/${p}?t=${Date.now()}`}
 async function mjGetGH(p){const r=await fetch(mjUrl(p),{headers:{"Authorization":"Bearer "+SY.token,"Accept":"application/vnd.github.raw+json","X-GitHub-Api-Version":"2022-11-28"}});if(r.status===404)return null;if(!r.ok)throw new Error(r.status);return r.text()}
 /* المصدر الأوّل: Firestore بحساب البريد (users/{uid}/majariyat/…) ينسخه إليه Action في jabal-data؛ وإلا فـ GitHub برمز المزامنة */
@@ -1091,7 +1091,7 @@ const fbSigned=()=>{try{return !!(FB.user||localStorage.getItem(FBK))}catch(e){r
 async function mjFB(){
   if(!fbSigned())return null;
   const m=await fbInit();if(!m)return null;
-  try{if(m.auth.authStateReady)await m.auth.authStateReady()}catch(e){}
+  try{if(m.auth.authStateReady)await m.auth.authStateReady()}catch(e){console.warn("جبل الرماة:",e)}
   return FB.user?{fs:m.fs,db:m.db,uid:FB.user.uid}:null;
 }
 async function mjGetFB(fb,p){
@@ -1333,8 +1333,8 @@ function chime(up){
   try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const t=actx.currentTime,o=actx.createOscillator(),g=actx.createGain();
    o.type="triangle";o.frequency.setValueAtTime(up?520:420,t);o.frequency.exponentialRampToValueAtTime(up?1040:260,t+.12);
    g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.18,t+.015);g.gain.exponentialRampToValueAtTime(.0001,t+.22);
-   o.connect(g).connect(actx.destination);o.start(t);o.stop(t+.25)}catch(e){}
-  try{navigator.vibrate&&navigator.vibrate(up?12:6)}catch(e){}
+   o.connect(g).connect(actx.destination);o.start(t);o.stop(t+.25)}catch(e){console.warn("جبل الرماة:",e)}
+  try{navigator.vibrate&&navigator.vibrate(up?12:6)}catch(e){console.warn("جبل الرماة:",e)}
 }
 function celebrate(id,big){
   const el=document.querySelector(`[data-tile="${id}"]`);
@@ -1355,8 +1355,8 @@ let calM=null,calSel=null;
 function vCal(){
   const t=today();if(!calM)calM=new Date(t.getFullYear(),t.getMonth(),1);if(!calSel)calSel=t;
   const first=new Date(calM),last=new Date(calM.getFullYear(),calM.getMonth()+1,0),start=addDays(first,-first.getDay());
-  let hm="";try{const f=new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura-nu-arab",{month:"long",year:"numeric"});const a=f.format(first),b=f.format(last);hm=a===b?a:a.replace(/\s*\S+\s*هـ?$/,"").replace(/\s*[٠-٩]+\s*هـ?$/,"")+" — "+b}catch(e){}
-  let hf=null;try{hf=new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura-nu-arab",{day:"numeric"})}catch(e){}
+  let hm="";try{const f=new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura-nu-arab",{month:"long",year:"numeric"});const a=f.format(first),b=f.format(last);hm=a===b?a:a.replace(/\s*\S+\s*هـ?$/,"").replace(/\s*[٠-٩]+\s*هـ?$/,"")+" — "+b}catch(e){console.warn("جبل الرماة:",e)}
+  let hf=null;try{hf=new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura-nu-arab",{day:"numeric"})}catch(e){console.warn("جبل الرماة:",e)}
   let cells=["ح","ن","ث","ر","خ","ج","س"].map((x,i)=>`<div class="wd" title="${DAYN[i]}">${x}</div>`).join("");
   const weeks=Math.ceil((first.getDay()+last.getDate())/7);
   for(let i=0;i<weeks*7;i++){const d=addDays(start,i),k=key(d),p=S.log[k]&&d<=t?dayPct(d):null;
@@ -1654,12 +1654,12 @@ function todoHTML(d){
 
 /* ---------- مؤقّت التركيز ---------- */
 const FOK="jabal-focus";
-let FO=null;try{FO=JSON.parse(localStorage.getItem(FOK)||"null")}catch(e){}
+let FO=null;try{FO=JSON.parse(localStorage.getItem(FOK)||"null")}catch(e){console.warn("جبل الرماة:",e)}
 let foTick=null,wake=null;
 const FDUR=[15,25,45,60];
-function foSave(){try{FO?localStorage.setItem(FOK,JSON.stringify(FO)):localStorage.removeItem(FOK)}catch(e){}}
+function foSave(){try{FO?localStorage.setItem(FOK,JSON.stringify(FO)):localStorage.removeItem(FOK)}catch(e){console.warn("جبل الرماة:",e)}}
 function foLeft(){if(!FO)return 0;return FO.pause!=null?FO.pause:Math.max(0,FO.end-Date.now())}
-async function foWake(on){try{if(on&&"wakeLock" in navigator&&!wake){wake=await navigator.wakeLock.request("screen");wake.addEventListener("release",()=>wake=null)}else if(!on&&wake){await wake.release();wake=null}}catch(e){}}
+async function foWake(on){try{if(on&&"wakeLock" in navigator&&!wake){wake=await navigator.wakeLock.request("screen");wake.addEventListener("release",()=>wake=null)}else if(!on&&wake){await wake.release();wake=null}}catch(e){console.warn("جبل الرماة:",e)}}
 function foStart(id,min){
   const it=S.items.find(x=>x.id===id);
   FO={id:id||"",t:it?it.t:"جلسةٌ حرّة",min,day:key(today()),end:Date.now()+min*60000,pause:null,stage:"run"};
@@ -1679,7 +1679,7 @@ function foFinish(early){
   const it=S.items.find(x=>x.id===FO.id),e=entry(FO.day);
   FO.stage=it&&it.type==="check"&&score(it,e)<1?"ask":"done";FO.got=early?mins:FO.min;FO.pause=0;
   foSave();foWake(false);
-  if(!early){chime(true);setTimeout(()=>chime(true),260);setTimeout(()=>chime(true),520);try{navigator.vibrate&&navigator.vibrate([120,80,120])}catch(e){}}
+  if(!early){chime(true);setTimeout(()=>chime(true),260);setTimeout(()=>chime(true),520);try{navigator.vibrate&&navigator.vibrate([120,80,120])}catch(e){console.warn("جبل الرماة:",e)}}
   foRender();
 }
 function foClose(){FO=null;foSave();foWake(false);clearInterval(foTick);foTick=null;$("#focus").innerHTML="";document.body.classList.remove("focusing");render()}
@@ -1723,14 +1723,14 @@ const VAPID_PUB="BAZd2H2CGHhkDkLWgUtlNYq1YTrAP0rJ87l1h8I9H9H-AradpYTZXH8-tYnMHjc
 const standalone=()=>(window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone===true;
 const pushOK=()=>"serviceWorker" in navigator&&"PushManager" in window&&"Notification" in window;
 let pushState=(()=>{try{return localStorage.getItem("jabal-push")||""}catch(e){return""}})();
-function setPush(s){pushState=s;try{s?localStorage.setItem("jabal-push",s):localStorage.removeItem("jabal-push")}catch(e){}}
+function setPush(s){pushState=s;try{s?localStorage.setItem("jabal-push",s):localStorage.removeItem("jabal-push")}catch(e){console.warn("جبل الرماة:",e)}}
 function b64u(s){const p="=".repeat((4-s.length%4)%4),r=atob((s+p).replace(/-/g,"+").replace(/_/g,"/"));return Uint8Array.from(r,c=>c.charCodeAt(0))}
 function dataUrl(p){return `https://api.github.com/repos/${SY.repo||"iayshaalharbi48-byte/jabal-data"}/contents/${p}`}
 async function subsWrite(fn){
   for(let i=0;i<3;i++){
     const g=await fetch(dataUrl("push/subs.json")+"?t="+Date.now(),{headers:ghHeaders()});
     let sha=null,cur={subs:[]};
-    if(g.ok){const j=await g.json();sha=j.sha;try{cur=JSON.parse(b64d(j.content))}catch(e){}}else if(g.status!==404)throw new Error(g.status);
+    if(g.ok){const j=await g.json();sha=j.sha;try{cur=JSON.parse(b64d(j.content))}catch(e){console.warn("جبل الرماة:",e)}}else if(g.status!==404)throw new Error(g.status);
     cur.subs=fn(cur.subs||[]);
     const body={message:"اشتراك التنبيهات",content:b64e(JSON.stringify(cur,null,1))};if(sha)body.sha=sha;
     const r=await fetch(dataUrl("push/subs.json"),{method:"PUT",headers:{...ghHeaders(),"Content-Type":"application/json"},body:JSON.stringify(body)});
@@ -1755,7 +1755,7 @@ async function pushEnable(){
 }
 async function pushOff(){
   try{const reg=await navigator.serviceWorker.ready,sub=await reg.pushManager.getSubscription();
-    if(sub){const ep=sub.endpoint;await sub.unsubscribe();if(SY.token)await subsWrite(list=>list.filter(x=>x.endpoint!==ep))}}catch(e){}
+    if(sub){const ep=sub.endpoint;await sub.unsubscribe();if(SY.token)await subsWrite(list=>list.filter(x=>x.endpoint!==ep))}}catch(e){console.warn("جبل الرماة:",e)}
   setPush("");render();toast("أُوقفت تنبيهات التطبيق");
 }
 function widgetCopy(){
@@ -1824,7 +1824,7 @@ function wsCell(x,ox,oy,W,big,night,T){
   x.restore();
 }
 async function wsSprite(sum){
-  try{await Promise.all(['500 40px "Thmanyah Serif Display"','400 24px "Thmanyah Serif Text"','500 24px "Thmanyah Serif Text"'].map(f=>document.fonts.load(f)))}catch(e){}
+  try{await Promise.all(['500 40px "Thmanyah Serif Display"','400 24px "Thmanyah Serif Text"','500 24px "Thmanyah Serif Text"'].map(f=>document.fonts.load(f)))}catch(e){console.warn("جبل الرماة:",e)}
   const c=document.createElement("canvas");c.width=WS.S+WS.M;c.height=WS.H*4;const x=c.getContext("2d");
   // الصفوف: ٠ نهار/اليوم، ١ ليل/اليوم، ٢ نهار/يوم جديد، ٣ ليل/يوم جديد — والأعمدة: صغيرة ثم متوسطة
   for(let r=0;r<4;r++){const night=r%2===1,T=wsTexts(sum,r<2);
@@ -1859,20 +1859,20 @@ async function wsPush(sm){
   if(!SY.token||wsBusy)return;wsBusy=true;
   try{
     const sig=JSON.stringify([wsTexts(sm,true),wsTexts(sm,false),sm.date]);
-    let last="";try{last=localStorage.getItem("jabal-ws")||""}catch(e){}
+    let last="";try{last=localStorage.getItem("jabal-ws")||""}catch(e){console.warn("جبل الرماة:",e)}
     if(sig===last){wsBusy=false;return}
     const url=dataUrl("widget.png"),g=await fetch(url+"?t="+Date.now(),{headers:ghHeaders()});
     const sha=g.ok?(await g.json()).sha:null;
     const img=await wsSprite(sm);
     const body={message:"نصوص الأداة",content:img.split(",")[1]};if(sha)body.sha=sha;
     const r=await fetch(url,{method:"PUT",headers:{...ghHeaders(),"Content-Type":"application/json"},body:JSON.stringify(body)});
-    if(r.ok)try{localStorage.setItem("jabal-ws",sig)}catch(e){}
-  }catch(e){}
+    if(r.ok)try{localStorage.setItem("jabal-ws",sig)}catch(e){console.warn("جبل الرماة:",e)}
+  }catch(e){console.warn("جبل الرماة:",e)}
   wsBusy=false;
 }
 
 /* ---------- الصيام المستحبّ والمناسبات الإسلامية (بتقويم أم القرى) ---------- */
-let hNumF=null;try{hNumF=new Intl.DateTimeFormat("en-u-ca-islamic-umalqura-nu-latn",{day:"numeric",month:"numeric",year:"numeric"})}catch(e){}
+let hNumF=null;try{hNumF=new Intl.DateTimeFormat("en-u-ca-islamic-umalqura-nu-latn",{day:"numeric",month:"numeric",year:"numeric"})}catch(e){console.warn("جبل الرماة:",e)}
 function hNum(d){if(!hNumF)return null;const o={};for(const p of hNumF.formatToParts(d))if(p.type==="day"||p.type==="month"||p.type==="year")o[p.type]=parseInt(p.value,10);return o.day?{d:o.day,m:o.month,y:o.year}:null}
 const ISL_EV={
  "1-1":{t:"رأس السنة الهجرية",k:"ev"},
@@ -1938,10 +1938,10 @@ const FBK="jabal-fb";
 let FBF="";let FB={m:null,user:null,status:"",unsub:[],ready:false,timer:null,busy:false,err:""};
 let FS={};   // ما زُومن آخر مرّة: {uid, days:{k:hash}, u:{k:وقت}, set:hash, setu:وقت}
 function fsLoad(uid){try{const x=JSON.parse(localStorage.getItem(FBK+"-s")||"null");FS=x&&x.uid===uid?x:{uid,days:{},u:{},set:"",setu:0}}catch(e){FS={uid,days:{},u:{},set:"",setu:0}}}
-function fsSave(){try{localStorage.setItem(FBK+"-s",JSON.stringify(FS))}catch(e){}}
+function fsSave(){try{localStorage.setItem(FBK+"-s",JSON.stringify(FS))}catch(e){console.warn("جبل الرماة:",e)}}
 function h32(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return(h>>>0).toString(36)}
 function setJSON(){const o={};for(const k in S)if(k!=="log"&&k!=="_u")o[k]=S[k];return JSON.stringify(o)}
-function writeLocal(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function writeLocal(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){console.warn("جبل الرماة:",e)}}
 const FB_ERR={"auth/invalid-credential":"البريد أو كلمة المرور غير صحيحة","auth/wrong-password":"كلمة المرور غير صحيحة","auth/user-not-found":"لا حساب بهذا البريد، فأنشئيه أولًا",
   "auth/email-already-in-use":"لهذا البريد حسابٌ من قبل، فادخلي به","auth/weak-password":"كلمة المرور قصيرة؛ اجعليها ستة أحرفٍ فأكثر","auth/invalid-email":"البريد غير صحيح",
   "auth/network-request-failed":"تعذّر الاتصال بالإنترنت","auth/too-many-requests":"محاولاتٌ كثيرة، فانتظري قليلًا","auth/api-key-not-valid.-please-pass-a-valid-api-key.":"مفتاح Firebase في التطبيق غير صحيح",
@@ -1953,11 +1953,11 @@ async function fbInit(){
     const [a,au,fs]=await Promise.all([import(FBU+"firebase-app.js"),import(FBU+"firebase-auth.js"),import(FBU+"firebase-firestore.js")]);
     const app=a.initializeApp(FBC),auth=au.getAuth(app),db=fs.getFirestore(app);
     FB.m={au,fs,auth,db};
-    au.onAuthStateChanged(auth,u=>{const was=FB.user?FB.user.uid:null;FB.user=u||null;if((u?u.uid:null)===was)return;if(u){try{localStorage.setItem(FBK,"1")}catch(e){}fbStart();if(route==="majariyat"){MJ._fresh=false;mjLoad(true)}}else fbStop();if(route==="prefs")render()});
+    au.onAuthStateChanged(auth,u=>{const was=FB.user?FB.user.uid:null;FB.user=u||null;if((u?u.uid:null)===was)return;if(u){try{localStorage.setItem(FBK,"1")}catch(e){console.warn("جبل الرماة:",e)}fbStart();if(route==="majariyat"){MJ._fresh=false;mjLoad(true)}}else fbStop();if(route==="prefs")render()});
     return FB.m;
   }catch(e){FB.status="تعذّر تحميل Firebase (لا اتصال؟)";if(route==="prefs")render();return null}
 }
-function fbStop(){for(const f of FB.unsub)try{f()}catch(e){}FB.unsub=[];FB.ready=false;FB.status=""}
+function fbStop(){for(const f of FB.unsub)try{f()}catch(e){console.warn("جبل الرماة:",e)}FB.unsub=[];FB.ready=false;FB.status=""}
 /* أوّل ما يدخل: يجلب ما في السحابة ويدمجه، ثم يرفع ما ينقصها، ثم يستمع للتغيّرات */
 async function fbStart(){
   const {fs,db}=FB.m,uid=FB.user.uid;fbStop();fsLoad(uid);FB.status="جارٍ الدمج…";if(route==="prefs")render();
@@ -2018,7 +2018,7 @@ async function fbWidget(){
     if(FS.wsig!==hg||FS.wid!==wid)data.img=(await wsSprite(sm)).split(",")[1];
     await fs.setDoc(fs.doc(db,"widgets",wid),data,{merge:true});
     FS.ws=hs;FS.wsig=hg;FS.wid=wid;fsSave();
-  }catch(e){}
+  }catch(e){console.warn("جبل الرماة:",e)}
 }
 async function fbAuth(kind){
   const em=($("#fbEmail")||{}).value?.trim()||"",pw=($("#fbPass")||{}).value||"";
@@ -2032,7 +2032,7 @@ async function fbAuth(kind){
     toast(kind==="up"?"أُنشئ حسابكِ، وتُرفع بياناتكِ الآن":"دخلتِ، وتُدمج بياناتكِ الآن");
   }catch(e){toast(fbMsg(e))}
 }
-async function fbOut(){if(!FB.m)return;await FB.m.au.signOut(FB.m.auth);try{localStorage.removeItem(FBK)}catch(e){}toast("خرجتِ من الحساب، وبقيت بياناتكِ على هذا الجهاز")}
+async function fbOut(){if(!FB.m)return;await FB.m.au.signOut(FB.m.auth);try{localStorage.removeItem(FBK)}catch(e){console.warn("جبل الرماة:",e)}toast("خرجتِ من الحساب، وبقيت بياناتكِ على هذا الجهاز")}
 function fbPrefsHTML(){
   const u=FB.user;
   if(u)return `<section class="blk"><div class="blk-h"><h2>الحساب</h2><span class="tag">${esc(FB.status||"…")}</span></div>
@@ -2165,8 +2165,8 @@ function sendTest(){
    .catch(()=>toast("تعذّر الإرسال من هنا؛ جرّبيه من التطبيق المثبّت أو من GitHub"));
 }
 /* ---------- sync ---------- */
-const SYK="jabal-sync";let SY={};try{SY=JSON.parse(localStorage.getItem(SYK)||"{}")||{}}catch(e){}
-function saveSY(){try{localStorage.setItem(SYK,JSON.stringify(SY))}catch(e){}}
+const SYK="jabal-sync";let SY={};try{SY=JSON.parse(localStorage.getItem(SYK)||"{}")||{}}catch(e){console.warn("جبل الرماة:",e)}
+function saveSY(){try{localStorage.setItem(SYK,JSON.stringify(SY))}catch(e){console.warn("جبل الرماة:",e)}}
 let syncStatus=SY.token?"تعمل":"غير مفعّلة",syncSha=null,pushT=null,syncing=false;
 const b64e=s=>btoa(unescape(encodeURIComponent(s))),b64d=s=>decodeURIComponent(escape(atob(s.replace(/\n/g,""))));
 function ghUrl(){return `https://api.github.com/repos/${SY.repo||"iayshaalharbi48-byte/jabal-data"}/contents/progress.json`}
@@ -2184,7 +2184,7 @@ async function syncPull(manual){
     if(r.status===404){syncSha=null;await syncPush();return}
     if(!r.ok)throw new Error(r.status);
     const j=await r.json();syncSha=j.sha;const remote=JSON.parse(b64d(j.content));
-    if(remote&&remote.state&&(remote.state._u||0)>(S._u||0)){S=migrate(remote.state);try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}animFrom=null;render();if(manual)toast("جُلب تقدّمكِ المحفوظ")}
+    if(remote&&remote.state&&(remote.state._u||0)>(S._u||0)){S=migrate(remote.state);try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){console.warn("جبل الرماة:",e)}animFrom=null;render();if(manual)toast("جُلب تقدّمكِ المحفوظ")}
     else await syncPush();
   }catch(err){syncStatus=String(err.message)==="401"||String(err.message)==="403"?"الرمز غير صالح":"تعذّر الاتصال";if(route==="prefs")render()}
 }
@@ -2210,7 +2210,7 @@ render();
 if(FO){if(FO.stage==="run"&&FO.pause==null&&foLeft()<=0)foFinish(false);else foRender()}
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&FO&&FO.stage==="run"){if(FO.pause==null&&foLeft()<=0)foFinish(false);else{if(FO.pause==null)foWake(true);foRender()}}});
 syncPull(false);
-try{if(localStorage.getItem(FBK))fbInit()}catch(e){}
+try{if(localStorage.getItem(FBK))fbInit()}catch(e){console.warn("جبل الرماة:",e)}
 })();
 </script>
 

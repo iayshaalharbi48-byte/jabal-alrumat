@@ -1,0 +1,28 @@
+name: فحص الجودة
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: الاختبارات
+        run: npm test
+      - name: التحقق من أن index.html مطابق للبناء
+        run: |
+          rm -rf "$RUNNER_TEMP/build" && mkdir -p "$RUNNER_TEMP/build"
+          cp -r src "$RUNNER_TEMP/build/src"
+          (cd "$RUNNER_TEMP/build/src" && python3 build.py)
+          if ! cmp -s "$RUNNER_TEMP/build/index.html" index.html; then
+            echo "index.html لا يطابق البناء؛ شغّلي src/build.py وأعيدي الرفع"; exit 1
+          fi
