@@ -182,3 +182,10 @@ test("السلسلة: يوم ناقص يقطعها", () => {
   fill(b, { core: false, sup: "none" });
   assert.equal(A.streak(), 1);
 });
+
+test("بند تدوين المذكّرات موجود في الأيام كلها، ويُضاف للبيانات القديمة عند الترحيل", () => {
+  const s = A.migrate({ sv: 2, items: [{ id: "salah", t: "الصلوات", cat: "ibada", days: [0, 1, 2, 3, 4, 5, 6], type: "prayers" }], log: {} });
+  const notes = s.items.find((i) => i.id === "notes");
+  assert.ok(notes, "بند المذكرات يجب أن يُضاف");
+  assert.equal(notes.days.length, 7, "يومي كل يوم");
+});
