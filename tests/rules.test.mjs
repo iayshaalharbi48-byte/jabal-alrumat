@@ -144,7 +144,7 @@ test("مفتاح اليوم يُحوَّل إلى التاريخ نفسه ذها
 test("الترحيل من نسخة قديمة يضيف يوم الحفظ الجمعة (٦) لبند الحفظ", () => {
   const old = { sv: 1, items: [{ id: "hifz", t: "حفظ", days: [0, 1, 2, 3, 4], type: "count", target: 1 }], log: {}, phases: [] };
   const s = A.migrate(old);
-  assert.equal(s.sv, 2);
+  assert.equal(s.sv, 3);
   const hifz = s.items.find((i) => i.id === "hifz");
   assert.ok(hifz.days.includes(6), "يوم ٦ يجب أن يُضاف");
 });
