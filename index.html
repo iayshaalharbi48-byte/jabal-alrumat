@@ -738,12 +738,12 @@ const DEFAULT_ITEMS=[
  {id:"salah",t:"الصلوات في وقتها",cat:"ibada",days:ALL,type:"prayers"},
  {id:"duha",t:"صلاة الضحى",cat:"ibada",days:ALL,type:"check"},
  {id:"witr",t:"الوتر",cat:"ibada",days:ALL,type:"check"},
- {id:"wird",t:"ورد التلاوة",cat:"ibada",days:ALL,type:"check"},
+ {id:"wird",t:"ورد التلاوة",cat:"ibada",days:WK,type:"check"},
  {id:"azm",t:"أذكار الصباح",cat:"ibada",days:ALL,type:"check"},
  {id:"aze",t:"أذكار المساء",cat:"ibada",days:ALL,type:"check"},
  {id:"hifz",t:"حفظ وجهٍ جديد",cat:"master",days:[0,1,2,3,4,6],type:"count",unit:"وجه",target:1,phase:true},
  {id:"tathbit",t:"تثبيت المحفوظ ومراجعته",cat:"master",days:[5],type:"check",phase:true},
- {id:"hadith",t:"دراسة الحديث",cat:"master",days:WK,type:"count",unit:"صفحة",phase:true},
+ {id:"hadith",t:"منهج الماجستير: الحديث",cat:"master",days:WK,type:"count",unit:"صفحة",phase:true},
  {id:"test",t:"الاختبار الشامل الشهري",cat:"master",days:[4],type:"check",phase:true,special:"test"},
  {id:"p_academy",t:"أكاديمية الحديث",cat:"prog",days:[],type:"check",prog:true},
  {id:"p_arqam",t:"مدرسة الأرقم",cat:"prog",days:[],type:"check",prog:true},
@@ -852,6 +852,7 @@ function migrate(s){
   const ids=new Set((s.items||[]).map(i=>i.id));
   s.items=(s.items||[]).concat(b.items.filter(i=>!ids.has(i.id)));
   for(const it of s.items){const df=b.items.find(x=>x.id===it.id);if(df&&df.metric&&!it.metric){it.metric=true;it.t=df.t;if(!it.target)it.target=df.target;if(!it.step)it.step=df.step}}
+  if(!(s.sv>=3)){for(const it of s.items){if(it.id==="hadith")it.t="منهج الماجستير: الحديث",it.days=WK;if(it.id==="wird")it.days=WK}s.sv=3}
   for(const k in b)if(s[k]===undefined)s[k]=b[k];
   return s;
 }
