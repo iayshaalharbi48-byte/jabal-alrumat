@@ -189,3 +189,17 @@ test("بند تدوين المذكّرات موجود في الأيام كلها
   assert.ok(notes, "بند المذكرات يجب أن يُضاف");
   assert.equal(notes.days.length, 7, "يومي كل يوم");
 });
+
+test("الترحيل يعيد تسمية بند الحديث ويصحّح يوم القرآن (الأحد–الخميس)", () => {
+  const old = { sv: 2, items: [
+    { id: "hadith", t: "دراسة الحديث", days: [0, 1, 2, 3, 4, 5, 6], type: "count" },
+    { id: "wird", t: "ورد التلاوة", days: [0, 1, 2, 3, 4, 5, 6], type: "check" },
+  ], log: {}, phases: [] };
+  const s = A.migrate(old);
+  assert.equal(s.sv, 3);
+  const h = s.items.find((i) => i.id === "hadith");
+  const w = s.items.find((i) => i.id === "wird");
+  assert.equal(h.t, "منهج الماجستير: الحديث");
+  assert.deepEqual([...h.days], [0, 1, 2, 3, 4]);
+  assert.deepEqual([...w.days], [0, 1, 2, 3, 4]);
+});
