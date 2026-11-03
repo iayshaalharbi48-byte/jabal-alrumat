@@ -144,7 +144,7 @@ test("مفتاح اليوم يُحوَّل إلى التاريخ نفسه ذها
 test("الترحيل من نسخة قديمة يضيف يوم الحفظ الجمعة (٦) لبند الحفظ", () => {
   const old = { sv: 1, items: [{ id: "hifz", t: "حفظ", days: [0, 1, 2, 3, 4], type: "count", target: 1 }], log: {}, phases: [] };
   const s = A.migrate(old);
-  assert.equal(s.sv, 3);
+  assert.equal(s.sv, 4);
   const hifz = s.items.find((i) => i.id === "hifz");
   assert.ok(hifz.days.includes(6), "يوم ٦ يجب أن يُضاف");
 });
@@ -159,7 +159,7 @@ test("الترحيل يضيف الحقول الناقصة دون أن يمسّ �
 
 test("الترحيل من لا شيء يعطي الحالة الافتراضية", () => {
   const s = A.migrate(null);
-  assert.equal(s.sv, 2);
+  assert.equal(s.sv, 4);
   assert.equal(s.name, "عائشة");
 });
 
@@ -190,16 +190,28 @@ test("بند تدوين المذكّرات موجود في الأيام كلها
   assert.equal(notes.days.length, 7, "يومي كل يوم");
 });
 
-test("الترحيل يعيد تسمية بند الحديث ويصحّح يوم القرآن (الأحد–الخميس)", () => {
+test("الترحيل يُبقي اسم «دراسة الحديث» ويصحّح أيام الحديث والقرآن (الأحد–الخميس)", () => {
   const old = { sv: 2, items: [
     { id: "hadith", t: "دراسة الحديث", days: [0, 1, 2, 3, 4, 5, 6], type: "count" },
     { id: "wird", t: "ورد التلاوة", days: [0, 1, 2, 3, 4, 5, 6], type: "check" },
   ], log: {}, phases: [] };
   const s = A.migrate(old);
-  assert.equal(s.sv, 3);
+  assert.equal(s.sv, 4);
   const h = s.items.find((i) => i.id === "hadith");
   const w = s.items.find((i) => i.id === "wird");
-  assert.equal(h.t, "منهج الماجستير: الحديث");
+  assert.equal(h.t, "دراسة الحديث");
   assert.deepEqual([...h.days], [0, 1, 2, 3, 4]);
   assert.deepEqual([...w.days], [0, 1, 2, 3, 4]);
+});
+
+test("من نُقل إلى الاسم المؤقت «منهج الماجستير: الحديث» يعود إلى «دراسة الحديث»", () => {
+  const s = A.migrate({ sv: 3, items: [{ id: "hadith", t: "منهج الماجستير: الحديث", days: [0, 1, 2, 3, 4], type: "count" }], log: {} });
+  assert.equal(s.items.find((i) => i.id === "hadith").t, "دراسة الحديث");
+});
+
+test("تدوين المذكّرات من الأساس الإلزامي: نقصه ينزل بالراية", () => {
+  assert.ok(A.CORE.has("notes"));
+  const e = fill(WED, { core: true, sup: "all" });
+  e.d.notes = false;
+  assert.equal(A.dayState(WED), "down");
 });
