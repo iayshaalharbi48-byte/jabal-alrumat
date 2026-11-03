@@ -743,7 +743,7 @@ const DEFAULT_ITEMS=[
  {id:"aze",t:"أذكار المساء",cat:"ibada",days:ALL,type:"check"},
  {id:"hifz",t:"حفظ وجهٍ جديد",cat:"master",days:[0,1,2,3,4,6],type:"count",unit:"وجه",target:1,phase:true},
  {id:"tathbit",t:"تثبيت المحفوظ ومراجعته",cat:"master",days:[5],type:"check",phase:true},
- {id:"hadith",t:"منهج الماجستير: الحديث",cat:"master",days:WK,type:"count",unit:"صفحة",phase:true},
+ {id:"hadith",t:"دراسة الحديث",cat:"master",days:WK,type:"count",unit:"صفحة",phase:true},
  {id:"test",t:"الاختبار الشامل الشهري",cat:"master",days:[4],type:"check",phase:true,special:"test"},
  {id:"p_academy",t:"أكاديمية الحديث",cat:"prog",days:[],type:"check",prog:true},
  {id:"p_arqam",t:"مدرسة الأرقم",cat:"prog",days:[],type:"check",prog:true},
@@ -839,7 +839,7 @@ const TRACKS=[
 
 /* ---------- state ---------- */
 function blank(){return{v:1,name:"عائشة",items:DEFAULT_ITEMS.map(i=>({...i,on:true})),phases:JSON.parse(JSON.stringify(DEFAULT_PHASES)),
-  totals:{},log:{},tests:{},poems:[],books:[],curBook:null,course:"",majLink:"",ntfy:"",lastHifz:{},projects:{},tracks:{},pieces:[],myQuotes:[],seenPos:null,programs:{},_u:0,sv:2}}
+  totals:{},log:{},tests:{},poems:[],books:[],curBook:null,course:"",majLink:"",ntfy:"",lastHifz:{},projects:{},tracks:{},pieces:[],myQuotes:[],seenPos:null,programs:{},_u:0,sv:4}}
 function load(){
   let s=null;
   try{s=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){console.warn("جبل الرماة:",e)}
@@ -852,7 +852,7 @@ function migrate(s){
   const ids=new Set((s.items||[]).map(i=>i.id));
   s.items=(s.items||[]).concat(b.items.filter(i=>!ids.has(i.id)));
   for(const it of s.items){const df=b.items.find(x=>x.id===it.id);if(df&&df.metric&&!it.metric){it.metric=true;it.t=df.t;if(!it.target)it.target=df.target;if(!it.step)it.step=df.step}}
-  if(!(s.sv>=3)){for(const it of s.items){if(it.id==="hadith")it.t="منهج الماجستير: الحديث",it.days=WK;if(it.id==="wird")it.days=WK}s.sv=3}
+  if(!(s.sv>=4)){for(const it of s.items){if(it.id==="hadith"){if(it.t==="منهج الماجستير: الحديث")it.t="دراسة الحديث";it.days=WK}if(it.id==="wird")it.days=WK}s.sv=4}
   for(const k in b)if(s[k]===undefined)s[k]=b[k];
   return s;
 }
@@ -889,7 +889,7 @@ function scheduled(it,d){
 const EX_CAP=4,EXN={sick:"مرض",travel:"سفر",hayd:"عذرٌ شرعي"};
 const HAYD_HIDE=new Set(["salah","duha","witr"]);
 /* الثغر الأساس؛ وما سواه مكمّلات */
-const CORE=new Set(["salah","wird","azm","aze","hifz","tathbit"]);
+const CORE=new Set(["salah","wird","azm","aze","hifz","tathbit","notes"]);
 const isCore=it=>CORE.has(it.id);
 /* القاعدة الجديدة تسري من يوم إطلاقها، وما قبله يبقى على ٧٠٪ فلا يتغيّر موضعكِ بأثرٍ رجعي */
 const RULE_FROM="2026-10-28";
