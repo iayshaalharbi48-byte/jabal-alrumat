@@ -1098,7 +1098,8 @@ async function mjLoad(force){
     if(v==null&&SY.token)v=await mjGetGH(p);
     else if(v==null&&fbErr)throw fbErr;
     return v};
-  const need=!MJ.index||force||!MJ._fresh;
+  /* يُعاد جلب الفهرس كلّما مضت ربع ساعة، فالتطبيق قد يبقى مفتوحًا في الذاكرة من يومٍ إلى يوم */
+  const need=!MJ.index||force||!MJ._at||Date.now()-MJ._at>9e5;
   try{
     if(!fb&&!SY.token)throw new Error("nofb");
     if(need){const t=await get("index.json");
@@ -1108,7 +1109,7 @@ async function mjLoad(force){
         MJ.status=!fb?"لستِ داخلةً في حسابكِ على هذا الجهاز؛ ادخلي من الإعدادات ← الحساب، ثم اضغطي «تحديث»"
           :`لا أعداد في حسابكِ (${em||"؟"})؛ تأكّدي أنّه البريد نفسه المحفوظ في GitHub باسم FIREBASE_EMAIL`;
         if(!MJ.index)MJ.index=[];
-      }else{MJ.index=JSON.parse(t);MJ._fresh=true;MJ.status=""}}
+      }else{MJ.index=JSON.parse(t);MJ._at=Date.now();MJ.status=""}}
     const sel=MJ.sel||(MJ.index[0]&&MJ.index[0].date);
     if(sel&&!MJ.html[sel]){const it=MJ.index.find(x=>x.date===sel);const h=it?await get(it.file):null;MJ.html[sel]=h||""}
     mjSaveCache();
@@ -1941,7 +1942,7 @@ async function fbInit(){
     const [a,au,fs]=await Promise.all([import(FBU+"firebase-app.js"),import(FBU+"firebase-auth.js"),import(FBU+"firebase-firestore.js")]);
     const app=a.initializeApp(FBC),auth=au.getAuth(app),db=fs.getFirestore(app);
     FB.m={au,fs,auth,db};
-    au.onAuthStateChanged(auth,u=>{const was=FB.user?FB.user.uid:null;FB.user=u||null;if((u?u.uid:null)===was)return;if(u){try{localStorage.setItem(FBK,"1")}catch(e){console.warn("جبل الرماة:",e)}fbStart();if(route==="majariyat"){MJ._fresh=false;mjLoad(true)}}else fbStop();if(route==="prefs")render()});
+    au.onAuthStateChanged(auth,u=>{const was=FB.user?FB.user.uid:null;FB.user=u||null;if((u?u.uid:null)===was)return;if(u){try{localStorage.setItem(FBK,"1")}catch(e){console.warn("جبل الرماة:",e)}fbStart();if(route==="majariyat"){MJ._at=0;mjLoad(true)}}else fbStop();if(route==="prefs")render()});
     return FB.m;
   }catch(e){FB.status="تعذّر تحميل Firebase (لا اتصال؟)";if(route==="prefs")render();return null}
 }
@@ -2050,7 +2051,7 @@ document.addEventListener("click",ev=>{
    case"exOpen":exOpen=!exOpen;break;
    case"ex":{const e=entry(k,true),v=b.dataset.v;if(v){if((v==="sick"||v==="travel")&&EX_CAP-exUsed(viewDay,k)<=0){toast("استُنفدت أيام المرض والسفر لهذا الشهر");return}e.ex=v;toast(v==="hayd"?"يومُ عذر: أُخفيت الصلوات، والراية لا تنزل":"يومُ عذر: الراية ثابتةٌ في موضعها")}else delete e.ex;exOpen=false;save();break}
    case"mjSel":MJ.sel=b.dataset.d;$("#view").innerHTML=vMajariyat();mjLoad();window.scrollTo(0,0);return;
-   case"mjRefresh":MJ._fresh=false;MJ.sel=null;MJ.html={};mjLoad(true);toast("يُحدَّث…");return;
+   case"mjRefresh":MJ._at=0;MJ.sel=null;MJ.html={};mjLoad(true);toast("يُحدَّث…");return;
    case"tog":setVal(id,!entry(k).d[id]);break;
    case"pray":{const e=entry(k,true);const arr=Array.isArray(e.d.salah)?e.d.salah.slice():[0,0,0,0,0];arr[+b.dataset.i]=arr[+b.dataset.i]?0:1;setVal("salah",arr);break}
    case"prayAll":{const v=entry(k).d.salah;const all=Array.isArray(v)&&v.every(Boolean);setVal("salah",all?[0,0,0,0,0]:[1,1,1,1,1]);break}
@@ -2188,7 +2189,7 @@ async function syncPush(retry){
   }catch(err){syncStatus=String(err.message)==="401"||String(err.message)==="403"||String(err.message)==="404"?"تحقّقي من الرمز واسم المستودع":"تعذّر الاتصال"}
   syncing=false;if(route==="prefs")render();
 }
-document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")syncPull(false);else if(SY.token){clearTimeout(pushT);syncPush()}});
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){syncPull(false);if(route==="majariyat")mjLoad()}else if(SY.token){clearTimeout(pushT);syncPush()}});
 window.addEventListener("hashchange",()=>{confirmReset=false;sheetOpen=false;render();window.scrollTo(0,0)});
 document.addEventListener("keydown",ev=>{if(ev.key==="Escape"&&sheetOpen){sheetOpen=false;render()}});
 setInterval(()=>{const sc=sceneNow()==="night"?"night":"day";if(document.documentElement.dataset.scene!==sc&&document.visibilityState==="visible")render()},60000);
