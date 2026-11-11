@@ -734,6 +734,8 @@ const ALL=[0,1,2,3,4,5,6], WK=[0,1,2,3,4];
 const CATS={ibada:"العبادات",master:"منهج الماجستير",prog:"البرامج العلمية",skill:"المهارات",care:"العناية بالنفس"};
 const PRAYERS=["الفجر","الظهر","العصر","المغرب","العشاء"];
 
+/* خطّة التركيز حتى اختبار الماجستير (أبريل ٢٠٢٧): تسري من هذا اليوم، وما قبله يبقى على الخطّة القديمة */
+const PLAN2="2026-11-12";
 const DEFAULT_ITEMS=[
  {id:"salah",t:"الصلوات في وقتها",cat:"ibada",days:ALL,type:"prayers"},
  {id:"duha",t:"صلاة الضحى",cat:"ibada",days:ALL,type:"check"},
@@ -741,8 +743,9 @@ const DEFAULT_ITEMS=[
  {id:"wird",t:"ورد التلاوة",cat:"ibada",days:WK,type:"check"},
  {id:"azm",t:"أذكار الصباح",cat:"ibada",days:ALL,type:"check"},
  {id:"aze",t:"أذكار المساء",cat:"ibada",days:ALL,type:"check"},
- {id:"hifz",t:"حفظ وجهٍ جديد",cat:"master",days:[0,1,2,3,4,6],type:"count",unit:"وجه",target:1,phase:true},
- {id:"tathbit",t:"تثبيت المحفوظ ومراجعته",cat:"master",days:[5],type:"check",phase:true},
+ {id:"hifz",t:"حفظ وجهٍ جديد",cat:"master",days:[0,1,2,3,4,6],type:"count",unit:"وجه",target:1,phase:true,chg:[{from:PLAN2,t:"استعادة المحفوظ",target:3}]},
+ {id:"tathbit",t:"تثبيت المحفوظ ومراجعته",cat:"master",days:[5],type:"check",phase:true,chg:[{from:PLAN2,t:"مراجعة ما استُعيد",days:ALL,sub:"ولو نصف جزءٍ كلّ يوم"}]},
+ {id:"masterblock",t:"كتلة الماجستير",cat:"master",days:WK,type:"check",phase:true,on:false,sub:"٦:٣٠ – ١٠ صباحًا · لا تُمَسّ",chg:[{from:PLAN2,on:true}]},
  {id:"hadith",t:"دراسة الحديث",cat:"master",days:WK,type:"count",unit:"صفحة",phase:true},
  {id:"test",t:"الاختبار الشامل الشهري",cat:"master",days:[4],type:"check",phase:true,special:"test"},
  {id:"p_academy",t:"أكاديمية الحديث",cat:"prog",days:[],type:"check",prog:true},
@@ -750,13 +753,13 @@ const DEFAULT_ITEMS=[
  {id:"p_manhaji",t:"البناء المنهجي",cat:"prog",days:[],type:"check",prog:true},
  {id:"p_mutun",t:"حلقة المتون",cat:"prog",days:[],type:"check",prog:true,sub:"حلقات المسجد النبوي · المستوى الأول"},
  {id:"course",t:"الدورة العلمية",cat:"skill",days:[5,6],type:"check"},
- {id:"ai",t:"تعلّم الذكاء الاصطناعي",cat:"skill",days:[1],type:"check"},
- {id:"poetry",t:"حفظ الشعر",cat:"skill",days:[3],type:"check"},
- {id:"content",t:"صناعة المحتوى",cat:"skill",days:[0,2,4],type:"check",sub:"إعدادٌ وتصويرٌ ومونتاجٌ ويوتيوب"},
+ {id:"ai",t:"تعلّم الذكاء الاصطناعي",cat:"skill",days:[1],type:"check",chg:[{from:PLAN2,on:false}]},
+ {id:"poetry",t:"حفظ الشعر",cat:"skill",days:[3],type:"check",chg:[{from:PLAN2,on:false}]},
+ {id:"content",t:"صناعة المحتوى",cat:"skill",days:[0,2,4],type:"check",sub:"إعدادٌ وتصويرٌ ومونتاجٌ ويوتيوب",chg:[{from:PLAN2,t:"قناة اليوتيوب",days:ALL,sub:"ساعةٌ واحدة (١٢ – ١) · فيديو كلّ جمعة"}]},
  {id:"writing",t:"الكتابة وتحسين الخط",cat:"skill",days:ALL,type:"check",sub:"جهدٌ إثرائي"},
  {id:"notes",t:"تدوين المذكّرات",cat:"skill",days:ALL,type:"check",sub:"ما تعلّمتِه اليوم، بكلماتكِ"},
  {id:"english",t:"ممارسة الإنجليزية",cat:"skill",days:ALL,type:"check"},
- {id:"chess",t:"الشطرنج",cat:"skill",days:ALL,type:"count",unit:"مباراة",sub:"بحسب القدرة"},
+ {id:"chess",t:"الشطرنج",cat:"skill",days:ALL,type:"count",unit:"مباراة",sub:"بحسب القدرة",chg:[{from:PLAN2,on:false}]},
  {id:"reading",t:"صفحات القراءة",cat:"skill",days:ALL,type:"count",unit:"صفحة",target:10,step:5,metric:true},
  {id:"majariyat",t:"قراءة ماجريات",cat:"skill",days:ALL,type:"check"},
  {id:"sport",t:"الرياضة والتمارين",cat:"care",days:[0,2,4],type:"count",unit:"دقيقة",target:60,step:15},
@@ -769,8 +772,8 @@ const BOOKS={
  jarh:"ضوابط الجرح والتعديل",ilal:"قواعد العلل",muall:"المنهج العلمي في دراسة الحديث المعلّ"
 };
 const DEFAULT_PHASES=[
- {id:"p1",name:"الفصل الأول",start:"2026-11-01",end:"2026-12-31",target:60,quran:"البقرة وآل عمران والنساء",books:["nuzha","ilm","tadwin"],map:{0:"nuzha",1:"ilm",2:"nuzha",3:"ilm",4:"tadwin"}},
- {id:"p2",name:"الفصل الثاني",start:"2027-01-01",end:"2027-03-31",target:60,quran:"نصف المائدة وجزء عمّ وجزء تبارك",books:["jarh","ilal","muall"],map:{0:"jarh",1:"ilal",2:"jarh",3:"ilal",4:"muall"}}
+ {id:"p1",name:"الفصل الأول",start:"2026-11-01",end:"2026-12-31",target:60,quran:"البقرة وآل عمران والنساء",q2:"الأجزاء الستّة الأولى من محفوظكِ",t2:120,books:["nuzha","ilm","tadwin"],map:{0:"nuzha",1:"ilm",2:"nuzha",3:"ilm",4:"tadwin"}},
+ {id:"p2",name:"الفصل الثاني",start:"2027-01-01",end:"2027-03-31",target:60,quran:"نصف المائدة وجزء عمّ وجزء تبارك",q2:"الأجزاء التسعة الباقية من محفوظكِ",t2:180,books:["jarh","ilal","muall"],map:{0:"jarh",1:"ilal",2:"jarh",3:"ilal",4:"muall"}}
 ];
 const QBANK=[
  {b:"nuzha",q:"كتاب «نزهة النظر» شرحٌ لأيّ متن؟",o:["نخبة الفكر في مصطلح أهل الأثر","ألفية العراقي","مقدمة ابن الصلاح","الموقظة للذهبي"],x:"النزهة شرح ابن حجر لمتنه «نخبة الفكر»."},
@@ -838,8 +841,8 @@ const TRACKS=[
 ];
 
 /* ---------- state ---------- */
-function blank(){return{v:1,name:"عائشة",items:DEFAULT_ITEMS.map(i=>({...i,on:true})),phases:JSON.parse(JSON.stringify(DEFAULT_PHASES)),
-  totals:{},log:{},tests:{},poems:[],books:[],curBook:null,course:"",majLink:"",ntfy:"",lastHifz:{},projects:{},tracks:{},pieces:[],myQuotes:[],seenPos:null,programs:{},_u:0,sv:4}}
+function blank(){return{v:1,name:"عائشة",items:DEFAULT_ITEMS.map(i=>({...JSON.parse(JSON.stringify(i)),on:i.on!==false})),phases:JSON.parse(JSON.stringify(DEFAULT_PHASES)).map(p=>(p.q2?{...p,quran:p.q2,target:p.t2}:p)),
+  totals:{},log:{},tests:{},poems:[],books:[],curBook:null,course:"",majLink:"",ntfy:"",lastHifz:{},projects:{},tracks:{},pieces:[],myQuotes:[],seenPos:null,programs:{},_u:0,sv:5}}
 function load(){
   let s=null;
   try{s=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){console.warn("جبل الرماة:",e)}
@@ -853,6 +856,8 @@ function migrate(s){
   s.items=(s.items||[]).concat(b.items.filter(i=>!ids.has(i.id)));
   for(const it of s.items){const df=b.items.find(x=>x.id===it.id);if(df&&df.metric&&!it.metric){it.metric=true;it.t=df.t;if(!it.target)it.target=df.target;if(!it.step)it.step=df.step}}
   if(!(s.sv>=4)){for(const it of s.items){if(it.id==="hadith"){if(it.t==="منهج الماجستير: الحديث")it.t="دراسة الحديث";it.days=WK}if(it.id==="wird")it.days=WK}s.sv=4}
+  if(!(s.sv>=5)){for(const it of s.items){const df=b.items.find(x=>x.id===it.id);if(df&&df.chg&&!it.chg)it.chg=JSON.parse(JSON.stringify(df.chg))}
+    for(const p of (s.phases||[])){const dp=DEFAULT_PHASES.find(x=>x.id===p.id);if(dp&&dp.q2){p.quran=dp.q2;p.target=dp.t2}}s.sv=5}
   for(const k in b)if(s[k]===undefined)s[k]=b[k];
   return s;
 }
@@ -879,7 +884,13 @@ function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeou
 function phaseOf(d){const k=key(d);return S.phases.find(p=>k>=p.start&&k<=p.end)||null}
 function lastThu(d){const x=new Date(d.getFullYear(),d.getMonth()+1,0);while(x.getDay()!==4)x.setDate(x.getDate()-1);return x}
 function isTestDay(d){return key(lastThu(d))===key(d)}
+/* البند في يومٍ بعينه: تُطبَّق تغييراته المؤرّخة (chg) حتى ذلك اليوم، فلا يتغيّر ما مضى */
+function at(it,k){if(!it||!it.chg||!it.chg.length)return it;let r=it;for(const c of it.chg)if(k>=c.from)r={...r,...c};if(r!==it)delete r.from;return r}
+const itemAt=(id,k)=>at(S.items.find(x=>x.id===id),k);
+/* تعديلٌ يسري من يومٍ معيّن دون أن يمسّ ما قبله */
+function setFrom(it,patch,k){k=k||key(today());const old=(it.chg||[]).find(c=>c.from===k)||{};let ch=(it.chg||[]).filter(c=>c.from!==k);ch.push({...old,...patch,from:k});for(const c of ch)if(c.from>k)for(const f in patch)delete c[f];ch=ch.filter(c=>Object.keys(c).length>1);ch.sort((x,y)=>x.from<y.from?-1:1);it.chg=ch}
 function scheduled(it,d){
+  it=at(it,key(d));
   if(!it.on||!it.days.includes(d.getDay()))return false;
   if(it.phase&&!phaseOf(d))return false;
   if(it.special==="test")return isTestDay(d);
@@ -889,12 +900,12 @@ function scheduled(it,d){
 const EX_CAP=4,EXN={sick:"مرض",travel:"سفر",hayd:"عذرٌ شرعي"};
 const HAYD_HIDE=new Set(["salah","duha","witr"]);
 /* الثغر الأساس؛ وما سواه مكمّلات */
-const CORE=new Set(["salah","wird","azm","aze","hifz","tathbit","notes"]);
+const CORE=new Set(["salah","wird","azm","aze","hifz","tathbit","notes","masterblock"]);
 const isCore=it=>CORE.has(it.id);
 /* القاعدة الجديدة تسري من يوم إطلاقها، وما قبله يبقى على ٧٠٪ فلا يتغيّر موضعكِ بأثرٍ رجعي */
 const RULE_FROM="2026-10-28";
 const exOf=d=>(S.log[key(d)]||{}).ex||"";
-function dayItems(d){const ex=exOf(d);return S.items.filter(it=>scheduled(it,d)&&!(ex==="hayd"&&HAYD_HIDE.has(it.id)))}
+function dayItems(d){const ex=exOf(d),k=key(d);return S.items.filter(it=>scheduled(it,d)&&!(ex==="hayd"&&HAYD_HIDE.has(it.id))).map(it=>at(it,k))}
 function exUsed(d,skipK){const m=key(d).slice(0,7);let n=0;for(const k in S.log){if(k.slice(0,7)===m&&k!==skipK){const x=S.log[k].ex;if(x==="sick"||x==="travel")n++}}return n}
 function entry(k,create){if(!S.log[k]){if(!create)return{d:{}};S.log[k]={d:{}}}return S.log[k]}
 function score(it,e){
@@ -948,7 +959,7 @@ function allQuotes(){return QUOTES.concat((S.myQuotes||[]).map(t=>({t,s:"من ع
 function quoteFor(d,firm){const q=allQuotes().filter(x=>!firm||x.firm);const n=Math.floor(d.getTime()/864e5);return q[((n%q.length)+q.length)%q.length]}
 const isDaily=it=>it.days.length===7;
 /* متى يحين كلّ وِرد (بالساعة)؛ وما لم يُذكر فوقته مفتوح */
-const WIN={witr:[[20,24],[0,5]],hifz:[[3,8.5]],azm:[[4.5,10]],majariyat:[[6,10.5]],duha:[[7,11.5]],aze:[[15.5,19]]};
+const WIN={witr:[[20,24],[0,5]],hifz:[[3,8.5]],masterblock:[[6.5,10]],content:[[12,13]],azm:[[4.5,10]],majariyat:[[6,10.5]],duha:[[7,11.5]],aze:[[15.5,19]]};
 function dueNow(it){const w=WIN[it.id];if(!w)return false;const t=new Date(),h=t.getHours()+t.getMinutes()/60;return w.some(([a,b])=>h>=a&&h<b)}
 const fmtMin=m=>{m=+m||0;const h=Math.floor(m/60),r=m%60;return h?`${fmt(h)} س${r?" و"+fmt(r)+" د":""}`:`${fmt(r)} د`};
 function sumItem(id,from,to){let s=0;for(const k in S.log){if((from&&k<from)||(to&&k>to))continue;const v=S.log[k].d[id];s+=typeof v==="number"?v:(v===true?1:0)}return s}
@@ -1468,7 +1479,7 @@ function weekDots(it){
   return `<div class="dots">${h}</div>`;
 }
 function vSkills(){
-  const its=S.items.filter(i=>(i.cat==="skill"||i.cat==="care")&&i.on);
+  const its=S.items.map(i=>at(i,key(today()))).filter(i=>(i.cat==="skill"||i.cat==="care")&&i.on);
   return `<section class="blk"><div class="blk-h"><h2>المهارات والعادات</h2><span class="tag">آخر سبعة أيام</span></div>
   <div class="list">${its.map(it=>{const tot=it.type==="count"?sumItem(it.id):Object.values(S.log).filter(e=>e.d[it.id]).length;
     return `<div class="row" style="flex-wrap:wrap;gap:8px 12px"><div class="txt" style="flex-basis:45%"><div class="t">${esc(it.t)}</div><div class="s">${it.days.length===7?"يوميًا":it.days.map(x=>DAYN[x]).join("، ")} · <span class="num">${fmt(tot)}</span> ${it.type==="count"?esc(it.unit):"مرّة"}</div></div>${weekDots(it)}</div>`}).join("")}</div></section>
@@ -1574,7 +1585,7 @@ function vPrefs(){
    <div class="list">${(S.myQuotes||[]).length?S.myQuotes.map((q,i)=>`<div class="row"><div class="txt">«${esc(q)}»</div><button class="linkbtn" data-act="qDel" data-i="${i}">حذف</button></div>`).join(""):`<div class="empty">أضيفي عبارةً تشدّ عزمكِ، بيتًا أو حكمةً أو عهدًا.</div>`}</div>
    <form class="card grid2" data-form="quote"><div class="field"><label for="qt">العبارة</label><input class="inp" id="qt" required></div><div style="align-self:end"><button class="btn" type="submit">إضافة</button></div></form></section>
   <section class="blk"><div class="blk-h"><h2>الوِرد الأسبوعي</h2><span class="tag">اختاري أيام كل بند</span></div>
-  <div class="card">${S.items.filter(i=>!i.special).map(it=>`<div class="prow"><div class="prow-h"><span><b>${esc(it.t)}</b> <span class="small muted">${CATS[it.cat]}${it.phase?" · في الفصلين فقط":""}</span></span><button class="sw ${it.on?"on":""}" data-act="itemOn" data-id="${it.id}" aria-label="تفعيل ${esc(it.t)}" aria-pressed="${it.on}"></button></div>
+  <div class="card">${S.items.filter(i=>!i.special).map(i=>at(i,key(today()))).map(it=>`<div class="prow"><div class="prow-h"><span><b>${esc(it.t)}</b> <span class="small muted">${CATS[it.cat]}${it.phase?" · في الفصلين فقط":""}</span></span><button class="sw ${it.on?"on":""}" data-act="itemOn" data-id="${it.id}" aria-label="تفعيل ${esc(it.t)}" aria-pressed="${it.on}"></button></div>
    <div class="days">${ALL.map(x=>`<button class="${it.days.includes(x)?"on":""}" data-act="itemDay" data-id="${it.id}" data-x="${x}" title="${DAYN[x]}">${DAYS[x]}</button>`).join("")}</div></div>`).join("")}</div></section>
   <section class="blk"><div class="blk-h"><h2>توزيع كتب الحديث</h2></div>
   ${S.phases.map(p=>`<div class="card stack"><b>${esc(p.name)}</b><div class="grid2">${WK.map(x=>`<div class="field"><label for="bm_${p.id}${x}">${DAYN[x]}</label><select class="inp" id="bm_${p.id}${x}" data-map="${p.id}" data-x="${x}">${p.books.map(b=>`<option value="${b}" ${p.map[x]===b?"selected":""}>${BOOKS[b]}</option>`).join("")}</select></div>`).join("")}</div>
@@ -2058,7 +2069,7 @@ document.addEventListener("click",ev=>{
   const a=b.dataset.act,id=b.dataset.id,k=key(viewDay);
   const keepY=window.scrollY;
   const tid=b.closest("[data-tile]")?.dataset.tile;
-  const itm=tid&&S.items.find(x=>x.id===tid),before=itm?score(itm,entry(k))>=1:null,dayBefore=dayPct(viewDay),stBefore=dayState(viewDay)==="up";
+  const itm=tid&&itemAt(tid,k),before=itm?score(itm,entry(k))>=1:null,dayBefore=dayPct(viewDay),stBefore=dayState(viewDay)==="up";
   switch(a){
    case"sheet":sheetOpen=!sheetOpen;render();return;
    case"goTask":{const el=document.querySelector(".ir:not(.done)");if(el)el.scrollIntoView({behavior:"smooth",block:"center"});return}
@@ -2090,8 +2101,8 @@ document.addEventListener("click",ev=>{
    case"bookDel":{const x=S.books.splice(+b.dataset.i,1)[0];if(S.curBook===x.id)S.curBook=null;save();break}
    case"stage":S.projects[b.dataset.p]=+b.dataset.i;save();break;
    case"pieceDel":S.pieces=S.pieces.filter(x=>x.id!==id);save();break;
-   case"itemOn":{const it=S.items.find(x=>x.id===id);it.on=!it.on;save();break}
-   case"itemDay":{const it=S.items.find(x=>x.id===id),x=+b.dataset.x;it.days=it.days.includes(x)?it.days.filter(y=>y!==x):it.days.concat(x).sort();save();break}
+   case"itemOn":{const it=S.items.find(x=>x.id===id);setFrom(it,{on:!at(it,key(today())).on});save();break}
+   case"itemDay":{const it=S.items.find(x=>x.id===id),x=+b.dataset.x,cur=at(it,key(today())).days;setFrom(it,{days:cur.includes(x)?cur.filter(y=>y!==x):cur.concat(x).sort()});save();break}
    case"ntfyTest":sendTest();return;
    case"fbIn":fbAuth("in");return;
    case"fbUp":fbAuth("up");return;
@@ -2131,7 +2142,7 @@ document.addEventListener("click",ev=>{
 });
 document.addEventListener("change",ev=>{
   const el=ev.target,keepY=window.scrollY;let rr=true;
-  if(el.matches(".cnt input")){const it=S.items.find(x=>x.id===el.dataset.id),bf=score(it,entry(key(viewDay)))>=1;setVal(el.dataset.id,Math.max(0,+el.value||0));render();window.scrollTo(0,keepY);if(!bf&&score(it,entry(key(viewDay)))>=1){chime(true);celebrate(it.id)}return}
+  if(el.matches(".cnt input")){const it=itemAt(el.dataset.id,key(viewDay)),bf=score(it,entry(key(viewDay)))>=1;setVal(el.dataset.id,Math.max(0,+el.value||0));render();window.scrollTo(0,keepY);if(!bf&&score(it,entry(key(viewDay)))>=1){chime(true);celebrate(it.id)}return}
   if(el.matches(".stepper input")){setVal(el.dataset.id,el.value===""?null:Math.max(0,+el.value||0))}
   else if(el.dataset.prog!==undefined){const pr=S.programs[el.dataset.prog]||(S.programs[el.dataset.prog]={});pr[el.dataset.f]=el.dataset.f==="note"?el.value.trim():Math.max(0,+el.value||0);save()}
   else if(el.dataset.target!==undefined){const it=S.items.find(x=>x.id===el.dataset.target);if(it.type==="limit")it.limit=Math.max(0,+el.value||0);else it.target=Math.max(1,+el.value||1);save()}
