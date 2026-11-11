@@ -742,7 +742,7 @@ const DEFAULT_ITEMS=[
  {id:"course",t:"الدورة العلمية",cat:"skill",days:[5,6],type:"check"},
  {id:"ai",t:"تعلّم الذكاء الاصطناعي",cat:"skill",days:[1],type:"check"},
  {id:"poetry",t:"حفظ الشعر",cat:"skill",days:[3],type:"check"},
- {id:"content",t:"صناعة المحتوى",cat:"skill",days:[0,2,4],type:"check",sub:"إعدادٌ وتصويرٌ ومونتاجٌ ويوتيوب",chg:[{from:PLAN2,t:"قناة اليوتيوب",days:ALL,sub:"ساعةٌ واحدة (١٢ – ١) · فيديو كلّ جمعة"}]},
+ {id:"content",t:"صناعة المحتوى",cat:"skill",days:[0,2,4],type:"check",sub:"إعدادٌ وتصويرٌ ومونتاجٌ ويوتيوب",chg:[{from:PLAN2,t:"قناة اليوتيوب",days:[0,2,4],sub:"ساعةٌ (١٢ – ١) · فيديو كلّ جمعة"}]},
  {id:"writing",t:"الكتابة وتحسين الخط",cat:"skill",days:ALL,type:"check",sub:"جهدٌ إثرائي"},
  {id:"notes",t:"تدوين المذكّرات",cat:"skill",days:ALL,type:"check",sub:"ما تعلّمتِه اليوم، بكلماتكِ"},
  {id:"english",t:"ممارسة الإنجليزية",cat:"skill",days:ALL,type:"check"},
@@ -829,7 +829,7 @@ const TRACKS=[
 
 /* ---------- state ---------- */
 function blank(){return{v:1,name:"عائشة",items:DEFAULT_ITEMS.map(i=>({...JSON.parse(JSON.stringify(i)),on:i.on!==false})),phases:JSON.parse(JSON.stringify(DEFAULT_PHASES)),
-  totals:{},log:{},tests:{},poems:[],books:[],curBook:null,course:"",majLink:"",ntfy:"",lastHifz:{},projects:{},tracks:{},pieces:[],myQuotes:[],seenPos:null,programs:{},_u:0,sv:6}}
+  totals:{},log:{},tests:{},poems:[],books:[],curBook:null,course:"",majLink:"",ntfy:"",lastHifz:{},projects:{},tracks:{},pieces:[],myQuotes:[],seenPos:null,programs:{},_u:0,sv:7}}
 function load(){
   let s=null;
   try{s=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){console.warn("جبل الرماة:",e)}
@@ -848,6 +848,8 @@ function migrate(s){
   /* sv6: عائشة اختارت الحفظ الجديد لا الاستعادة، وأبقت الشطرنج والذكاء الاصطناعي والشعر؛ فيُرفع ما أضافه sv5 لها */
   if(!(s.sv>=6)){for(const it of s.items){if(UNDO6.has(it.id)&&it.chg){it.chg=it.chg.filter(c=>c.from!==PLAN2);if(!it.chg.length)delete it.chg}}
     for(const p of (s.phases||[])){const dp=DEFAULT_PHASES.find(x=>x.id===p.id);if(dp&&/من محفوظكِ$/.test(p.quran||"")){p.quran=dp.quran;p.target=dp.target}}s.sv=6}
+  /* sv7: قناة اليوتيوب على خطّتها الأولى للمحتوى: الأحد والثلاثاء والخميس */
+  if(!(s.sv>=7)){const ct=s.items.find(i=>i.id==="content"),c=ct&&(ct.chg||[]).find(x=>x.from===PLAN2);if(c){c.days=[0,2,4];c.sub="ساعةٌ (١٢ – ١) · فيديو كلّ جمعة"}s.sv=7}
   for(const k in b)if(s[k]===undefined)s[k]=b[k];
   return s;
 }

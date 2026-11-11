@@ -27,8 +27,9 @@ test("الحفظ الجديد وجهٌ واحد كما كان، والتثبيت
   assert.ok(ids(new Date(2026, 10, 20)).includes("tathbit"));
 });
 
-test("القناة كلّ يوم بعد الخطّة", () => {
+test("القناة الأحد والثلاثاء والخميس بعد الخطّة", () => {
   assert.ok(ids(AFTER).includes("content"));
+  assert.ok(!ids(new Date(2026, 10, 18)).includes("content"), "الأربعاء");
   assert.equal(A.dayItems(AFTER).find((i) => i.id === "content").t, "قناة اليوتيوب");
 });
 
@@ -50,7 +51,7 @@ test("الترحيل من sv=4 يضيف الكتلة والقناة ولا يم�
   for (const it of old.items) delete it.chg;
   old.items = old.items.filter((i) => i.id !== "masterblock");
   const s = A.migrate(old);
-  assert.equal(s.sv, 6);
+  assert.equal(s.sv, 7);
   assert.equal(A.at(s.items.find((i) => i.id === "chess"), "2026-11-12").on, true);
   const mb = s.items.find((i) => i.id === "masterblock");
   assert.equal(A.at(mb, "2026-11-12").on, true);
@@ -71,7 +72,7 @@ test("من حُمِّلت عنده نسخة sv=5 يعود إليه الحفظ ا
   st.phases[0].quran = "الأجزاء الستّة الأولى من محفوظكِ";
   st.phases[0].target = 120;
   const s = A.migrate(st);
-  assert.equal(s.sv, 6);
+  assert.equal(s.sv, 7);
   for (const id of ["hifz", "chess", "ai", "poetry", "tathbit"]) assert.ok(!s.items.find((i) => i.id === id).chg, id);
   assert.equal(s.phases[0].quran, "البقرة وآل عمران والنساء");
   assert.equal(s.phases[0].target, 60);
@@ -86,4 +87,12 @@ test("التبديل من الإعدادات يسري من يومه ولا يع�
   A.setFrom(it, { on: true }, "2026-11-16");
   assert.equal(A.at(it, "2026-11-25").on, true, "التغيير اللاحق المجدول لا يغلب اختيارها الأحدث");
   assert.equal(A.at(it, "2026-11-15").on, false);
+});
+
+test("من حُمِّلت عنده القناة يوميّة تعود إلى الأحد والثلاثاء والخميس", () => {
+  const st = A.blank();
+  st.sv = 6;
+  st.items.find((i) => i.id === "content").chg = [{ from: "2026-11-12", t: "قناة اليوتيوب", days: [0, 1, 2, 3, 4, 5, 6] }];
+  const s = A.migrate(st);
+  assert.equal(JSON.stringify(A.at(s.items.find((i) => i.id === "content"), "2026-11-12").days), "[0,2,4]");
 });
