@@ -7,12 +7,10 @@ const BEFORE = new Date(2026, 10, 10); // الثلاثاء ١٠ نوفمبر —
 const AFTER = new Date(2026, 10, 17);  // الثلاثاء ١٧ نوفمبر — بعدها
 const ids = (d) => A.dayItems(d).map((i) => i.id);
 
-test("الشطرنج والذكاء الاصطناعي والشعر تبقى في الماضي وتُرفع من الخطّة الجديدة", () => {
-  assert.ok(ids(BEFORE).includes("chess"));
-  assert.ok(!ids(AFTER).includes("chess"));
-  assert.ok(!ids(new Date(2026, 10, 16)).includes("ai"), "الإثنين بعد الخطّة");
-  assert.ok(ids(new Date(2026, 10, 9)).includes("ai"), "الإثنين قبلها");
-  assert.ok(!ids(new Date(2026, 10, 18)).includes("poetry"));
+test("الشطرنج والذكاء الاصطناعي والشعر باقية بعد الخطّة", () => {
+  assert.ok(ids(AFTER).includes("chess"));
+  assert.ok(ids(new Date(2026, 10, 16)).includes("ai"));
+  assert.ok(ids(new Date(2026, 10, 18)).includes("poetry"));
 });
 
 test("كتلة الماجستير من الأساس بعد الخطّة فقط", () => {
@@ -21,16 +19,15 @@ test("كتلة الماجستير من الأساس بعد الخطّة فقط",
   assert.ok(A.isCore({ id: "masterblock" }));
 });
 
-test("الاستعادة ثلاثة أوجه بعد الخطّة، والماضي على وجهٍ واحد", () => {
-  assert.equal(A.dayItems(BEFORE).find((i) => i.id === "hifz").target, 1);
+test("الحفظ الجديد وجهٌ واحد كما كان، والتثبيت يوم الجمعة", () => {
   const h = A.dayItems(AFTER).find((i) => i.id === "hifz");
-  assert.equal(h.target, 3);
-  assert.equal(h.t, "استعادة المحفوظ");
+  assert.equal(h.target, 1);
+  assert.equal(h.t, "حفظ وجهٍ جديد");
+  assert.ok(!ids(AFTER).includes("tathbit"));
+  assert.ok(ids(new Date(2026, 10, 20)).includes("tathbit"));
 });
 
-test("المراجعة يومية بعد الخطّة، والقناة كلّ يوم", () => {
-  assert.ok(!ids(BEFORE).includes("tathbit"));
-  assert.ok(ids(AFTER).includes("tathbit"));
+test("القناة كلّ يوم بعد الخطّة", () => {
   assert.ok(ids(AFTER).includes("content"));
   assert.equal(A.dayItems(AFTER).find((i) => i.id === "content").t, "قناة اليوتيوب");
 });
@@ -47,20 +44,38 @@ test("يومٌ قديمٌ مكتمل لا ينقلب نزولًا بسبب ال�
   assert.equal(A.dayState(BEFORE), "up");
 });
 
-test("الترحيل يضيف التغييرات المؤرّخة إلى حالةٍ قديمة (sv=4) دون مساس الماضي", () => {
+test("الترحيل من sv=4 يضيف الكتلة والقناة ولا يمسّ الحفظ والمهارات", () => {
   const old = A.blank();
   old.sv = 4;
   for (const it of old.items) delete it.chg;
   old.items = old.items.filter((i) => i.id !== "masterblock");
   const s = A.migrate(old);
-  assert.equal(s.sv, 5);
-  const chess = s.items.find((i) => i.id === "chess");
-  assert.equal(A.at(chess, "2026-11-11").on, true);
-  assert.equal(A.at(chess, "2026-11-12").on, false);
+  assert.equal(s.sv, 6);
+  assert.equal(A.at(s.items.find((i) => i.id === "chess"), "2026-11-12").on, true);
   const mb = s.items.find((i) => i.id === "masterblock");
-  assert.equal(mb.on, false);
   assert.equal(A.at(mb, "2026-11-12").on, true);
-  assert.equal(s.phases[0].target, 120);
+  assert.equal(A.at(s.items.find((i) => i.id === "content"), "2026-11-12").t, "قناة اليوتيوب");
+  assert.equal(s.phases[0].target, 60);
+});
+
+test("من حُمِّلت عنده نسخة sv=5 يعود إليه الحفظ الجديد والمهارات", () => {
+  const st = A.blank();
+  st.sv = 5;
+  const P = "2026-11-12";
+  const set = (id, c) => (st.items.find((i) => i.id === id).chg = [c]);
+  set("hifz", { from: P, t: "استعادة المحفوظ", target: 3 });
+  set("chess", { from: P, on: false });
+  set("ai", { from: P, on: false });
+  set("poetry", { from: P, on: false });
+  set("tathbit", { from: P, days: [0, 1, 2, 3, 4, 5, 6] });
+  st.phases[0].quran = "الأجزاء الستّة الأولى من محفوظكِ";
+  st.phases[0].target = 120;
+  const s = A.migrate(st);
+  assert.equal(s.sv, 6);
+  for (const id of ["hifz", "chess", "ai", "poetry", "tathbit"]) assert.ok(!s.items.find((i) => i.id === id).chg, id);
+  assert.equal(s.phases[0].quran, "البقرة وآل عمران والنساء");
+  assert.equal(s.phases[0].target, 60);
+  assert.ok(A.at(s.items.find((i) => i.id === "masterblock"), P).on);
 });
 
 test("التبديل من الإعدادات يسري من يومه ولا يعيد كتابة التاريخ", () => {

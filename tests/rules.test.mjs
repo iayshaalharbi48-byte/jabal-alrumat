@@ -144,7 +144,7 @@ test("مفتاح اليوم يُحوَّل إلى التاريخ نفسه ذها
 test("الترحيل من نسخة قديمة يضيف يوم الحفظ الجمعة (٦) لبند الحفظ", () => {
   const old = { sv: 1, items: [{ id: "hifz", t: "حفظ", days: [0, 1, 2, 3, 4], type: "count", target: 1 }], log: {}, phases: [] };
   const s = A.migrate(old);
-  assert.equal(s.sv, 5);
+  assert.equal(s.sv, 6);
   const hifz = s.items.find((i) => i.id === "hifz");
   assert.ok(hifz.days.includes(6), "يوم ٦ يجب أن يُضاف");
 });
@@ -159,7 +159,7 @@ test("الترحيل يضيف الحقول الناقصة دون أن يمسّ �
 
 test("الترحيل من لا شيء يعطي الحالة الافتراضية", () => {
   const s = A.migrate(null);
-  assert.equal(s.sv, 5);
+  assert.equal(s.sv, 6);
   assert.equal(s.name, "عائشة");
 });
 
@@ -196,7 +196,7 @@ test("الترحيل يُبقي اسم «دراسة الحديث» ويصحّح 
     { id: "wird", t: "ورد التلاوة", days: [0, 1, 2, 3, 4, 5, 6], type: "check" },
   ], log: {}, phases: [] };
   const s = A.migrate(old);
-  assert.equal(s.sv, 5);
+  assert.equal(s.sv, 6);
   const h = s.items.find((i) => i.id === "hadith");
   const w = s.items.find((i) => i.id === "wird");
   assert.equal(h.t, "دراسة الحديث");
