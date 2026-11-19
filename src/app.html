@@ -717,12 +717,14 @@ const KEY="jabal-alrumat-v1";
 const DAYN=["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
 const DAYS=["ح","ن","ث","ر","خ","ج","س"];
 const ALL=[0,1,2,3,4,5,6], WK=[0,1,2,3,4];
-const CATS={ibada:"العبادات",master:"منهج الماجستير",prog:"البرامج العلمية",skill:"المهارات",care:"العناية بالنفس"};
+const CATS={ibada:"العبادات",master:"منهج الماجستير",prog:"البرامج العلمية",skill:"المهارات",care:"العناية بالنفس",glow:"رحلة التوهّج"};
 const PRAYERS=["الفجر","الظهر","العصر","المغرب","العشاء"];
 
 /* خطّة التركيز حتى اختبار الماجستير (أبريل ٢٠٢٧): تسري من هذا اليوم، وما قبله يبقى على الخطّة القديمة */
 const PLAN2="2026-11-12";
 const UNDO6=new Set(["hifz","tathbit","chess","ai","poetry"]);
+/* رحلة التوهّج: ٩٠ يومًا من ٢٠ نوفمبر ٢٠٢٦ إلى ١٧ فبراير ٢٠٢٧ */
+const GLOW="2026-11-20",GLOW_END="2027-02-18";
 const DEFAULT_ITEMS=[
  {id:"salah",t:"الصلوات في وقتها",cat:"ibada",days:ALL,type:"prayers"},
  {id:"duha",t:"صلاة الضحى",cat:"ibada",days:ALL,type:"check"},
@@ -750,9 +752,19 @@ const DEFAULT_ITEMS=[
  {id:"reading",t:"صفحات القراءة",cat:"skill",days:ALL,type:"count",unit:"صفحة",target:10,step:5,metric:true},
  {id:"majariyat",t:"قراءة ماجريات",cat:"skill",days:ALL,type:"check"},
  {id:"sport",t:"الرياضة والتمارين",cat:"care",days:[0,2,4],type:"count",unit:"دقيقة",target:60,step:15},
- {id:"walk",t:"خطوات المشي",cat:"care",days:ALL,type:"count",unit:"خطوة",target:5000,step:500,metric:true},
+ {id:"walk",t:"خطوات المشي",cat:"care",days:ALL,type:"count",unit:"خطوة",target:5000,step:500,metric:true,chg:[{from:GLOW,target:8000},{from:"2026-12-11",target:10000}]},
  {id:"screen",t:"مدة استخدام الجهاز",cat:"care",days:ALL,type:"limit",unit:"دقيقة",limit:180,step:15,metric:true},
- {id:"selfcare",t:"العناية بالشعر والجسم",cat:"care",days:[3,6],type:"check"}
+ {id:"selfcare",t:"العناية بالشعر والجسم",cat:"care",days:[3,6],type:"check",chg:[{from:GLOW,on:false}]},
+ {id:"g_am",t:"روتين الصباح والواقي",cat:"glow",days:ALL,type:"check",on:false,sub:"PanOxyl ← Anua ← APLB ← TOCOBO",chg:[{from:GLOW,on:true},{from:GLOW_END,on:false}]},
+ {id:"g_pm",t:"روتين المساء",cat:"glow",days:ALL,type:"check",on:false,sub:"الغسول اللطيف ← الأزيليك ← المرطّب",chg:[{from:GLOW,on:true},{from:GLOW_END,on:false}]},
+ {id:"g_posture",t:"روتين القوام",cat:"glow",days:ALL,type:"count",unit:"دقيقة",target:10,step:5,on:false,chg:[{from:GLOW,on:true},{from:GLOW_END,on:false}]},
+ {id:"g_water",t:"الماء",cat:"glow",days:ALL,type:"count",unit:"كوب",target:8,step:1,on:false,chg:[{from:GLOW,on:true},{from:GLOW_END,on:false}]},
+ {id:"g_plate",t:"طبقٌ متوازن بلا سكرٍ مضاف",cat:"glow",days:ALL,type:"check",on:false,sub:"نصفه خضار، وربعه بروتين، وربعه نشويات بطيئة",chg:[{from:GLOW,on:true},{from:GLOW_END,on:false}]},
+ {id:"g_supp",t:"أوميغا ٣ والزنك",cat:"glow",days:ALL,type:"check",on:false,sub:"مع الغداء",chg:[{from:"2026-11-27",on:true},{from:GLOW_END,on:false}]},
+ {id:"g_body",t:"ترطيب الجسم بعد الاستحمام",cat:"glow",days:ALL,type:"check",on:false,sub:"AmLactin للأكواع والركب، وEOS لسائر الجسم",chg:[{from:GLOW,on:true},{from:GLOW_END,on:false}]},
+ {id:"g_sleep",t:"النوم بعد العشاء",cat:"glow",days:ALL,type:"check",on:false,chg:[{from:GLOW,on:true},{from:GLOW_END,on:false}]},
+ {id:"g_hair",t:"غسل الشعر",cat:"glow",days:[1,3,6],type:"check",on:false,sub:"السبت والأربعاء: Selsun · الاثنين: إكليل الجبل أو السدر",chg:[{from:GLOW,on:true},{from:GLOW_END,on:false}]},
+ {id:"g_photo",t:"صور المتابعة ومحيط الخصر",cat:"glow",days:[5],type:"check",on:false,sub:"بعد العصر، المكان والإضاءة نفسها",chg:[{from:GLOW,on:true},{from:GLOW_END,on:false}]}
 ];
 const BOOKS={
  nuzha:"نزهة النظر",tadwin:"تدوين السنة",ilm:"كتاب العلم من صحيح البخاري",
@@ -829,7 +841,7 @@ const TRACKS=[
 
 /* ---------- state ---------- */
 function blank(){return{v:1,name:"عائشة",items:DEFAULT_ITEMS.map(i=>({...JSON.parse(JSON.stringify(i)),on:i.on!==false})),phases:JSON.parse(JSON.stringify(DEFAULT_PHASES)),
-  totals:{},log:{},tests:{},poems:[],books:[],curBook:null,course:"",majLink:"",ntfy:"",lastHifz:{},projects:{},tracks:{},pieces:[],myQuotes:[],seenPos:null,programs:{},_u:0,sv:7}}
+  totals:{},log:{},tests:{},poems:[],books:[],curBook:null,course:"",majLink:"",ntfy:"",lastHifz:{},projects:{},tracks:{},pieces:[],myQuotes:[],seenPos:null,programs:{},_u:0,sv:8}}
 function load(){
   let s=null;
   try{s=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){console.warn("جبل الرماة:",e)}
@@ -850,6 +862,8 @@ function migrate(s){
     for(const p of (s.phases||[])){const dp=DEFAULT_PHASES.find(x=>x.id===p.id);if(dp&&/من محفوظكِ$/.test(p.quran||"")){p.quran=dp.quran;p.target=dp.target}}s.sv=6}
   /* sv7: قناة اليوتيوب على خطّتها الأولى للمحتوى: الأحد والثلاثاء والخميس */
   if(!(s.sv>=7)){const ct=s.items.find(i=>i.id==="content"),c=ct&&(ct.chg||[]).find(x=>x.from===PLAN2);if(c){c.days=[0,2,4];c.sub="ساعةٌ (١٢ – ١) · فيديو كلّ جمعة"}s.sv=7}
+  /* sv8: رحلة التوهّج — تُضاف بنودها (أعلاه) وتُطفأ «العناية بالشعر والجسم» العامّة، ويرتفع هدف الخطوات من يومها */
+  if(!(s.sv>=8)){for(const id of ["selfcare","walk"]){const it=s.items.find(i=>i.id===id),df=b.items.find(x=>x.id===id);if(it&&df&&df.chg){const ch=(it.chg||[]).filter(c=>!df.chg.some(d=>d.from===c.from));it.chg=ch.concat(JSON.parse(JSON.stringify(df.chg))).sort((x,y)=>x.from<y.from?-1:1)}}s.sv=8}
   for(const k in b)if(s[k]===undefined)s[k]=b[k];
   return s;
 }
@@ -951,7 +965,7 @@ function allQuotes(){return QUOTES.concat((S.myQuotes||[]).map(t=>({t,s:"من ع
 function quoteFor(d,firm){const q=allQuotes().filter(x=>!firm||x.firm);const n=Math.floor(d.getTime()/864e5);return q[((n%q.length)+q.length)%q.length]}
 const isDaily=it=>it.days.length===7;
 /* متى يحين كلّ وِرد (بالساعة)؛ وما لم يُذكر فوقته مفتوح */
-const WIN={witr:[[20,24],[0,5]],hifz:[[3,8.5]],masterblock:[[6.5,10]],content:[[12,13]],azm:[[4.5,10]],majariyat:[[6,10.5]],duha:[[7,11.5]],aze:[[15.5,19]]};
+const WIN={g_am:[[4.5,7]],g_pm:[[18,21]],witr:[[20,24],[0,5]],hifz:[[3,8.5]],masterblock:[[6.5,10]],content:[[12,13]],azm:[[4.5,10]],majariyat:[[6,10.5]],duha:[[7,11.5]],aze:[[15.5,19]]};
 function dueNow(it){const w=WIN[it.id];if(!w)return false;const t=new Date(),h=t.getHours()+t.getMinutes()/60;return w.some(([a,b])=>h>=a&&h<b)}
 const fmtMin=m=>{m=+m||0;const h=Math.floor(m/60),r=m%60;return h?`${fmt(h)} س${r?" و"+fmt(r)+" د":""}`:`${fmt(r)} د`};
 function sumItem(id,from,to){let s=0;for(const k in S.log){if((from&&k<from)||(to&&k>to))continue;const v=S.log[k].d[id];s+=typeof v==="number"?v:(v===true?1:0)}return s}

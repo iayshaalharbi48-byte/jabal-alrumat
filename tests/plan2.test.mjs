@@ -51,7 +51,7 @@ test("الترحيل من sv=4 يضيف الكتلة والقناة ولا يم�
   for (const it of old.items) delete it.chg;
   old.items = old.items.filter((i) => i.id !== "masterblock");
   const s = A.migrate(old);
-  assert.equal(s.sv, 7);
+  assert.equal(s.sv, 8);
   assert.equal(A.at(s.items.find((i) => i.id === "chess"), "2026-11-12").on, true);
   const mb = s.items.find((i) => i.id === "masterblock");
   assert.equal(A.at(mb, "2026-11-12").on, true);
@@ -72,7 +72,7 @@ test("من حُمِّلت عنده نسخة sv=5 يعود إليه الحفظ ا
   st.phases[0].quran = "الأجزاء الستّة الأولى من محفوظكِ";
   st.phases[0].target = 120;
   const s = A.migrate(st);
-  assert.equal(s.sv, 7);
+  assert.equal(s.sv, 8);
   for (const id of ["hifz", "chess", "ai", "poetry", "tathbit"]) assert.ok(!s.items.find((i) => i.id === id).chg, id);
   assert.equal(s.phases[0].quran, "البقرة وآل عمران والنساء");
   assert.equal(s.phases[0].target, 60);
